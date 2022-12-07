@@ -7,3 +7,4 @@
 /CMakeSettings.json
 **/bin/
 **/venv/
+/src/decoders/version.h
