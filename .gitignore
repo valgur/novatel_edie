@@ -8,3 +8,5 @@
 **/bin/
 **/venv/
 /src/decoders/version.h
+build*/
+.idea/
