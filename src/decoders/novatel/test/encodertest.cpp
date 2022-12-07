@@ -24,7 +24,7 @@
 
 // Includes
 
-#include <lib/nlohmann/json.hpp>
+#include <nlohmann/json.hpp>
 
 #include "hw_interface/stream_interface/api/inputstreaminterface.hpp"
 #include "hw_interface/stream_interface/api/inputfilestream.hpp"

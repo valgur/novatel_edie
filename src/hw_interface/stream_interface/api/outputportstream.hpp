@@ -40,7 +40,7 @@
 //-----------------------------------------------------------------------
 #include "outputstreaminterface.hpp"
 #include "decoders/novatel/api/filters/messagedatafilter.hpp"
-#include "lib/driverinterface/api/IDeviceDriver.h"
+#include "driverinterface/api/IDeviceDriver.h"
 
 /*! \class OutputPortStream
  *  \brief A Derived class from parent interface class OutputStreamInterface.

@@ -44,7 +44,7 @@
 #include "decoders/common/api/basemessagedata.hpp"
 #include "filters/messagedatafilter.hpp"
 #include "decoders/common/api/unknowndatahandler.hpp"
-#include "lib/nlohmann/json.hpp"
+#include "nlohmann/json.hpp"
 
 /*! Json library to be used to decode json file*/
 using json = nlohmann::json;

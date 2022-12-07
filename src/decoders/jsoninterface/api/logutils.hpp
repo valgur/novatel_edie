@@ -36,7 +36,7 @@
 //-----------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------
-#include <lib/nlohmann/json.hpp>
+#include <nlohmann/json.hpp>
 #include <cstdlib>
 #include <map>
 #include <vector>

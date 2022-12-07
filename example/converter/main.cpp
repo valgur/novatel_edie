@@ -3,12 +3,12 @@
 
 #include <iostream>
 #include <chrono>
-#include "src/hw_interface/stream_interface/api/inputstreaminterface.hpp"
-#include "src/hw_interface/stream_interface/api/inputfilestream.hpp"
-#include "src/hw_interface/stream_interface/api/outputfilestream.hpp"
-#include "src/decoders/novatel/api/framer.hpp"
-#include "src/decoders/novatel/api/decoder.hpp"
-#include "src/decoders/version.h"
+#include "hw_interface/stream_interface/api/inputstreaminterface.hpp"
+#include "hw_interface/stream_interface/api/inputfilestream.hpp"
+#include "hw_interface/stream_interface/api/outputfilestream.hpp"
+#include "decoders/novatel/api/framer.hpp"
+#include "decoders/novatel/api/decoder.hpp"
+#include "decoders/version.h"
 
 inline bool file_exists(const std::string& name) {
    struct stat buffer;
@@ -46,7 +46,7 @@ int main(int argc, char** argv)
 
    std::string json_file = argv[1];
    std::string convert_file = argv[2];
-   
+
    InputStreamInterface* ifs = new InputFileStream(convert_file.c_str());;
    OutputFileStream* ofs = new OutputFileStream((convert_file + ".asc").c_str());
 

@@ -34,7 +34,6 @@ else()
     add_compile_definitions(HWINTERFACE_STATIC_DEFINE)
 endif()
 
-target_include_directories(objdynamichwinterface PUBLIC src)
 target_include_directories(objdynamichwinterface PUBLIC api)
 target_include_directories(objdynamichwinterface PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../../)
 target_include_directories(objdynamichwinterface PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../)

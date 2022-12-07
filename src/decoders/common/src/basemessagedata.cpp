@@ -529,9 +529,9 @@ void BaseMessageData::setFlattenMessageData(CHAR *pcDecodedMessage)
 {
 	pcMyFlattenMessageData = pcDecodedMessage;
 }
-void BaseMessageData::setMessagejsonstring(std::string sjasonMessage)
+void BaseMessageData::setMessagejsonstring(std::string sjsonMessage)
 {
-	sMyjson = sjasonMessage;
+	sMyjson = sjsonMessage;
 }
 void BaseMessageData::setHeaderjsonstring(std::string sjsonheader)
 {

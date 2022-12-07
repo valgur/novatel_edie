@@ -38,7 +38,7 @@
 //-----------------------------------------------------------------------
 #include "inputstreaminterface.hpp"
 #include "decoders/novatel/api/novatelparser.hpp"
-#include "lib/driverinterface/api/IDeviceDriver.h"
+#include "driverinterface/api/IDeviceDriver.h"
 
 /*! \class CallBackRead
  *   \brief A Derived class will be used by decoder, if the decoded input is device driver object.

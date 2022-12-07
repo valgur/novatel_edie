@@ -38,7 +38,6 @@ endif()
 set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER "hw_interface")
 set_property(TARGET objstreaminterface PROPERTY FOLDER "hw_interface")
 
-target_include_directories(objstreaminterface PUBLIC src)
 target_include_directories(objstreaminterface PUBLIC api)
 target_include_directories(objstreaminterface PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../)
 target_include_directories(objstreaminterface PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../../lib/driverinterface/api)

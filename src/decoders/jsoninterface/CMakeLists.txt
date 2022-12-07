@@ -2,11 +2,11 @@ cmake_minimum_required(VERSION 3.12.4)
 project(JsonInterface VERSION 1.0.0)
 
 file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c* ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h* ${CMAKE_CURRENT_SOURCE_DIR}/api/*.h*)
-set(JASON_SOURCES)
-LIST(APPEND JASON_SOURCES ${SOURCES})
+set(JSON_SOURCES)
+LIST(APPEND JSON_SOURCES ${SOURCES})
 
 if(WINDOWS)
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${NOVATEL_SOURCES})
+    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${NOVATEL_SOURCES})
 endif()
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${PROJECT_NAME}/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}-${ARCH})
@@ -14,7 +14,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${PROJECT_NAME}/${CMA
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${PROJECT_NAME}/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}-${ARCH})
 
 #Creating an object file which can be used for both static and shared build without recompilation.
-add_library(objjsoninterface OBJECT ${JASON_SOURCES})
+add_library(objjsoninterface OBJECT ${JSON_SOURCES})
 
 #Creating a static lib, with the project name, using available object file, without recompilation. 
 add_library(${PROJECT_NAME} STATIC $<TARGET_OBJECTS:objjsoninterface>)
@@ -33,7 +33,6 @@ endif()
 set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER "decoders")
 set_property(TARGET objjsoninterface PROPERTY FOLDER "decoders")
 
-target_include_directories(objjsoninterface PUBLIC src)
 target_include_directories(objjsoninterface PUBLIC api)
 target_include_directories(objjsoninterface PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../)
 

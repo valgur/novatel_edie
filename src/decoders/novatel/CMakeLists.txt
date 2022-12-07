@@ -34,7 +34,6 @@ endif()
 set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER "decoders")
 set_property(TARGET objnovatel PROPERTY FOLDER "decoders")
 
-target_include_directories(objnovatel PUBLIC src)
 target_include_directories(objnovatel PUBLIC api)
 target_include_directories(objnovatel PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../)
 target_include_directories(objnovatel PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../common/api)

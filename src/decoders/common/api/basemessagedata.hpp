@@ -157,10 +157,10 @@ public:
 
    /*! \brief Sets json message string
     *
-    *  \param [in] sjasonMessage json message string
+    *  \param [in] sjsonMessage json message string
     *  \return "Does not return a value"
     */
-   void  setMessagejsonstring(std::string sjasonMessage);
+   void  setMessagejsonstring(std::string sjsonMessage);
 
    /*! \brief Sets json header string
     *

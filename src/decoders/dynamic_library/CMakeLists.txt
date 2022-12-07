@@ -34,7 +34,6 @@ else()
     add_compile_definitions(DECODERS_STATIC_DEFINE)
 endif()
 
-target_include_directories(objdynamicdecoder PUBLIC src)
 target_include_directories(objdynamicdecoder PUBLIC api)
 target_include_directories(objdynamicdecoder PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../../)
 target_include_directories(objdynamicdecoder PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../)

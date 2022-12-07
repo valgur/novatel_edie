@@ -40,7 +40,7 @@
 #include "messageparams.hpp"
 #include "types.hpp"
 #include "enums.hpp"
-#include <lib/nlohmann/json.hpp>
+#include <nlohmann/json.hpp>
 #include <vector>
 #include <iostream>
 #include <fstream>
