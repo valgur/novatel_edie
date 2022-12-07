@@ -40,37 +40,30 @@ if(WINDOWS)
 endif()
 
 if(LINUX)
-    # if 32 bit then,
-    # other way to check 32 bit 	if (CMAKE_CL_64) ?
+    set(CMAKE_C_FLAGS_DEBUG "-g")
+    set(CMAKE_CXX_FLAGS_DEBUG "-g -std=gnu++11 -fPIC -D_LINUX_")
+    set(CMAKE_C_FLAGS_RELEASE "-s -O3 -DNDEBUG")
+    set(CMAKE_CXX_FLAGS_RELEASE "-g -Wall -std=gnu++11 -fPIC -D_LINUX_ -DNDEBUG -s")
+
+    if(COVERAGE)
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} --coverage -fprofile-arcs -ftest-coverage")
+    endif()
+
     if((ARCH STREQUAL "x86") OR (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "i686"))
         message("ARCH is x86 & Building for 32 bit")
-        set(CMAKE_C_FLAGS_DEBUG "-m32 -g")
-        set(CMAKE_CXX_FLAGS_DEBUG "-m32 -g -std=gnu++11 -fPIC")
-        set(CMAKE_C_FLAGS_RELEASE "-m32 -O3 -DNDEBUG -s")
-        if((COVERAGE STREQUAL "TRUE"))
-            set(CMAKE_CXX_FLAGS_RELEASE "-m32 -g -Wall -std=gnu++11 -fPIC -D_LINUX_ -DNDEBUG -s --coverage -fprofile-arcs -ftest-coverage")
-        else()
-            set(CMAKE_CXX_FLAGS_RELEASE "-m32 -g -Wall -std=gnu++11 -fPIC -D_LINUX_ -DNDEBUG -s")
-        endif()
+        set(CMAKE_C_FLAGS_DEBUG "-m32 ${CMAKE_C_FLAGS_DEBUG}")
+        set(CMAKE_CXX_FLAGS_DEBUG "-m32 ${CMAKE_CXX_FLAGS_DEBUG}")
+        set(CMAKE_C_FLAGS_RELEASE "-m32 ${CMAKE_C_FLAGS_RELEASE}")
+        set(CMAKE_CXX_FLAGS_RELEASE "-m32 ${CMAKE_CXX_FLAGS_RELEASE}")
     else()
-        # set C&C++ flags for debug and release
         message("ARCH is x64 & Building for 64 bit")
-        set(CMAKE_C_FLAGS_DEBUG "-g")
-        set(CMAKE_CXX_FLAGS_DEBUG "-g -std=gnu++11 -fPIC -D_LINUX_")
-        set(CMAKE_C_FLAGS_RELEASE "-s -O3 -DNDEBUG")
-        if((COVERAGE STREQUAL "TRUE"))
-            set(CMAKE_CXX_FLAGS_RELEASE "-g -Wall -std=gnu++11 -fPIC -D_LINUX_ -DNDEBUG -s --coverage -fprofile-arcs -ftest-coverage")
-        else()
-            set(CMAKE_CXX_FLAGS_RELEASE "-g -Wall -std=gnu++11 -fPIC -D_LINUX_ -DNDEBUG -s")
-        endif()
-    endif((ARCH STREQUAL "x86") OR (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "i686"))
+    endif()
 
     # Debug information
     message("CMAKE_C_FLAGS_DEBUG:    " ${CMAKE_C_FLAGS_DEBUG})
     message("CMAKE_CXX_FLAGS_DEBUG:  " ${CMAKE_CXX_FLAGS_DEBUG})
     message("CMAKE_C_FLAGS_RELEASE:  " ${CMAKE_C_FLAGS_RELEASE})
     message("CMAKE_CXX_FLAGS_RELEASE:" ${CMAKE_CXX_FLAGS_RELEASE})
-
 endif(LINUX)
 
 set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}")
@@ -95,7 +88,7 @@ if(WINDOWS)
 endif()
 
 # This is an archive Static build(after combining stream, common, novatel and jsoninterface component into libEDIE.a) in Linux
-# if we do not require it , We can comment this section.  
+# if we do not require it, We can comment this section.
 if(LINUX)
     add_custom_target(${PROJECT_NAME} ALL COMMAND ${CMAKE_AR} rc libEDIE.a
         $<TARGET_FILE:StreamInterface>
