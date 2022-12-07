@@ -32,7 +32,7 @@ InputMemoryStream::InputMemoryStream()
 }
 
 // ---------------------------------------------------------
-InputMemoryStream::InputMemoryStream(UINT uiBufferSize = 1024)
+InputMemoryStream::InputMemoryStream(UINT uiBufferSize)
 {
    pMyInMemoryStream = new MemoryStream(uiBufferSize);
 }

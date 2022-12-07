@@ -30,7 +30,7 @@ OutputMemoryStream::OutputMemoryStream()
    pMyOutMemoryStream = new MemoryStream();
 }
 // ---------------------------------------------------------
-OutputMemoryStream::OutputMemoryStream(UINT uiBufferSize = 1024)
+OutputMemoryStream::OutputMemoryStream(UINT uiBufferSize)
 {
    pMyOutMemoryStream = new MemoryStream(uiBufferSize);
 }

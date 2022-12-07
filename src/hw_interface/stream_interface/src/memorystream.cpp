@@ -38,7 +38,7 @@ MemoryStream::MemoryStream():CircularBuffer()
 }
 
 // ---------------------------------------------------------
-MemoryStream::MemoryStream(UINT uiBufferSize = 1024):CircularBuffer()
+MemoryStream::MemoryStream(UINT uiBufferSize):CircularBuffer()
 {
    SetCapacity(uiBufferSize);
 }
