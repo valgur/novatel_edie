@@ -3,3 +3,7 @@
 /dist
 /nov_edie.egg-info
 __pycache__
+/build/
+/.pytest_cache/
+*.egg-info
+/novatel_edie/resources/

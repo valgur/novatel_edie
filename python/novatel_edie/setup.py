@@ -1,11 +1,12 @@
-from setuptools import setup, find_packages
-from setuptools.command.test import test as test_command
-import sys
 import os
-import glob
 import shutil
-import platform
+import sys
+from distutils.command.build import build
 from pathlib import Path
+
+from setuptools import find_packages
+from setuptools import setup
+from setuptools.command.test import test as test_command
 
 PACKAGE_NAME = 'novatel_edie'
 VERSION_FILENAME = 'version.py'
@@ -14,101 +15,105 @@ AUTHOR = 'rdoris'
 AUTHOR_EMAIL = 'rdoris@novatel.com'
 INSTALL_REQUIRES = []
 
+SCRIPT_DIR = Path(__file__).parent.absolute()
 
-'''AUTOMATICALLY GENERATED. DO NOT MODIFY ANYTHING BELOW THIS UNLESS YOU KNOW WHAT YOU ARE DOING'''
 
-VERSION_PATH = os.path.join(os.path.dirname(__file__), PACKAGE_NAME, VERSION_FILENAME)
+def copy_libraries(package_root, arch, ext):
+    def copy(src, dst):
+        print(f'Copying "{src}" -> {dst}"')
+        shutil.copy(src, dst)
 
-def copy_libraries(package_root, package_platform):
-    Path("novatel_edie/resources").mkdir(parents=True, exist_ok=True)
-    shutil.copy(os.path.join(package_root, 'database', 'novatel_log_definitions.json'), os.path.join('novatel_edie', 'resources'))
-    bin_root = os.path.join(package_root, '\\bin')
-    print(os.path.join(package_root, 'bin\\**\\Release-{}\\*.{}'.format(*package_platform)))
-    package_so = glob.glob(os.path.join(package_root, 'bin\\**\\Release-{}\\*.{}'.format(*package_platform)), recursive=True)
+    package_root = Path(package_root).resolve()
+    resource_dir = SCRIPT_DIR / PACKAGE_NAME / 'resources'
+    resource_dir.mkdir(parents=True, exist_ok=True)
+    bin_root = package_root / 'bin'
+    pattern = f'**/Release-{arch}/*.{ext}'
+    print("Globbing", bin_root / pattern)
+    package_so = sorted(bin_root.glob(pattern))
     if not package_so:
         raise Exception('Unable to find the required .so/.dll files for EDIE')
     for file in package_so:
-        fbase, fext = os.path.splitext(os.path.basename(file))
-        if 'x64' in file:
-            shutil.copyfile(file, os.path.join('novatel_edie', 'resources', '{}_x64{}'.format(fbase, fext)))
+        if arch == 'x64':
+            copy(file, resource_dir / f'{file.stem}_x64.{ext}')
         else:
-            shutil.copyfile(file, os.path.join('novatel_edie', 'resources', '{}_x32{}'.format(fbase, fext)))
+            copy(file, resource_dir / f'{file.stem}_x32.{ext}')
+    copy(package_root / 'database/novatel_log_definitions.json', resource_dir)
 
-        print('Copying "{}"'.format(file))
 
-if os.environ.get('EDIE_ROOT'):
-    edie_root = os.environ['EDIE_ROOT']
-else:
-    edie_root = os.path.normpath(os.path.join(os.getcwd(), '..\\..'))
-print('EDIE_ROOT set to "{}"'.format(edie_root))
+def get_platform_info(plat_name):
+    """Derives the architecture ID and shared library extension from the platform name.
 
-if not os.environ.get('EDIE_PLATFORM'):
-    if sys.maxsize > 2**32:
-        current_arch = 'x64'
+    The platform name must be in the format returned by sysconfig.get_platform().
+    See: https://docs.python.org/3/library/sysconfig.html#sysconfig.get_platform
+    """
+    arch = plat_name.rsplit('-', 1)[-1]
+    if plat_name.startswith('win'):
+        if plat_name == 'win32':
+            return 'Win32', 'dll'
+        if arch == 'amd64':
+            return 'x64', 'dll'
+        return arch, 'dll'
     else:
-        if platform.system() == 'Windows':
-            current_arch = 'Win32'
-        else:
-            current_arch = 'x32'
-        
-    if platform.system() == 'Windows':
-        package_platform = current_arch, 'dll'
-    elif os.name == 'Linux':
-        package_platform = current_arch, 'so'
-    else:
-        raise Exception('Platform "{}" is not currently supported'.format(platform.system()))
-else:
-    if os.environ['EDIE_PLATFORM'] == 'win32':
-        package_platform = 'Win32', 'dll'
-    elif os.environ['EDIE_PLATFORM'] == 'win64':
-        package_platform = 'x64', 'dll'
-    elif os.environ['EDIE_PLATFORM'] == 'linux32':
-        package_platform = 'x32', 'so'
-    elif os.environ['EDIE_PLATFORM'] == 'linux64':
-        package_platform = 'x64', 'so'
-    else:
-        raise Exception('Platform "{}" is not currently supported'.format(platform.system()))
+        if arch in ['ppc', 'i386', 'fat', 'i686']:
+            return 'x32', 'so'
+        if arch in ['x86_64', 'amd64', 'ppc64']:
+            return 'x64', 'so'
+        return arch, 'so'
 
-copy_libraries(edie_root, package_platform)
 
-main_ns = {}
-with open(VERSION_PATH) as ver_file:
-    exec(ver_file.read(), main_ns)
-VERSION = main_ns['__version__']
+class CopyBinaries(build):
+    def run(self):
+        edie_root = os.environ.get('EDIE_ROOT') or SCRIPT_DIR.parent.parent
+        print(f'EDIE_ROOT set to "{edie_root}"')
+        arch, ext = get_platform_info(self.plat_name)
+        copy_libraries(edie_root, arch, ext)
+        super().run()
+
+
+def parse_version():
+    version_path = SCRIPT_DIR / PACKAGE_NAME / VERSION_FILENAME
+    main_ns = {}
+    exec(version_path.read_text(), main_ns)
+    return main_ns['__version__']
+
+
+def parse_description():
+    return (SCRIPT_DIR / 'readme.md').read_text()
 
 
 class PyTestCommand(test_command):
     user_options = [('pytest-args=', 'a', 'Arguments to pass to pytest')]
 
     def initialize_options(self):
-      test_command.initialize_options(self)
-      self.pytest_args = ''
+        test_command.initialize_options(self)
+        self.pytest_args = ''
 
     def run_tests(self):
-      import shlex
-      import pytest
-      print(self.pytest_args)
-      errno = pytest.main(shlex.split(self.pytest_args))
-      sys.exit(errno)
+        import shlex
+        import pytest
+        print(self.pytest_args)
+        errno = pytest.main(shlex.split(self.pytest_args))
+        sys.exit(errno)
 
 
 setup(
     name=PACKAGE_NAME,
-    version=VERSION,
+    version=parse_version(),
     description=DESCRIPTION,
-    long_description=open(os.path.join(os.path.dirname(__file__), 'readme.md')).read(),
+    long_description=parse_description(),
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
     packages=find_packages(exclude=['test', 'doc']),
-    cmdclass={'test': PyTestCommand},
+    cmdclass={'build': CopyBinaries, 'test': PyTestCommand},
     tests_require=['pytest'],
     install_requires=INSTALL_REQUIRES,
     entry_points={},
     include_package_data=True,
     platforms=["Windows", "Linux"],
     package_data={
-      'novatel_edie': [ 'novatel_edie/resources/*.dll',
-                        'novatel_edie/resources/*.json'
-                        ]
+        'novatel_edie': ['novatel_edie/resources/*.dll',
+                         'novatel_edie/resources/*.so',
+                         'novatel_edie/resources/*.json']
     },
-    zip_safe=False,)
+    zip_safe=False,
+)

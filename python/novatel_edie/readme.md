@@ -9,7 +9,7 @@ from novatel_edie import novatel
 from novatel_edie import hw_interface
 import os
 
-print(os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources\\bestpos.bin"))
+print(os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources/bestpos.bin"))
 in_file = hw_interface.InputFileStream(os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources/bestpos.bin"))
 decoder = novatel.Decoder(in_file)
 

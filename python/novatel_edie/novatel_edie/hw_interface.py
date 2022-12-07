@@ -1,25 +1,13 @@
-import os
-import sys
 from ctypes import *
 
-if sys.maxsize > 2**32:
-    ARCH = 'x64'
-else:
-    ARCH = 'x32'
+from ._util import _load_shared_library
 
-if sys.platform == 'linux':
-    raise Exception('Handle loading the LINUX SO library')
-elif sys.platform == 'win32':
-    try:
-        HWINTERFACE_DLL = CDLL(os.path.abspath(os.path.join(
-        os.path.dirname(__file__), 'resources', 'hwinterface_dynamic_library_{}.dll'.format(ARCH))))
-    except Exception:
-        HWINTERFACE_DLL = CDLL("decoders_dynamic_library.dll")
+HWINTERFACE_DLL = _load_shared_library('hwinterface_dynamic_library')
 
 HWINTERFACE_DLL.ifs_init.restype = c_void_p
 HWINTERFACE_DLL.ifs_init.argtypes = [c_char_p]
 HWINTERFACE_DLL.ifs_read.restype = None
-HWINTERFACE_DLL.ifs_read.argtypes = [c_void_p, c_void_p, c_char_p, POINTER(c_ulong)]
+HWINTERFACE_DLL.ifs_read.argtypes = [c_void_p, c_void_p, c_char_p, POINTER(c_uint)]
 
 HWINTERFACE_DLL.is_del.restype = None
 HWINTERFACE_DLL.is_del.argtypes = [c_void_p]

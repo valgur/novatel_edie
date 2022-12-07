@@ -1,25 +1,10 @@
-import os
-import sys
 import json
 from ctypes import *
-import logging
 
-LOGGER = logging.getLogger(__name__)
+from ._util import _load_shared_library, RESOURCES_DIR
 
-if sys.maxsize > 2**32:
-    ARCH = 'x64'
-else:
-    ARCH = 'x32'
-
-DECODERS_JSON = os.path.abspath(os.path.join(os.path.dirname(__file__), 'resources', 'novatel_log_definitions.json'))
-if sys.platform == 'linux':
-    raise Exception('Handle loading the LINUX SO library')
-elif sys.platform == 'win32':
-    try:
-        DECODERS_DLL = CDLL(os.path.abspath(os.path.join(
-        os.path.dirname(__file__), 'resources', 'decoders_dynamic_library_{}.dll'.format(ARCH))))
-    except Exception:
-        DECODERS_DLL = CDLL("decoders_dynamic_library.dll")
+DECODERS_JSON = str((RESOURCES_DIR / 'novatel_log_definitions.json').absolute())
+DECODERS_DLL = _load_shared_library('decoders_dynamic_library')
 
 # Patch c_bool be 4 bytes in size
 temp_c_bool = c_bool
@@ -77,7 +62,7 @@ class Log:
 
     def __str__(self):
         return '#' + ','.join([str(x) for x in self.header.values()]) + \
-               ';' + ','.join([str(x) for x in self.body.values()])
+            ';' + ','.join([str(x) for x in self.body.values()])
 
     def __getitem__(self, key):
         if self._header.get(key):
@@ -261,7 +246,7 @@ class Decoder:
         self._status: StreamReadStatus = StreamReadStatus()
         self._current_header = DecoderMessageHeader()
         self._msg_data = create_string_buffer(DLL_MSG_FRAME_SIZE)
-        self._msg_json_data = create_string_buffer(DLL_MSG_FRAME_SIZE*2)
+        self._msg_json_data = create_string_buffer(DLL_MSG_FRAME_SIZE * 2)
         self._ascii_current_body = str
 
         self._current_log = Log()
