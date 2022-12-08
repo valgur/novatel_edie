@@ -27,6 +27,12 @@ def copy_libraries(package_root, arch, ext):
     resource_dir = SCRIPT_DIR / PACKAGE_NAME / 'resources'
     resource_dir.mkdir(parents=True, exist_ok=True)
     bin_root = package_root / 'bin'
+    if not bin_root.is_dir() or str(bin_root) == '/bin':
+        raise Exception(
+            f'Could not find bin directory in EDIE root: {bin_root}.\n'
+            'Set the EDIE_ROOT environment variable when installing with pip and '
+            'make sure that EDIE has been built (with -DCMAKE_LIB_SHARED=ON). '
+        )
     pattern = f'**/Release-{arch}/*.{ext}'
     print("Globbing", bin_root / pattern)
     package_so = sorted(bin_root.glob(pattern))
