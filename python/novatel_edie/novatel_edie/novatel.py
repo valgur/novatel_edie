@@ -2,6 +2,7 @@ import json
 from ctypes import *
 
 from ._util import _load_shared_library, RESOURCES_DIR
+from .hw_interface import InputFileStream, InputByteStream
 
 DECODERS_JSON = str((RESOURCES_DIR / 'novatel_log_definitions.json').absolute())
 DECODERS_DLL = _load_shared_library('decoders_dynamic_library')
@@ -230,15 +231,20 @@ class Decoder:
     """Decodes NovAtel logs and return the decoded header and data to the user.
 
     Args:
-        input_stream (:obj:`InputFileStream`): Stream to decode the data from
+        input_stream (:obj:`InputFileStream` or :obj:`io.BytesIO`): Stream to decode the data from
         json_database (str): Path to an alternative message database
         msg_filter (:obj:`Filter`, optional): Filters the returned decoded data.
 
     """
 
     def __init__(self, input_stream, json_database=DECODERS_JSON, msg_filter=None):
+        if hasattr(input_stream, 'data_stream'):
+            self.input_stream = input_stream
+        else:
+            self._input = input_stream  # make sure input_stream is not garbage collected
+            self.input_stream = InputByteStream(input_stream)
         self._Decoder = DECODERS_DLL.decoder_init(json_database.encode(),
-                                                  input_stream.data_stream,
+                                                  self.input_stream.data_stream,
                                                   msg_filter)
         self._status: StreamReadStatus = StreamReadStatus()
         self._current_header = DecoderMessageHeader()

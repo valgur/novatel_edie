@@ -35,5 +35,8 @@ extern "C" {
    HWINTERFACE_EXPORT InputFileStream* ifs_init(const char* file);
    HWINTERFACE_EXPORT void is_del(InputStreamInterface* pSteam);
    HWINTERFACE_EXPORT void is_read(InputStreamInterface* is, StreamReadStatus* srs, char* databuffer, int& iSize);
+   // Deprecated, use is_read() instead
    HWINTERFACE_EXPORT void ifs_read(InputFileStream* ifs, StreamReadStatus* srs, char* databuffer, int& iSize);
+   using read_callback_t = UINT (*)(void* context, char*, UINT);
+   HWINTERFACE_EXPORT InputStreamInterface* is_wrapper(void* context, read_callback_t readCallback);
 }

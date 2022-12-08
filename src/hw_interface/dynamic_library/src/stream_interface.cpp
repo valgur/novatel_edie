@@ -52,3 +52,33 @@ void is_del(InputStreamInterface* pStream)
 {
    delete pStream;
 }
+
+class InputStreamWrapper final : public InputStreamInterface
+{
+public:
+   explicit InputStreamWrapper(void* context, read_callback_t readCallback)
+      : m_pContext(context), m_pfnReadCallback(readCallback)
+   {
+   }
+
+   StreamReadStatus ReadData(ReadDataStructure& pReadDataStructure) override
+   {
+      UINT count = m_pfnReadCallback(m_pContext, pReadDataStructure.cData, pReadDataStructure.uiDataSize);
+      pReadDataStructure.uiDataSize = count;
+      m_stFileReadStatus.uiCurrentStreamRead = count;     // Current read byte count
+      m_stFileReadStatus.uiPercentStreamRead = 100;       // Total read percentage
+      m_stFileReadStatus.ullStreamLength += count;        // Total File Length (in Bytes)
+      m_stFileReadStatus.bEOS = count == 0;               // End of Stream
+      return m_stFileReadStatus;
+   }
+
+private:
+   void* m_pContext = nullptr;
+   read_callback_t m_pfnReadCallback = nullptr;
+   StreamReadStatus m_stFileReadStatus{};
+};
+
+InputStreamInterface* is_wrapper(void* context, read_callback_t readCallback)
+{
+   return new InputStreamWrapper(context, readCallback);
+}
