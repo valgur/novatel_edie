@@ -2,10 +2,10 @@ import os
 import shutil
 import sys
 from distutils.command.build import build
+from distutils.command.clean import clean
 from pathlib import Path
 
-from setuptools import find_packages
-from setuptools import setup
+from setuptools import find_packages, setup
 from setuptools.command.test import test as test_command
 
 PACKAGE_NAME = 'novatel_edie'
@@ -15,7 +15,7 @@ AUTHOR = 'rdoris'
 AUTHOR_EMAIL = 'rdoris@novatel.com'
 INSTALL_REQUIRES = []
 
-SCRIPT_DIR = Path(__file__).parent.absolute()
+SCRIPT_DIR = Path(__file__).absolute().parent
 
 
 def copy_libraries(package_root, arch, ext):
@@ -31,7 +31,10 @@ def copy_libraries(package_root, arch, ext):
     print("Globbing", bin_root / pattern)
     package_so = sorted(bin_root.glob(pattern))
     if not package_so:
-        raise Exception('Unable to find the required .so/.dll files for EDIE')
+        raise Exception(
+            'Unable to find the required .so/.dll files for EDIE. '
+            'Make sure you have built the EDIE shared libraries using -DCMAKE_LIB_SHARED=ON.'
+        )
     for file in package_so:
         if arch == 'x64':
             copy(file, resource_dir / f'{file.stem}_x64.{ext}')
@@ -61,15 +64,6 @@ def get_platform_info(plat_name):
         return arch, 'so'
 
 
-class CopyBinaries(build):
-    def run(self):
-        edie_root = os.environ.get('EDIE_ROOT') or SCRIPT_DIR.parent.parent
-        print(f'EDIE_ROOT set to "{edie_root}"')
-        arch, ext = get_platform_info(self.plat_name)
-        copy_libraries(edie_root, arch, ext)
-        super().run()
-
-
 def parse_version():
     version_path = SCRIPT_DIR / PACKAGE_NAME / VERSION_FILENAME
     main_ns = {}
@@ -79,6 +73,25 @@ def parse_version():
 
 def parse_description():
     return (SCRIPT_DIR / 'readme.md').read_text()
+
+
+class CopyBinaries(build):
+    def run(self):
+        print(SCRIPT_DIR)
+        edie_root = os.environ.get('EDIE_ROOT') or SCRIPT_DIR.parent.parent
+        print(f'EDIE_ROOT set to "{edie_root}"')
+        arch, ext = get_platform_info(self.plat_name)
+        copy_libraries(edie_root, arch, ext)
+        super().run()
+
+
+class Clean(clean):
+    def run(self):
+        resource_dir = SCRIPT_DIR / PACKAGE_NAME / 'resources'
+        for file in resource_dir.iterdir():
+            if file.suffix != '.py':
+                file.unlink()
+        super().run()
 
 
 class PyTestCommand(test_command):
@@ -91,6 +104,7 @@ class PyTestCommand(test_command):
     def run_tests(self):
         import shlex
         import pytest
+
         print(self.pytest_args)
         errno = pytest.main(shlex.split(self.pytest_args))
         sys.exit(errno)
@@ -104,16 +118,22 @@ setup(
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
     packages=find_packages(exclude=['test', 'doc']),
-    cmdclass={'build': CopyBinaries, 'test': PyTestCommand},
+    cmdclass={
+        'build': CopyBinaries,
+        'clean': Clean,
+        'test': PyTestCommand,
+    },
     tests_require=['pytest'],
     install_requires=INSTALL_REQUIRES,
     entry_points={},
     include_package_data=True,
     platforms=["Windows", "Linux"],
     package_data={
-        'novatel_edie': ['novatel_edie/resources/*.dll',
-                         'novatel_edie/resources/*.so',
-                         'novatel_edie/resources/*.json']
+        'novatel_edie': [
+            'resources/*.dll',
+            'resources/*.so',
+            'resources/*.json',
+        ]
     },
     zip_safe=False,
 )
