@@ -29,7 +29,7 @@
 #include "novatel.hpp"
 
 
-Decoder* decoder_init(char* json_database, InputFileStream* ifs, FilterConfig* filter)
+Decoder* decoder_init(char* json_database, InputStreamInterface* ifs, FilterConfig* filter)
 {
    Decoder* decoder = NULL;
 

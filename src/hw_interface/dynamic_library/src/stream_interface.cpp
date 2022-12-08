@@ -33,23 +33,22 @@ InputFileStream* ifs_init(const char* file)
    return new InputFileStream(file);
 }
 
-void ifs_read(InputFileStream* ifs, StreamReadStatus* srs, char* databuffer, int& iSize)
+void is_read(InputStreamInterface* ifs, StreamReadStatus* srs, char* databuffer, int& iSize)
 {
-   StreamReadStatus status;
    ReadDataStructure data;
    data.cData = databuffer;
    data.uiDataSize = iSize;
    // read data from input stream
-   status = ifs->ReadData(data);
-   srs->bEOS = status.bEOS;
-   srs->uiCurrentStreamRead = status.uiCurrentStreamRead;
-   srs->uiPercentStreamRead = status.uiPercentStreamRead;
-   srs->ullStreamLength = status.ullStreamLength;
+   *srs = ifs->ReadData(data);
    iSize = data.uiDataSize;
 }
 
-void is_del(InputStreamInterface* pSteam)
+void ifs_read(InputFileStream* ifs, StreamReadStatus* srs, char* databuffer, int& iSize)
 {
-   if (pSteam)
-      delete pSteam;
+   is_read(ifs, srs, databuffer, iSize);
+}
+
+void is_del(InputStreamInterface* pStream)
+{
+   delete pStream;
 }

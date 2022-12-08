@@ -88,7 +88,7 @@ struct MessageHeader2
 };
 
 extern "C" {
-   DECODERS_EXPORT Decoder* decoder_init(char* json_database, InputFileStream* ifs, FilterConfig* filter = NULL);
+   DECODERS_EXPORT Decoder* decoder_init(char* json_database, InputStreamInterface* ifs, FilterConfig* filter = NULL);
    DECODERS_EXPORT BOOL decoder_read(Decoder* advDecoder, StreamReadStatus* srs, MessageHeader2* msgHdr, CHAR* pacMsgData, CHAR* pacJsonData);
    DECODERS_EXPORT void decoder_del(Decoder* advDecoder);
    DECODERS_EXPORT void decoder_copy_body(CHAR* pDestBody, CHAR* pSrcBody);
