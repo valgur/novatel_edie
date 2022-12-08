@@ -187,7 +187,7 @@ private:
     *
     *  \details Read data from input stream and append the data read from file to praser buffer.
     *  If Input file size is less then READ_BUFFER_SIZE, then process only those bytes.
-    *  And append, only non callback data in case of port. Converted Integer value from Hex value 
+    *  And append, only non callback data in case of port. Converted Integer value from Hex value
     *
     *  \sa READ_BUFFER_SIZE
     */
@@ -248,7 +248,7 @@ public:
    StreamReadStatus* getStreamReadStatus(void);
 
    /*! \fn void Reset()
-    * \brief Clears Circullar buffer which will be used for storing read data from input.
+    * \brief Clears Circular buffer which will be used for storing read data from input.
     * EOS(End Of Stream) to FALS.
     */
    void Reset();

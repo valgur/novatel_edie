@@ -24,8 +24,8 @@
 
 /*! \file inputstreaminterface.hpp
  *  \brief Interface class for reading data from all types of decoder input(File/Port/Buffer)
- * 
- */ 
+ *
+ */
 
 //-----------------------------------------------------------------------
 // Recursive Inclusion
@@ -47,7 +47,7 @@ class NovatelParser;
 
 /*! \class InputStreamInterface
  *   \brief An Interface Class used by application ro provide input to the decoder.
- * 
+ *
  *  Interface class for reading data from all types of decoder input(File/Port/Buffer)
 */
 class InputStreamInterface
@@ -58,25 +58,25 @@ public:
     * \sa ReadData()
     * \param [in] pReadDataStructure ReadDataStructure variable to hold decoded log
     * \return StreamReadStatus structure - Read data statistics
-    */   
+    */
    virtual StreamReadStatus ReadData(ReadDataStructure& pReadDataStructure) = 0;
 
    /** A virtual member.
     *
     * \sa Write()
-    * \param [in]  Data to be written the circullar buffer, will be used to decode.
+    * \param [in]  Data to be written the circular buffer, will be used to decode.
     * \param [in]  Number of bytes in data buffer.
     * \return Number of bytes written to the stream
     * \throws "dont have method" -if not have any concrete method derived.
-    */ 
+    */
 	virtual UINT Write(UCHAR*,UINT ){throw "dont have method";}
 
    /** A virtual member.
-    * \brief Checks weather the data in circullar buffer avaialble to decode or not.
+    * \brief Checks weather the data in circular buffer avaialble to decode or not.
     * \sa IsStreamAvailable().
     * \return TRUE or FALSE.
     * \remark If no concrete derived method, It simply returns FALSE.
-    */   
+    */
    virtual BOOL IsStreamAvailable(void){return FALSE;}
 
    /** A virtual member.
@@ -94,12 +94,12 @@ public:
     * \remark If no concrete derived method, It simply returns NULL string.
     */
    virtual std::string GetFileExtension(){return NULL;};
-   
+
    /** A virtual member.
     * \brief Registers call back to driver.
     * \sa RegisterCallBack().
     * \remark default returns 0.
-    */   
+    */
    virtual void RegisterCallBack(NovatelParser*){};
 
    /** A virtual member.
@@ -115,7 +115,7 @@ public:
     * \remark No default implementation.
     */
    virtual void EnableCallBack(BOOL){};
-   
+
    /** A virtual member.
     * \brief Set/Reset File Position from which next read will be done.
     * \sa Reset().
@@ -156,10 +156,10 @@ public:
    virtual ULONGLONG GetCurrentFileOffset(void)const { return 0; };
 
    /** A virtual member.
-    * \brief Returns the class object which has interfacesed or derived from circuallar buffer.
+    * \brief Returns the class object which is derived from circular buffer.
     * \sa GetMemoryStream().
-    * \remark MemoryStream* class Object to access circullar buffer.
-    */   
+    * \remark MemoryStream* class Object to access circular buffer.
+    */
 	virtual MemoryStream* GetMemoryStream(){return NULL;};
 private:
 };

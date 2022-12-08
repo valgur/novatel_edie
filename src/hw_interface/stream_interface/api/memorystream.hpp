@@ -23,10 +23,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 /*! \file memorystream.hpp
- *  \brief Derived class from parent circullar buffer.
- *  Provide API's to use Circullar buffer.
- * 
- */ 
+ *  \brief Derived class from parent circular buffer.
+ *  Provide API's to use Circular buffer.
+ *
+ */
 
 //-----------------------------------------------------------------------
 // Recursive Inclusion
@@ -41,36 +41,36 @@
 #include "decoders/common/api/circularbuffer.hpp"
 
 /*! \class MemoryStream
- *  \brief Derived class from parent CircullarBuffer.
- * 
- *  All methods supported from CircullarBuffer class will do the same here.
+ *  \brief Derived class from parent CircularBuffer.
+ *
+ *  All methods supported from CircularBuffer class will do the same here.
 */
 class MemoryStream : public CircularBuffer
 {
 public:
     /*! A Constructor
-	 *  \brief  Created default Circuallar buffer class object. 
-	 *  It will create circuallr buffer with size(uiBufferSize) provided
-	 *  
-	 * \param [in] uiBufferSize - Length of circullar buffer to be created.
-	 */ 
+	 *  \brief  Created default Circular buffer class object.
+	 *  It will create circular buffer with size(uiBufferSize) provided
+	 *
+	 * \param [in] uiBufferSize - Length of circular buffer to be created.
+	 */
 	MemoryStream(UINT uiBufferSize);
 
     /*! A Constructor
-	 *  \brief  Creates circullar buffer and append buffer content provided.
-	 * 
+	 *  \brief  Creates circular buffer and append buffer content provided.
+	 *
 	 *  \param [in] pucBuffer Data Buffer.
 	 *  \param [in] uiContentSize Length of data buffer.
-	 * 
-	 *  \remark If Circullar buffer length is lesser than provided uiContentSize, 
-	 *   then circullar buffer will auto enlarge to created reuested size before append.
-	 */ 	
+	 *
+	 *  \remark If Circular buffer length is lesser than provided uiContentSize,
+	 *   then circular buffer will auto enlarge to created requested size before append.
+	 */
 	MemoryStream(UCHAR* pucBuffer, UINT uiContentSize);
 
     /*! A Constructor
-	 *  \brief  Creates default MemoryStream object. Inside, Calls default CircullarBuffer class object.
-	 * 
-	 */ 	
+	 *  \brief  Creates default MemoryStream object. Inside, Calls default CircularBuffer class object.
+	 *
+	 */
     MemoryStream();
 
 	/*! Default destructor */
@@ -79,70 +79,70 @@ public:
     /*! \fn INT Available()
 	 *  \brief Returns the actual content size, this is not the memory allocated size
 	 *  The size increases when we write and it decreases when read.
-	 * 
+	 *
 	 *  \return Available data in buffer to decode.
-	 */ 
+	 */
 	INT Available();
 
     /*! \fn void Flush()
 	 *  \brief Clear the data in the buffer.
-	 * 
-	 */ 
+	 *
+	 */
 	void Flush();
 
     /*! \fn INStreamReadStatusT Read(CHAR* pucBuffer, UINT uiSize)
 	 *  \brief Reads the required amount(uiSize) from buffer into pucBuffer
-	 * 
+	 *
 	 *  \return StreamReadStatus structure with read statistics.
-	 */ 
+	 */
 	StreamReadStatus Read(CHAR* pucBuffer, UINT uiSize);
 
     /*! \fn UINT Read(void)
 	 *  \brief Read the one byte from the buffer
-	 * 
+	 *
 	 *  \return Byte read from buffer.
 	 *  \remark update StreamReadStatus structure with read statistics.
-	 */ 
+	 */
     UINT Read(void);
 
     /*! \fn UINT Write(UCHAR)
 	 *  \brief Write one byte or character to buffer and update read statistics(StreamReadStatus)
-	 * 
-	 */ 
+	 *
+	 */
     UINT Write(UCHAR);
 
     /*! \fn UINT Write(UCHAR* pucBuffer, UINT uisize)
 	 *  \brief Write provided buffer of dezired length.
 	 *  \return Returns length of bytes append/write.
-	 */ 	
+	 */
 	UINT Write(UCHAR* pucBuffer, UINT uisize);
 
     /*! \fn UINT CalculatePercentage(UINT uipercentage)
-	 *  \brief Calculates the percentage of current Memory(Circuallr Buffer) read.
+	 *  \brief Calculates the percentage of current Memory(Circular Buffer) read.
 	 *  \return percentage of read compare to total buffer.
-	 */ 	
+	 */
 	UINT CalculatePercentage(UINT);
 
-    /*! For testing MemoryStream class private methods */ 
+    /*! For testing MemoryStream class private methods */
 	friend class MemoryStreamTest;
-    /*! For testing MemoryStream class private methods */ 
+    /*! For testing MemoryStream class private methods */
 	friend class IOMemoryStreamTest;
 
 private:
-	/*! Private Copy Constructor 
+	/*! Private Copy Constructor
 	 *
-	 *  A copy constructor is a member function which initializes an object using another object of the same class. 
-	 */ 
+	 *  A copy constructor is a member function which initializes an object using another object of the same class.
+	 */
 	MemoryStream(const MemoryStream& clOther);
-	
-	/*! Private assignment operator 
+
+	/*! Private assignment operator
 	 *
-	 *  The copy assignment operator is called whenever selected by overload resolution, 
+	 *  The copy assignment operator is called whenever selected by overload resolution,
 	 *  e.g. when an object appears on the left side of an assignment expression.
-	 */ 
+	 */
 	const MemoryStream& operator= (const MemoryStream& clOther);
-	
-	/*! StreamReadStatus Enumarated value. */
+
+	/*! StreamReadStatus enumerated value. */
 	StreamReadStatus stMemoryReadStatus;
 };
 

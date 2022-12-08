@@ -23,12 +23,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 /*! \file   composer.hpp
- *  \brief  Class to start conversion from ASCII to BINARY and vice vera process
+ *  \brief  Class to start conversion from ASCII to BINARY and vice versa process
  */
 
 #include "hwinterface_export.h"
 
 #include "src/hw_interface/stream_interface/api/inputfilestream.hpp"
+#include "src/hw_interface/stream_interface/api/inputmemorystream.hpp"
 
 extern "C" {
    HWINTERFACE_EXPORT InputFileStream* ifs_init(const char* file);

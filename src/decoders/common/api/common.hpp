@@ -827,7 +827,7 @@ typedef enum
    SPLIT_NONE    /*!< Do not split */
 } FileSplitMethodEnum;
 
-/*! A macro for Maximum of circullar buffer size to read data from input stream */
+/*! A macro for Maximum of circular buffer size to read data from input stream */
 #define BUFFER_SIZE 10240
 
 

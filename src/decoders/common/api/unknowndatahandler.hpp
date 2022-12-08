@@ -36,14 +36,14 @@
  */
 
 //-----------------------------------------------------------------------
-// Includes                                                               
+// Includes
 //-----------------------------------------------------------------------
 #include "common.hpp"
 #include "circularbuffer.hpp"
 
 /*! \class UnknownDataHandler
     \brief A class contains unknown data handlers.
-  
+
     A more detailed UnknownDataHandler class description.
     \author GPR
     \date   FEB 2021
@@ -55,11 +55,11 @@ private:
    CircularBuffer cMyCircularDataBuffer;             /**<Circular Buffer to hold data read from stream*/
    std::vector<std::string> aszValidCOMPromptsList;  /**<Pre defined Valid COM Promtps from Novatel Receiver*/
 
-   /*! \fn void CheckUnknownByteType(UCHAR ucDataByte) 
+   /*! \fn void CheckUnknownByteType(UCHAR ucDataByte)
        \brief Checks the input CHAR is unknown byte or not.
        \param [in] ucDataByte Byte to be checked for unknown or not?.
-   */   
-   void CheckUnknownByteType(UCHAR ucDataByte); 
+   */
+   void CheckUnknownByteType(UCHAR ucDataByte);
 public:
    /*! \brief UnknownDataHandler Class constructor.
     *
@@ -73,20 +73,20 @@ public:
    ~UnknownDataHandler();
 
    /*! \fn void HandleUnknownDataBytes(CHAR* pucBuffer, UINT uiCount, BOOL bEOS)
-       \brief Find unknown bytes from given string 
+       \brief Find unknown bytes from given string
        \param [in] pucBuffer string in which unknown bytes will be catch.
        \param [in] uiCount Number of bytes in input buffer
        \param [in] bEOS Is End Of Stream/File reached with this buffer in the given stream.
    */
    void HandleUnknownDataBytes(CHAR* pucBuffer, UINT uiCount, BOOL bEOS);
 
-   /*! \fn void HandleUnknownData(CHAR* pcMessageBuffer, MessageHeader* stMessageHeader, BOOL bEOS);       
-       \brief Find unknown bytes from given string 
+   /*! \fn void HandleUnknownData(CHAR* pcMessageBuffer, MessageHeader* stMessageHeader, BOOL bEOS);
+       \brief Find unknown bytes from given string
        \param [in] pcMessageBuffer Message pointer to parse a frame and store.
        \param [in] stMessageHeader Header structure to fill from handler
        \param [in] bEOS Is End Of Stream/File reached with this buffer in the given stream.
    */
-   void HandleUnknownData(CHAR* pcMessageBuffer, MessageHeader* stMessageHeader, BOOL bEOS);       
+   void HandleUnknownData(CHAR* pcMessageBuffer, MessageHeader* stMessageHeader, BOOL bEOS);
 
    /*! \fn UnknownDataStatistics GetUnknownDataStatistics(void)
        \brief Returns Unknown Data statistics
@@ -97,13 +97,13 @@ public:
 
    /*! \fn void ResetUnknownDataStatistics(void)
        \brief Reset the all unknown data statistics structure,
-              And clears circullar buffer which was used for catching unknown bytes.
+              And clears circular buffer which was used for catching unknown bytes.
    */
    void ResetUnknownDataStatistics();
 
    /*! \fn void Reset()
        \brief Reset the all unknown data statistics structure,
-              And clears circullar buffer which was used for catching unknown bytes.
+              And clears circular buffer which was used for catching unknown bytes.
    */
    void Reset();
 };
