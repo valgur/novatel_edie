@@ -82,8 +82,8 @@ add_subdirectory(src/decoders/jsoninterface/test)
 add_subdirectory(src/decoders/novatel/test)
 add_subdirectory(src/hw_interface/stream_interface/test)
 
+add_subdirectory(example/converter)
 if(WINDOWS)
-    add_subdirectory(example/converter)
     add_subdirectory(example/serialtest)
 endif()
 

@@ -10,9 +10,8 @@
 #include "decoders/novatel/api/decoder.hpp"
 #include "decoders/version.h"
 
-inline bool file_exists(const std::string& name) {
-   struct stat buffer;
-   return (stat(name.c_str(), &buffer) == 0);
+inline bool file_exists(const std::string &name) {
+   return std::ifstream(name).is_open();
 }
 
 int main(int argc, char** argv)

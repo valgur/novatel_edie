@@ -6,20 +6,18 @@ set(CONVERTER_SOURCES)
 LIST(APPEND CONVERTER_SOURCES ${SOURCES})
 
 if(WINDOWS)
-source_group("src" FILES ${CONVERTER_SOURCES})
+    source_group("src" FILES ${CONVERTER_SOURCES})
 endif()
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/${PROJECT_NAME}/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}-${ARCH})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/${PROJECT_NAME}/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}-${ARCH})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin/${PROJECT_NAME}/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}-${ARCH})
 
-set(PROJECT_LINK_LIBS Common.lib JsonInterface.lib Novatel.lib StreamInterface.lib)
-link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../bin/Common/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}-${ARCH})
-link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../bin/JsonInterface/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}-${ARCH})
-link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../bin/Novatel/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}-${ARCH})
-link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../bin/StreamInterface/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}-${ARCH})
+set(PROJECT_LINK_LIBS hwinterface_dynamic_library decoders_dynamic_library)
+link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../bin/hwinterface_dynamic_library/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}-${ARCH})
+link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../bin/decoders_dynamic_library/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}-${ARCH})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../src)
 
 add_executable(converter main.cpp)
-target_link_libraries(converter ${PROJECT_LINK_LIBS} )
+target_link_libraries(converter ${PROJECT_LINK_LIBS})
