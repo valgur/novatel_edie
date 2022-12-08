@@ -1,8 +1,9 @@
-from novatel_edie import hw_interface
-from novatel_edie import novatel
-import os
+from pathlib import Path
 
-input_file = hw_interface.InputFileStream(os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources/bestpos.bin"))
+from novatel_edie import hw_interface, novatel
+
+script_dir = Path(__file__).parent
+input_file = hw_interface.InputFileStream(str(script_dir / "resources/bestpos.bin"))
 framer = novatel.Framer(input_file)
 
 for log in framer:
