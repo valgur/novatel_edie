@@ -62,8 +62,15 @@ class Log:
         self._unknown_data = unknown_data
 
     def __str__(self):
-        return '#' + ','.join([str(x) for x in self.header.values()]) + \
-            ';' + ','.join([str(x) for x in self.body.values()])
+        header = ",".join(map(str, self.header.values()))
+        body = ",".join(map(str, self.body.values()))
+        return f'#{header};{body}'
+
+    def __repr__(self):
+        header = f'dict({", ".join(f"{k}={v!r}" for k, v in self.header.items())})'
+        body = f'dict({", ".join(f"{k}={v!r}" for k, v in self.body.items())})'
+        unknown_data = f', unknown_data={self.unknown_data!r}' if self.unknown_data else ''
+        return f'{self.__class__.__name__}(header={header}, body={body}{unknown_data})'
 
     def __getitem__(self, key):
         return self._header.get(key)
