@@ -66,35 +66,26 @@ StreamReadStatus NovatelParser::ParseData(CHAR** pcMessageBuffer, MessageHeader*
    // Set the default parsing status
    eMyParseStatus = WAITING_FOR_SYNC;
 
-   // loop buffer till colpmete message
+   // loop buffer till complete message
    while (eMyParseStatus != COMPLETE_MESSAGE)
    {
-      // Read data from file or port when circular buffer reach end
-      // or we didn't find complete frame in current data buffer
+      // Read data from file or port when circular buffer reaches end
+      // or we didn't find complete frame in the current data buffer
       if (( cMyCircularDataBuffer.GetLength() == 0)
          || ( cMyCircularDataBuffer.GetLength() == uiMyByteCount))
       {
-		 if (pclMyInputStreamInterface->IsStreamAvailable())
-		 {
-			 bIsInputStreamEOF = FALSE;
-		 }
-         if (bIsInputStreamEOF != TRUE)
-         {
-            if (ReadInputStream() == 0)
-            {
-               uiMyByteCount = 0;
-               //Return to application if we didn't get data from stream
-               return eMyStreamReadStatus;
-            }
-         }
-         else
+		   if (pclMyInputStreamInterface->IsStreamAvailable())
+		   {
+		  	   bIsInputStreamEOF = FALSE;
+		   }
+         if (bIsInputStreamEOF == TRUE || (ReadInputStream() == 0))
          {
             eMyStreamReadStatus.bEOS = TRUE;
             // Send remaining data as unknown to application if we reach end of stream
             if (vcMyUnknownBytes.size() != 0)
             {
-               *pcMessageBuffer = new CHAR[vcMyUnknownBytes.size()+1];
-               memset(*pcMessageBuffer, '\0', vcMyUnknownBytes.size()+1);
+               *pcMessageBuffer = new CHAR[vcMyUnknownBytes.size() + 1];
+               memset(*pcMessageBuffer, '\0', vcMyUnknownBytes.size() + 1);
                std::copy(vcMyUnknownBytes.begin(), vcMyUnknownBytes.end(), *pcMessageBuffer);
 
                stMessageHeader->uiMessageID = 0;
@@ -106,7 +97,6 @@ StreamReadStatus NovatelParser::ParseData(CHAR** pcMessageBuffer, MessageHeader*
             }
             return eMyStreamReadStatus;
          }
-
       }
 
       // Get one character at a time
