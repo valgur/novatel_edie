@@ -65,10 +65,7 @@ class Log:
             ';' + ','.join([str(x) for x in self.body.values()])
 
     def __getitem__(self, key):
-        if self._header.get(key):
-            return self._header.get(key)
-        else:
-            return None
+        return self._header.get(key)
 
     @property
     def header(self):
