@@ -44,7 +44,7 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/rotating_file_sink.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
-#include "spdlog_setup/conf.h"
+#include "common/spdlog_setup/conf.h"
 #include <iostream>
 #include <map>
 

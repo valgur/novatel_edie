@@ -3,7 +3,7 @@ import os
 from conan import ConanFile
 from conan.tools.build import check_min_cppstd
 from conan.tools.cmake import CMake, cmake_layout, CMakeToolchain, CMakeDeps
-from conan.tools.files import copy, rmdir
+from conan.tools.files import copy, rmdir, move_folder_contents, mkdir
 
 required_conan_version = ">=2.0"
 
@@ -77,14 +77,16 @@ class NovatelEdieConan(ConanFile):
         copy(self, "LICENSE",
              src=self.source_folder,
              dst=os.path.join(self.package_folder, "licenses"))
-        copy(self, "*",
-             src=os.path.join(self.package_folder, "share", "novatel", "edie"),
-             dst=os.path.join(self.package_folder, "res"))
+        mkdir(self, os.path.join(self.package_folder, "res"))
+        move_folder_contents(self, os.path.join(self.package_folder, "share", "novatel", "edie"),
+                                   os.path.join(self.package_folder, "res"))
         rmdir(self, os.path.join(self.package_folder, "share"))
 
     def package_info(self):
         self.cpp_info.set_property("cmake_file_name", "EDIE")
         self.cpp_info.set_property("cmake_target_name", "EDIE::EDIE")
+        self.cpp_info.includedirs.append(os.path.join("include", "novatel", "edie"))
+        self.cpp_info.resdirs = ["res"]
         self.cpp_info.libs = ["novatel", "stream_interface"]
         if self.options.build_dynamic_libs:
             self.cpp_info.libs.extend(["decoders_dynamic_library", "hwinterface_dynamic_library"])
