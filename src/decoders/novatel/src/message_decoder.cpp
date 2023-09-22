@@ -30,7 +30,7 @@
 //-----------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------
-#include "decoders/novatel/api/message_decoder.hpp"
+#include "decoders/novatel/message_decoder.hpp"
 #include <bitset>
 #include <sstream>
 
@@ -195,7 +195,7 @@ MessageDecoder::MsgIdToMsgName(const uint32_t uiMessageID_)
    UnpackMsgID(uiMessageID_, usLogID, uiSiblingID, uiMessageFormat, uiResponse);
 
    const MessageDefinition* pstMessageDefinition = pclMyMsgDb->GetMsgDef(usLogID);
-   
+
    std::string strMessageName = pstMessageDefinition ? pstMessageDefinition->name : GetEnumString(vMyCommandDefns, usLogID);
    std::string strMessageFormatSuffix = uiResponse ? "R"
       : uiMessageFormat == static_cast<uint32_t>(MESSAGEFORMAT::BINARY) ? "B"

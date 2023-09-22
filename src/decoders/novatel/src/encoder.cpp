@@ -30,7 +30,7 @@
 //-----------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------
-#include "decoders/novatel/api/encoder.hpp"
+#include "decoders/novatel/encoder.hpp"
 #include <bitset>
 
 using namespace novatel::edie;
@@ -174,7 +174,7 @@ Encoder::MsgNameToMsgId(std::string sMsgName_) const
 
       return CreateMsgID(pclMessageDef->logID, uiSiblingID, uiMsgFormat, uiResponse);
    }
-   
+
    if (sMsgName_.back() == 'R') // Ascii Response
    {
       uiResponse = static_cast<uint32_t>(true);
@@ -278,7 +278,7 @@ Encoder::EncodeBinaryHeader(const IntermediateHeader& stIntermediateHeader_, uns
 bool
 Encoder::EncodeBinaryShortHeader(const IntermediateHeader& stIntermediateHeader_, unsigned char** ppcOutBuf_, uint32_t& uiMyBufferBytesRemaining_)
 {
-   OEM4BinaryShortHeader stBinaryHeader; 
+   OEM4BinaryShortHeader stBinaryHeader;
 
    stBinaryHeader.ucSync1 = OEM4_BINARY_SYNC1;
    stBinaryHeader.ucSync2 = OEM4_BINARY_SYNC2;
@@ -448,7 +448,7 @@ Encoder::FieldToBinary(const FieldContainer& fc_, unsigned char** ppcOutBuf_, ui
    case CONVERSION_STRING::B:  return CopyToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, &std::get<int8_t>  (fc_.field_value));
    case CONVERSION_STRING::k:  return CopyToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, &std::get<float>   (fc_.field_value));
    case CONVERSION_STRING::lk: return CopyToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, &std::get<double>  (fc_.field_value));
-   case CONVERSION_STRING::c: 
+   case CONVERSION_STRING::c:
 	  return (fc_.field_def->dataType.length == 1)
          ? CopyToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, &std::get<uint8_t>(fc_.field_value))
          : (fc_.field_def->dataType.length == 4 && fc_.field_def->dataType.name == DATA_TYPE_NAME::ULONG)

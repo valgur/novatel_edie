@@ -32,8 +32,8 @@
 //-----------------------------------------------------------------------
 #include "paths.hpp"
 
-#include "hw_interface/stream_interface/api/inputfilestream.hpp"
-#include "decoders/novatel/api/framer.hpp"
+#include "hw_interface/stream_interface/inputfilestream.hpp"
+#include "decoders/novatel/framer.hpp"
 #include <gtest/gtest.h>
 
 using namespace std;

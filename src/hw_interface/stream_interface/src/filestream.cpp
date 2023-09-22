@@ -29,7 +29,7 @@
 
 // Includes
 #include "filestream.hpp"
-#include "decoders/common/api/nexcept.h"
+#include "common/nexcept.h"
 #include <sys/stat.h>
 #include <string>
 

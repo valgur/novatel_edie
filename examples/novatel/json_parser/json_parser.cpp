@@ -32,10 +32,10 @@
 // Includes
 //-----------------------------------------------------------------------
 #include <chrono>
-#include "src/hw_interface/stream_interface/api/inputfilestream.hpp"
-#include "src/hw_interface/stream_interface/api/outputfilestream.hpp"
-#include "src/decoders/novatel/api/parser.hpp"
-#include "src/version.h"
+#include "hw_interface/stream_interface/inputfilestream.hpp"
+#include "hw_interface/stream_interface/outputfilestream.hpp"
+#include "decoders/novatel/parser.hpp"
+#include "version.h"
 
 using namespace std;
 using namespace novatel::edie;

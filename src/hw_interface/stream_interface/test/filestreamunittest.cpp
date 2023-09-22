@@ -28,8 +28,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // Includes
-#include "hw_interface/stream_interface/api/filestream.hpp"
-#include "decoders/common/api/nexcept.h"
+#include "hw_interface/stream_interface/filestream.hpp"
+#include "common/nexcept.h"
 #include "paths.hpp"
 
 #include <string>

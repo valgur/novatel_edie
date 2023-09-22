@@ -18,14 +18,14 @@
 //-----------------------------------------------------------------------
 #include "paths.hpp"
 
-#include "decoders/common/api/common.hpp"
-#include "decoders/common/api/jsonreader.hpp"
-#include "decoders/novatel/api/filter.hpp"
-#include "decoders/novatel/api/framer.hpp"
-#include "decoders/novatel/api/header_decoder.hpp"
-#include "decoders/novatel/api/message_decoder.hpp"
-#include "decoders/novatel/api/encoder.hpp"
-#include "decoders/novatel/api/rxconfig/rxconfig_handler.hpp"
+#include "common/common.hpp"
+#include "common/jsonreader.hpp"
+#include "decoders/novatel/filter.hpp"
+#include "decoders/novatel/framer.hpp"
+#include "decoders/novatel/header_decoder.hpp"
+#include "decoders/novatel/message_decoder.hpp"
+#include "decoders/novatel/encoder.hpp"
+#include "decoders/novatel/rxconfig/rxconfig_handler.hpp"
 
 #include <gtest/gtest.h>
 

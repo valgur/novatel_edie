@@ -30,7 +30,7 @@
 //-----------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------
-#include "decoders/novatel/api/commander.hpp"
+#include "decoders/novatel/commander.hpp"
 #include <bitset>
 
 using namespace novatel::edie;

@@ -34,15 +34,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <chrono>
-#include "src/hw_interface/stream_interface/api/inputfilestream.hpp"
-#include "src/hw_interface/stream_interface/api/outputfilestream.hpp"
-#include "src/decoders/novatel/api/encoder.hpp"
-#include "src/decoders/novatel/api/filter.hpp"
-#include "src/decoders/novatel/api/framer.hpp"
-#include "src/decoders/novatel/api/header_decoder.hpp"
-#include "src/decoders/novatel/api/message_decoder.hpp"
-#include "src/decoders/common/api/jsonreader.hpp"
-#include "src/version.h"
+#include "hw_interface/stream_interface/inputfilestream.hpp"
+#include "hw_interface/stream_interface/outputfilestream.hpp"
+#include "decoders/novatel/encoder.hpp"
+#include "decoders/novatel/filter.hpp"
+#include "decoders/novatel/framer.hpp"
+#include "decoders/novatel/header_decoder.hpp"
+#include "decoders/novatel/message_decoder.hpp"
+#include "common/jsonreader.hpp"
+#include "version.h"
 #include "logger/logger.hpp"
 
 using namespace std;

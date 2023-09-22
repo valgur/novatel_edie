@@ -30,7 +30,7 @@
 //-----------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------
-#include "decoders/novatel/api/header_decoder.hpp"
+#include "decoders/novatel/header_decoder.hpp"
 #include <bitset>
 
 using namespace novatel::edie;

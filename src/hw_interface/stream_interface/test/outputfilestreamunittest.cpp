@@ -23,7 +23,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // Includes
-#include "hw_interface/stream_interface/api/outputfilestream.hpp"
+#include "hw_interface/stream_interface/outputfilestream.hpp"
 #include "paths.hpp"
 #include <string>
 #include <filesystem>
