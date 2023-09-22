@@ -27,6 +27,6 @@ target_include_directories(decoders_dynamic_library
     PRIVATE include/edie/decoders/dynamic_library
 )
 
-file(GLOB_RECURSE MY_PUBLIC_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/*.h*)
-set_target_properties(decoders_dynamic_library PROPERTIES PUBLIC_HEADER "${MY_PUBLIC_HEADERS}")
-install(TARGETS decoders_dynamic_library PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/novatel/edie)
+install(TARGETS decoders_dynamic_library COMPONENT dynamic_libs)
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

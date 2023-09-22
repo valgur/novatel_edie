@@ -5,7 +5,7 @@ file (GLOB SOURCES
 set(NOVATELTEST_SOURCES)
 list(APPEND NOVATELTEST_SOURCES ${SOURCES})
 
-find_package(GTest REQUIRED)
+find_package(GTest REQUIRED CONFIG)
 
 add_executable(NovatelTest ${NOVATELTEST_SOURCES})
 set_property(TARGET NovatelTest PROPERTY FOLDER "edie/decoders/tests")

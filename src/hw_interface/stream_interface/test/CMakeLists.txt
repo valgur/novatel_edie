@@ -5,7 +5,7 @@ file (GLOB SOURCES
 set(STREAMINTERFACETEST_SOURCES)
 list(APPEND STREAMINTERFACETEST_SOURCES ${SOURCES})
 
-find_package(GTest REQUIRED)
+find_package(GTest REQUIRED CONFIG)
 
 add_executable(StreamInterfaceTest ${STREAMINTERFACETEST_SOURCES})
 set_property(TARGET StreamInterfaceTest PROPERTY FOLDER "hw_interface/tests")

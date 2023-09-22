@@ -32,6 +32,6 @@ target_include_directories(objnovatel
 get_target_property(common_INCLUDE_DIRS obj::common INCLUDE_DIRECTORIES)
 target_include_directories(novatel PUBLIC include ${common_INCLUDE_DIRS})
 
-file(GLOB_RECURSE MY_PUBLIC_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/*.h*)
-set_target_properties(novatel PROPERTIES PUBLIC_HEADER "${MY_PUBLIC_HEADERS}")
-install(TARGETS novatel PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/novatel/edie)
+install(TARGETS novatel)
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

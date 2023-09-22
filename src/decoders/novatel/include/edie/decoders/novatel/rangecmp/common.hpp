@@ -28,7 +28,7 @@
 #define RANGECMP_COMMON_HPP
 
 #include <array>
-#include <stdint.h>
+#include <cstdint>
 
 namespace novatel::edie::oem {
 
@@ -38,8 +38,7 @@ namespace novatel::edie::oem {
 constexpr uint32_t SPEED_OF_LIGHT = 299792458;
 constexpr uint32_t MAX_VALUE = 0x800000; //!< Also 8388608, defined in RANGECMP documentation for ADR.
 constexpr uint32_t BITS_PER_BYTE = 8;
-constexpr int32_t MAGIC_NEGATE = -1; //!< Some fields are magically negated in RANGE messages when
-                                     //!< translating from a compressed version.
+constexpr int32_t MAGIC_NEGATE = -1; //!< Some fields are magically negated in RANGE messages when translating from a compressed version.
 
 //! NOTE: See documentation on slot/PRN offsets for specific satellite systems:
 //! https://docs.novatel.com/OEM7/Content/Logs/RANGECMP4.htm
@@ -51,8 +50,7 @@ constexpr uint32_t SBAS_PRN_OFFSET_130_LOWER_LIMIT = 54;
 constexpr uint32_t SBAS_PRN_OFFSET_130_UPPER_LIMIT = 62;
 constexpr uint32_t QZSS_PRN_OFFSET = 193; //!< PRN offset for QZSS.
 
-//! NOTE: See the documentation on GLONASS slot & frequency numbers for descriptions on how these
-//! offsets work.
+//! NOTE: See the documentation on GLONASS slot & frequency numbers for descriptions on how these offsets work.
 //! https://docs.novatel.com/OEM7/Content/Messages/GLONASS_Slot_and_Frequen.htm?Highlight=GLONASS%20Slot%20and%20Frequency%20Numbers
 constexpr uint32_t GLONASS_SLOT_UNKNOWN_LOWER_LIMIT = 43; //!< Slot limit for unknown GLONASS satellites.
 constexpr uint32_t GLONASS_SLOT_UNKNOWN_UPPER_LIMIT = 64; //!< Slot limit for unknown GLONASS satellites.
@@ -390,8 +388,7 @@ struct RangeCmpDataStruct
     uint32_t uiADR{0};
     uint8_t ucStdDevPSRStdDevADR{0}; // This is a combination of two fields; PSR Std. and ADR std.
     uint8_t ucPRN{0};
-    uint32_t uiLockTimeCNoGLOFreq{0}; // This is a combination of two fields; Lock time (21b), C/No
-                                      // (5b), and GLONASS Frequency number (8b)
+    uint32_t uiLockTimeCNoGLOFreq{0}; // This is a combination of two fields; Lock time (21b), C/No (5b), and GLONASS Frequency number (8b)
     uint16_t usReserved{0};
 
     constexpr RangeCmpDataStruct() = default;
@@ -807,8 +804,7 @@ struct ChannelTrackingStatusStruct
             eSatelliteSystem, static_cast<RangeCmp2::SIGNAL_TYPE>(stRangeCmp2SigBlock_.uiCombinedField1 & RC2_SIG_SIGNAL_TYPE_MASK));
     }
 
-    //! Constructor from the available data from a RANGECMP4 Primary Block and Measurement Block
-    //! pair.
+    //! Constructor from the available data from a RANGECMP4 Primary Block and Measurement Block pair.
     ChannelTrackingStatusStruct(SYSTEM eSystem_, RangeCmp4::SIGNAL_TYPE eSignalType_,
                                 const RangeCmp4MeasurementSignalBlockStruct& stMeasurementBlock_)
     {
@@ -818,8 +814,7 @@ struct ChannelTrackingStatusStruct
         bPRNLocked = false;
         bChannelAssignmentForced = false;
         bDigitalFilteringOnSignal = false;
-        bGrouped = false; // Note that bGrouped can be changed once the number of signals for this
-                          // PRN have been determined.
+        bGrouped = false; // Note that bGrouped can be changed once the number of signals for this PRN have been determined.
 
         eSatelliteSystem = SystemToSatelliteSystem(eSystem_);
         eSignalType = RangeCmp4SignalTypeToSignalType(eSatelliteSystem, eSignalType_);
@@ -969,8 +964,7 @@ struct ChannelTrackingStatusStruct
                                              : SATELLITE_SYSTEM::OTHER;
     }
 
-    //! Combine the channel tracking status fields into a single 4-byte value according to
-    //! documentation:
+    //! Combine the channel tracking status fields into a single 4-byte value according to documentation:
     //! https://docs.novatel.com/OEM7/Content/Logs/RANGE.htm?Highlight=RANGE#Table_ChannelTrackingStatus
     uint32_t GetAsWord() const
     {

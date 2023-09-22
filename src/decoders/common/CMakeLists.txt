@@ -17,10 +17,14 @@ target_include_directories(objcommon
     PUBLIC include/edie/decoders/common
 )
 
-# FIXME: should be added via a spdlog::spdlog target
-find_package(Threads REQUIRED)
-target_link_libraries(objcommon PUBLIC Threads::Threads)
+find_package(nlohmann_json REQUIRED CONFIG)
+find_package(spdlog REQUIRED CONFIG)
+find_package(spdlog_setup REQUIRED CONFIG)
+target_link_libraries(objcommon PUBLIC
+    nlohmann_json::nlohmann_json
+    spdlog::spdlog
+    spdlog_setup::spdlog_setup
+)
 
-file(GLOB_RECURSE MY_PUBLIC_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/*.h*)
-set_target_properties(objcommon PROPERTIES PUBLIC_HEADER "${MY_PUBLIC_HEADERS}")
-install(TARGETS objcommon PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/novatel/edie)
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

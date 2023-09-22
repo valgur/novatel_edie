@@ -5,7 +5,7 @@ file (GLOB SOURCES
 set(COMMONTEST_SOURCES)
 list(APPEND COMMONTEST_SOURCES ${SOURCES})
 
-find_package(GTest REQUIRED)
+find_package(GTest REQUIRED CONFIG)
 
 add_executable(CommonTest ${COMMONTEST_SOURCES})
 set_property(TARGET CommonTest PROPERTY FOLDER "edie/decoders/tests")
