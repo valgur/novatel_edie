@@ -3,9 +3,12 @@
 .idea/
 build/
 bin/
-venv/
 edie.*.log
 edie.log
 CMakeSettings.json
 CMakeUserPresets.json
 version.h
+dist/
+venv/
+*.egg-info
+__pycache__
