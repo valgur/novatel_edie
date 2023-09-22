@@ -30,7 +30,7 @@
 //-----------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------
-#include "decoders/novatel/api/message_decoder.hpp"
+#include "decoders/novatel/message_decoder.hpp"
 
 #include <bitset>
 #include <sstream>

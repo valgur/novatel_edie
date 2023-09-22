@@ -36,9 +36,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "src/decoders/novatel/api/commander.hpp"
-#include "src/hw_interface/stream_interface/api/outputfilestream.hpp"
-#include "src/version.h"
+#include "decoders/novatel/commander.hpp"
+#include "hw_interface/stream_interface/outputfilestream.hpp"
+#include "version.h"
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;

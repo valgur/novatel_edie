@@ -28,7 +28,7 @@
 
 #include <gtest/gtest.h>
 
-#include "hw_interface/stream_interface/api/inputfilestream.hpp"
+#include "hw_interface/stream_interface/inputfilestream.hpp"
 #include "paths.hpp"
 
 #ifndef RESOURCE_DIR

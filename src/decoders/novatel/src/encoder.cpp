@@ -30,7 +30,7 @@
 //-----------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------
-#include "decoders/novatel/api/encoder.hpp"
+#include "decoders/novatel/encoder.hpp"
 
 #include <bitset>
 

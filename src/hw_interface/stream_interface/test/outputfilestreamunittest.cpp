@@ -28,7 +28,7 @@
 
 #include <gtest/gtest.h>
 
-#include "hw_interface/stream_interface/api/outputfilestream.hpp"
+#include "hw_interface/stream_interface/outputfilestream.hpp"
 #include "paths.hpp"
 
 class OutputFileStreamTest : public ::testing::Test

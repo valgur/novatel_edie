@@ -30,7 +30,7 @@
 //-----------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------
-#include "decoders/novatel/api/fileparser.hpp"
+#include "decoders/novatel/fileparser.hpp"
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;

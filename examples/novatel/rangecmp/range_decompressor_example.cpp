@@ -33,15 +33,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "src/decoders/novatel/api/encoder.hpp"
-#include "src/decoders/novatel/api/filter.hpp"
-#include "src/decoders/novatel/api/framer.hpp"
-#include "src/decoders/novatel/api/header_decoder.hpp"
-#include "src/decoders/novatel/api/message_decoder.hpp"
-#include "src/decoders/novatel/api/rangecmp/range_decompressor.hpp"
-#include "src/hw_interface/stream_interface/api/inputfilestream.hpp"
-#include "src/hw_interface/stream_interface/api/outputfilestream.hpp"
-#include "src/version.h"
+#include "decoders/novatel/encoder.hpp"
+#include "decoders/novatel/filter.hpp"
+#include "decoders/novatel/framer.hpp"
+#include "decoders/novatel/header_decoder.hpp"
+#include "decoders/novatel/message_decoder.hpp"
+#include "decoders/novatel/rangecmp/range_decompressor.hpp"
+#include "hw_interface/stream_interface/inputfilestream.hpp"
+#include "hw_interface/stream_interface/outputfilestream.hpp"
+#include "version.h"
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;

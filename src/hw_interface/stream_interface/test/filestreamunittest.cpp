@@ -33,8 +33,8 @@
 
 #include <gtest/gtest.h>
 
-#include "decoders/common/api/nexcept.h"
-#include "hw_interface/stream_interface/api/filestream.hpp"
+#include "common/nexcept.h"
+#include "hw_interface/stream_interface/filestream.hpp"
 #include "paths.hpp"
 
 #ifndef RESOURCE_DIR

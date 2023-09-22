@@ -34,7 +34,7 @@
 
 #include <sys/stat.h>
 
-#include "decoders/common/api/nexcept.h"
+#include "common/nexcept.h"
 
 using namespace std;
 

@@ -36,10 +36,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "src/decoders/novatel/api/fileparser.hpp"
-#include "src/hw_interface/stream_interface/api/inputfilestream.hpp"
-#include "src/hw_interface/stream_interface/api/outputfilestream.hpp"
-#include "src/version.h"
+#include "decoders/novatel/fileparser.hpp"
+#include "hw_interface/stream_interface/inputfilestream.hpp"
+#include "hw_interface/stream_interface/outputfilestream.hpp"
+#include "version.h"
 
 using namespace std;
 using namespace novatel::edie;

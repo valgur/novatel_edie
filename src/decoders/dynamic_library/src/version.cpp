@@ -32,7 +32,7 @@
 //-----------------------------------------------------------------------
 #include "version.hpp"
 
-#include "src/version.h" // this refers to the EDIE version.h
+#include "version.h" // this refers to the EDIE version.h
 
 const char* version() { return get_version(); }
 

@@ -32,7 +32,7 @@
 
 #include <gtest/gtest.h>
 
-#include "hw_interface/stream_interface/api/multioutputfilestream.hpp"
+#include "hw_interface/stream_interface/multioutputfilestream.hpp"
 #include "string"
 
 class MultiOutputFileStreamTest : public ::testing::Test

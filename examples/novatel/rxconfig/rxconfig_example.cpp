@@ -36,11 +36,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "src/decoders/common/api/common.hpp"
-#include "src/decoders/novatel/api/rxconfig/rxconfig_handler.hpp"
-#include "src/hw_interface/stream_interface/api/inputfilestream.hpp"
-#include "src/hw_interface/stream_interface/api/outputfilestream.hpp"
-#include "src/version.h"
+#include "common/common.hpp"
+#include "decoders/novatel/rxconfig/rxconfig_handler.hpp"
+#include "hw_interface/stream_interface/inputfilestream.hpp"
+#include "hw_interface/stream_interface/outputfilestream.hpp"
+#include "version.h"
 
 using namespace std;
 using namespace novatel::edie;
