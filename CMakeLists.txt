@@ -3,6 +3,7 @@ project(EDIE LANGUAGES CXX)
 
 option(BUILD_TESTS "Build tests" ON)
 option(BUILD_EXAMPLES "Build examples" ON)
+option(BUILD_DYNAMIC_LIBS "Build C-style *_dynamic_library versions of the libraries" ON)
 option(COVERAGE "Coverage" OFF)
 
 set(CMAKE_CXX_STANDARD 17)
