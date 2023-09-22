@@ -39,8 +39,9 @@
 //-----------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------
-#include <stdint.h>
-#include <string.h>
+#include <climits>
+#include <cstdint>
+#include <cstring>
 #include <array>
 
 namespace novatel::edie::oem {

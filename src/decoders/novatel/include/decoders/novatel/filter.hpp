@@ -43,7 +43,7 @@
 #include "common/jsonreader.hpp"
 #include "decoders/novatel/common.hpp"
 #include "decoders/novatel/header_decoder.hpp"
-#include "logger/logger.hpp"
+#include "common/logger/logger.hpp"
 
 namespace novatel::edie::oem {
 

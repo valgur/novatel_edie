@@ -40,7 +40,7 @@
 #include "decoders/novatel/common.hpp"
 #include "decoders/novatel/header_decoder.hpp"
 
-#include <string.h>
+#include <cstring>
 
 extern "C"
 {

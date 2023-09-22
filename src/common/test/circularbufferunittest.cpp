@@ -32,6 +32,7 @@
 //-----------------------------------------------------------------------
 #include "common/circularbuffer.hpp"
 #include <gtest/gtest.h>
+#include <climits>
 
 class CircularBufferTest : public ::testing::Test {
 public:

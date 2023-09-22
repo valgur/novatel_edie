@@ -1,9 +1,11 @@
-cmake_minimum_required(VERSION 3.14)
+include(cmake/conan.cmake)
+
+cmake_minimum_required(VERSION 3.15)
 project(EDIE LANGUAGES CXX)
 
 option(BUILD_TESTS "Build tests" ON)
 option(BUILD_EXAMPLES "Build examples" ON)
-option(BUILD_DYNAMIC_LIBS "Build C-style *_dynamic_library versions of the libraries" ON)
+option(BUILD_DYNAMIC_LIBS "Build additional C-style *_dynamic_library versions of the libraries" ON)
 option(COVERAGE "Coverage" OFF)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -19,9 +21,6 @@ endif()
 if(NOT DEFINED CMAKE_VERBOSE_MAKEFILE)
     set(CMAKE_VERBOSE_MAKEFILE OFF)
 endif()
-
-# FIXME
-include_directories(lib)
 
 # Check platforms
 if(CMAKE_HOST_WIN32)

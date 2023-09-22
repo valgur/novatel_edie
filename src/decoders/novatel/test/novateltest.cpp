@@ -47,6 +47,7 @@
 #include "resources/novatel_message_definitions.hpp"
 #include <gtest/gtest.h>
 
+#include <climits>
 #include <chrono>
 #include <iostream>
 #include <fstream>

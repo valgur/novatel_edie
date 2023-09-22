@@ -42,7 +42,7 @@
 #include "decoders/novatel/message_decoder.hpp"
 
 #include <nlohmann/json.hpp>
-#include <logger/logger.hpp>
+#include <common/logger/logger.hpp>
 
 #include <cassert>
 

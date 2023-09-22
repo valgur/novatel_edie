@@ -42,14 +42,14 @@
 #include "decoders/novatel/common.hpp"
 
 #include <nlohmann/json.hpp>
-#include <logger/logger.hpp>
+#include <common/logger/logger.hpp>
 #include <variant>
 #include <string>
 #include <sstream>
 #include <cassert>
 #include <iostream>
 #include <fstream>
-#include <stdarg.h>
+#include <cstdarg>
 
 namespace novatel::edie::oem {
 

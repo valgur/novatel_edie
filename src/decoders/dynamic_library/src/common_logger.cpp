@@ -30,7 +30,7 @@
 //-----------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------
-#include "logger/logger.hpp"
+#include "common/logger/logger.hpp"
 #include "common_logger.hpp"
 #include <string>
 

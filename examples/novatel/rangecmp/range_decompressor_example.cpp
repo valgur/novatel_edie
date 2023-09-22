@@ -28,8 +28,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <chrono>
 #include "hw_interface/stream_interface/inputfilestream.hpp"
 #include "hw_interface/stream_interface/outputfilestream.hpp"

@@ -29,6 +29,6 @@ target_include_directories(objstreaminterface
 get_target_property(common_INCLUDE_DIRS obj::common INCLUDE_DIRECTORIES)
 target_include_directories(stream_interface PUBLIC include ${common_INCLUDE_DIRS})
 
-file(GLOB_RECURSE MY_PUBLIC_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/*.h*)
-set_target_properties(stream_interface PROPERTIES PUBLIC_HEADER "${MY_PUBLIC_HEADERS}")
-install(TARGETS stream_interface PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/novatel/edie)
+install(TARGETS stream_interface)
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/novatel/edie)
