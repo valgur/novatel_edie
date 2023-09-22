@@ -97,7 +97,7 @@ if(BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
-include(GNUInstallDirs)
 install(FILES database/messages_public.json
-    DESTINATION ${CMAKE_INSTALL_DATADIR}/novatel/edie
+    DESTINATION ${CMAKE_INSTALL_DATADIR}
+    COMPONENT data
 )

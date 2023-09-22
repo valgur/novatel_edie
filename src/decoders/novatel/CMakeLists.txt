@@ -34,5 +34,4 @@ target_include_directories(novatel PUBLIC include ${common_INCLUDE_DIRS})
 
 install(TARGETS novatel)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/novatel/edie)
-
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

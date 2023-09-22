@@ -26,6 +26,6 @@ target_include_directories(hwinterface_dynamic_library
     PRIVATE include/edie/hw_interface/dynamic_library
 )
 
-install(TARGETS hwinterface_dynamic_library)
+install(TARGETS hwinterface_dynamic_library COMPONENT dynamic_libs)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/novatel/edie)
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
