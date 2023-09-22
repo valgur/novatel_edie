@@ -17,9 +17,10 @@ add_library(obj::novatel ALIAS objnovatel)
 target_link_libraries(objnovatel PUBLIC obj::common edie::stream_interface)
 
 # Creating a static lib, with the project name, using available object file, without recompilation.
-add_library(novatel STATIC $<TARGET_OBJECTS:objnovatel>)
+add_library(novatel $<TARGET_OBJECTS:objnovatel>)
 add_library(edie::novatel ALIAS novatel)
 target_link_libraries(novatel PUBLIC obj::common)
+set_property(TARGET novatel PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 set_property(TARGET novatel PROPERTY FOLDER "decoders")
 set_property(TARGET objnovatel PROPERTY FOLDER "decoders")
