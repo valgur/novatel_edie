@@ -27,6 +27,6 @@ target_include_directories(decoders_dynamic_library
     PRIVATE include/decoders/dynamic_library
 )
 
-install(TARGETS decoders_dynamic_library)
+install(TARGETS decoders_dynamic_library COMPONENT dynamic_libs)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/novatel/edie)
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

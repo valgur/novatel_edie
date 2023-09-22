@@ -11,8 +11,7 @@ required_conan_version = ">=2.0"
 class NovatelEdieConan(ConanFile):
     name = "novatel_edie"
     version = "3.2.24"
-    description = ("The EDIE (Encode-Decode Interface Engine) SDK allows interfacing and decoding "
-                   "data output from NovAtel's OEM7 receivers.")
+    description = "The NovAtel EDIE SDK allows interfacing with and decoding data from NovAtel OEM7 receivers."
     url = "https://github.com/novatel/novatel_edie"
     license = "MIT"
     package_type = "library"
