@@ -3,7 +3,7 @@ import os
 from conan import ConanFile
 from conan.tools.build import check_min_cppstd
 from conan.tools.cmake import CMake, cmake_layout, CMakeToolchain, CMakeDeps
-from conan.tools.files import copy
+from conan.tools.files import copy, rmdir
 
 required_conan_version = ">=2.0"
 
@@ -82,14 +82,21 @@ class NovatelEdieConan(ConanFile):
         cmake.build()
 
     def package(self):
+        cmake = CMake(self)
+        cmake.install()
         copy(
             self,
             "LICENSE",
             src=self.source_folder,
             dst=os.path.join(self.package_folder, "licenses"),
         )
-        cmake = CMake(self)
-        cmake.install()
+        copy(
+            self,
+            "*",
+            src=os.path.join(self.package_folder, "share", "novatel", "edie"),
+            dst=os.path.join(self.package_folder, "res"),
+        )
+        rmdir(self, os.path.join(self.package_folder, "share"))
 
     def package_info(self):
         self.cpp_info.set_property("cmake_file_name", "EDIE")
