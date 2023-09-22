@@ -106,3 +106,6 @@ class NovatelEdieConan(ConanFile):
         self.cpp_info.libs = ["novatel", "stream_interface"]
         if self.options.build_dynamic_libs:
             self.cpp_info.libs.extend(["decoders_dynamic_library", "hwinterface_dynamic_library"])
+        self.runenv_info.define_path(
+            "EDIE_DATABASE_FILE", os.path.join(self.package_folder, "res", "messages_public.json")
+        )
