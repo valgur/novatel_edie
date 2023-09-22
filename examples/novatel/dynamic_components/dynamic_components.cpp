@@ -31,8 +31,8 @@
 //-----------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "decoders/dynamic_library/common_jsonreader.hpp"
 #include "decoders/dynamic_library/novatel_encoder.hpp"
@@ -57,7 +57,7 @@ inline bool file_exists(const std::string& name)
 int main(int argc, char* argv[])
 {
     // This example uses the default logger config, but you can also pass a config file to the Logger() ctor
-    // An example config file: logger\example_logger_config.toml
+    // An example config file: doc\example_logger_config.toml
     auto pclLogger = Logger().RegisterLogger("converter");
     pclLogger->set_level(spdlog::level::debug);
     Logger::AddConsoleLogging(pclLogger);

@@ -38,7 +38,7 @@
 //-----------------------------------------------------------------------
 #include <cassert>
 
-#include <logger/logger.hpp>
+#include <common/logger/logger.hpp>
 #include <nlohmann/json.hpp>
 
 #include "common/common.hpp"

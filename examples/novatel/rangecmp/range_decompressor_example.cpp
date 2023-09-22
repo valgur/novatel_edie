@@ -29,9 +29,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <chrono>
-
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "decoders/novatel/encoder.hpp"
 #include "decoders/novatel/filter.hpp"

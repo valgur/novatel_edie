@@ -40,9 +40,9 @@
 // Includes
 //-----------------------------------------------------------------------
 #include <array>
-
-#include <stdint.h>
-#include <string.h>
+#include <climits>
+#include <cstdint>
+#include <cstring>
 
 namespace novatel::edie::oem {
 

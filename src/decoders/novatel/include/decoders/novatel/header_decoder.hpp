@@ -37,15 +37,15 @@
 // Includes
 //-----------------------------------------------------------------------
 #include <cassert>
+#include <cstdarg>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <variant>
 
-#include <logger/logger.hpp>
+#include <common/logger/logger.hpp>
 #include <nlohmann/json.hpp>
-#include <stdarg.h>
 
 #include "common/common.hpp"
 #include "common/crc32.hpp"

@@ -32,9 +32,8 @@
 // Includes
 //-----------------------------------------------------------------------
 #include <chrono>
-
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "decoders/novatel/commander.hpp"
 #include "hw_interface/stream_interface/outputfilestream.hpp"

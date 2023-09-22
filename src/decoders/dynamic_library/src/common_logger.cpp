@@ -34,7 +34,7 @@
 
 #include <string>
 
-#include "logger/logger.hpp"
+#include "common/logger/logger.hpp"
 
 void common_logger_setup() { auto pclLogger = Logger(); }
 

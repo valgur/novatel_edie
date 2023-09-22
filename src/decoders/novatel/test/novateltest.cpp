@@ -32,6 +32,7 @@
 // Includes
 //-----------------------------------------------------------------------
 #include <chrono>
+#include <climits>
 #include <codecvt>
 #include <filesystem>
 #include <fstream>

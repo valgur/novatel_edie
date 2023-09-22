@@ -32,9 +32,8 @@
 // Includes
 //-----------------------------------------------------------------------
 #include <chrono>
-
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "common/common.hpp"
 #include "decoders/novatel/rxconfig/rxconfig_handler.hpp"
@@ -55,7 +54,7 @@ inline bool file_exists(const std::string& name)
 int main(int argc, char* argv[])
 {
     // This example uses the default logger config, but you can also pass a config file to the Logger() ctor
-    // An example config file: logger\example_logger_config.toml
+    // An example config file: doc\example_logger_config.toml
     auto pclLogger = Logger().RegisterLogger("rxconfig_converter");
     pclLogger->set_level(spdlog::level::debug);
     Logger::AddConsoleLogging(pclLogger);
