@@ -25,6 +25,8 @@
 // ===============================================================================
 
 #include <chrono>
+#include <cstdio>
+#include <cstdlib>
 
 #include <edie/decoders/novatel/commander.hpp>
 #include <edie/hw_interface/stream_interface/outputfilestream.hpp>

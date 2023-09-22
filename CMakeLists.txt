@@ -1,9 +1,11 @@
-cmake_minimum_required(VERSION 3.14)
+include(cmake/conan.cmake)
+
+cmake_minimum_required(VERSION 3.15)
 project(edie-public VERSION 3.1.0 LANGUAGES CXX)
 
 option(BUILD_TESTS "Build tests" ON)
 option(BUILD_EXAMPLES "Build examples" ON)
-option(BUILD_DYNAMIC_LIBS "Build C-style *_dynamic_library versions of the libraries" ON)
+option(BUILD_DYNAMIC_LIBS "Build additional C-style *_dynamic_library versions of the libraries" ON)
 option(COVERAGE "Coverage" OFF)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -21,9 +23,6 @@ endif()
 if(NOT DEFINED CMAKE_VERBOSE_MAKEFILE)
     set(CMAKE_VERBOSE_MAKEFILE OFF)
 endif()
-
-# FIXME
-include_directories(lib)
 
 # Check platforms
 if(CMAKE_HOST_WIN32)
@@ -72,14 +71,6 @@ set(CMAKE_INSTALL_INCLUDEDIR include CACHE PATH "")
 set(CMAKE_INSTALL_BINDIR bin/novatel/edie CACHE PATH "")
 set(CMAKE_INSTALL_LIBDIR lib/novatel/edie CACHE PATH "")
 set(CMAKE_INSTALL_DATADIR share/novatel/edie CACHE PATH "")
-
-# Fetch the GoogleTest library
-include(FetchContent)
-FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/refs/tags/v1.13.0.zip
-)
-FetchContent_MakeAvailable(googletest)
 
 # build EDIE components
 add_subdirectory(src)

@@ -26,6 +26,8 @@
 
 #include "novatel_parser.hpp"
 
+#include <climits>
+
 using namespace novatel::edie;
 using namespace novatel::edie::oem;
 

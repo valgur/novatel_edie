@@ -26,6 +26,6 @@ target_include_directories(hwinterface_dynamic_library
     PRIVATE include/edie/hw_interface/dynamic_library
 )
 
-file(GLOB_RECURSE MY_PUBLIC_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/*.h*)
-set_target_properties(hwinterface_dynamic_library PROPERTIES PUBLIC_HEADER "${MY_PUBLIC_HEADERS}")
-install(TARGETS hwinterface_dynamic_library PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/novatel/edie)
+install(TARGETS hwinterface_dynamic_library)
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/novatel/edie)

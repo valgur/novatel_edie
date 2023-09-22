@@ -26,6 +26,8 @@
 
 #include "novatel_framer.hpp"
 
+#include <climits>
+
 using namespace novatel::edie;
 using namespace novatel::edie::oem;
 
