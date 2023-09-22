@@ -22,4 +22,4 @@ find_package(spdlog REQUIRED CONFIG)
 target_link_libraries(objcommon PUBLIC nlohmann_json::nlohmann_json spdlog::spdlog)
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/novatel/edie)
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
