@@ -14,4 +14,7 @@ target_link_libraries(NovatelTest PUBLIC
     GTest::GTest GTest::Main
 )
 
-add_test(NovatelTest COMMAND NovatelTest)
+add_test(
+    NAME NovatelTest
+    COMMAND NovatelTest ${CMAKE_SOURCE_DIR}/database/messages_public.json ${CMAKE_CURRENT_LIST_DIR}/resources
+)
