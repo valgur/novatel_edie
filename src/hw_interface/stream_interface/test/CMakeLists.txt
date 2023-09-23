@@ -14,4 +14,7 @@ target_link_libraries(StreamInterfaceTest PUBLIC
     GTest::GTest GTest::Main
 )
 
-add_test(StreamInterfaceTest COMMAND StreamInterfaceTest)
+add_test(
+    NAME StreamInterfaceTest
+    COMMAND StreamInterfaceTest ${CMAKE_CURRENT_LIST_DIR}/resources
+)
