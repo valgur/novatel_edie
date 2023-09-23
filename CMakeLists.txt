@@ -88,6 +88,7 @@ if(Git_FOUND)
 endif()
 
 if(BUILD_TESTS)
+    enable_testing()
     add_subdirectory(src/decoders/common/test)
     add_subdirectory(src/decoders/novatel/test)
     add_subdirectory(src/hw_interface/stream_interface/test)

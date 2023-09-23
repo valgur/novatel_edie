@@ -14,4 +14,4 @@ target_link_libraries(CommonTest PUBLIC
     GTest::GTest GTest::Main
 )
 
-add_test(CommonTest COMMAND CommonTest)
+add_test(NAME CommonTest COMMAND CommonTest)
