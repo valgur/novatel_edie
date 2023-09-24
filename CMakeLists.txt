@@ -6,6 +6,7 @@ project(EDIE VERSION 3.2.24 LANGUAGES CXX)
 option(BUILD_TESTS "Build tests" ON)
 option(BUILD_EXAMPLES "Build examples" ON)
 option(BUILD_DYNAMIC_LIBS "Build additional C-style *_dynamic_library versions of the libraries" ON)
+option(BUILD_PYTHON "Build Python bindings" OFF)
 option(COVERAGE "Coverage" OFF)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -103,6 +104,10 @@ endif()
 
 if(BUILD_EXAMPLES)
     add_subdirectory(examples)
+endif()
+
+if(BUILD_PYTHON)
+    add_subdirectory(python)
 endif()
 
 install(FILES database/messages_public.json
