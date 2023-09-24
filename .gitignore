@@ -11,4 +11,6 @@ version.h
 dist/
 venv/
 *.egg-info
-__pycache__
+__pycache__/
+.pytest_cache/
+wheelhouse/
