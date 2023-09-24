@@ -5,6 +5,8 @@
 #include "hw_interface/stream_interface/outputfilestream.hpp"
 
 #include <nanobind/nanobind.h>
+#include <nanobind/stl/string.h>
+#include "u32string.h"
 
 #include <vector>
 
