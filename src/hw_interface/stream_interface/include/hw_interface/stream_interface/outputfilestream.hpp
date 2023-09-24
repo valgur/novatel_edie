@@ -76,7 +76,7 @@ public:
     */
    FileStream* pOutFileStream;
 
-   /*! \fn uint32_t WriteData(char* cData, uint32_t uiSize)
+   /*! \fn uint32_t WriteData(const char* cData, uint32_t uiSize)
     *  \brief Write data to output file.
     *  \param [in] cData Buffer pointer.
     *  \param [in] uiSize size of the buffer.
@@ -84,7 +84,7 @@ public:
     *  \remark Set Split type and write data to output files. If split type was not set,
     *  Then writing can be done to only one file.
     */
-   uint32_t WriteData(char* cData, uint32_t uiSize);
+   uint32_t WriteData(const char* cData, uint32_t uiSize);
 
 private:
 	/*! Private Copy Constructor

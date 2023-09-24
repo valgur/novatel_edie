@@ -330,7 +330,7 @@ template<typename T>
 void JsonReader::RemoveMessage(T iMsgId_, bool bGenerateMappings_)
 {
    std::vector<novatel::edie::MessageDefinition>::iterator iTer;
-   
+
    iTer = GetMessageIt(iMsgId_);
 
    if (iTer != vMessageDefinitions.end())

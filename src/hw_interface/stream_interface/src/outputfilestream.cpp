@@ -48,7 +48,7 @@ OutputFileStream::~OutputFileStream()
 }
 
 // ---------------------------------------------------------
-uint32_t OutputFileStream::WriteData(char* cData, uint32_t uiSize)
+uint32_t OutputFileStream::WriteData(const char* cData, uint32_t uiSize)
 {
    return pOutFileStream->WriteFile(cData, uiSize);
 }

@@ -138,7 +138,7 @@ public:
     */
    void SelectWCTimeFile(novatel::edie::TIME_STATUS eStatus_, uint16_t usWeek_, double dMilliseconds_);
 
-   /*! \fn uint32_t WriteData(char* pcData_, uint32_t uiDataLength_, std::string strMsgName_, uint32_t uiSize_, novatel::edie::oem::TIME_STATUS eStatus_, uint16_t usWeek_, DOUBLE dMilliseconds_)
+   /*! \fn uint32_t WriteData(const char* pcData_, uint32_t uiDataLength_, std::string strMsgName_, uint32_t uiSize_, novatel::edie::oem::TIME_STATUS eStatus_, uint16_t usWeek_, DOUBLE dMilliseconds_)
     *  \param [in] char* pcData_
     *  \param [in] uint32_t uiDataLength_
     *  \param [in] std::string strMsgName_
@@ -151,7 +151,7 @@ public:
     *  Then writing can be done to only one file.
     */
    uint32_t WriteData(
-      char* pcData_,
+      const char* pcData_,
       uint32_t uiDataLength_,
       std::string strMsgName_,
       uint32_t uiSize_,
@@ -167,7 +167,7 @@ public:
     *  \remark Set Split type and write data to output files. If split type was not set,
     *  Then writing can be done to only one file.
     */
-   uint32_t WriteData(char* pcData_, uint32_t uiDataLength_);
+   uint32_t WriteData(const char* pcData_, uint32_t uiDataLength_);
 
    /*! \fn void SelectFileStream(std::string stFileName)
     *  \brief Sets the output file in which to be decoded ouput will be written.

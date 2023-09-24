@@ -359,7 +359,7 @@ void MultiOutputFileStream::SelectTimeFile(novatel::edie::TIME_STATUS eStatus_, 
 
 // ---------------------------------------------------------
 uint32_t MultiOutputFileStream::WriteData(
-   char* pcData_,
+   const char* pcData_,
    uint32_t uiDataLength_,
    std::string strMsgName_,
    uint32_t uiSize_,
@@ -399,7 +399,7 @@ uint32_t MultiOutputFileStream::WriteData(
 }
 
 // ---------------------------------------------------------
-uint32_t MultiOutputFileStream::WriteData(char* pcData_, uint32_t uiDataLength_)
+uint32_t MultiOutputFileStream::WriteData(const char* pcData_, uint32_t uiDataLength_)
 {
    return pLocalFileStream ? pLocalFileStream->WriteFile(pcData_, uiDataLength_) : 0;
 }
