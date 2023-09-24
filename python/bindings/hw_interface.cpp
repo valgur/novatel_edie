@@ -1,12 +1,14 @@
 #include <vector>
 
 #include <nanobind/nanobind.h>
+#include <nanobind/stl/string.h>
 
 #include "edie/hw_interface/stream_interface/common.hpp"
 #include "edie/hw_interface/stream_interface/filestream.hpp"
 #include "edie/hw_interface/stream_interface/inputfilestream.hpp"
 #include "edie/hw_interface/stream_interface/multioutputfilestream.hpp"
 #include "edie/hw_interface/stream_interface/outputfilestream.hpp"
+#include "u32string.h"
 
 namespace nb = nanobind;
 using namespace nb::literals;

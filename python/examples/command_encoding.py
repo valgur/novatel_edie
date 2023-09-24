@@ -24,9 +24,9 @@
 ########################################################################
 #                            DESCRIPTION
 #
-# \file command_encoding.py
-# \brief Demonstrate how to use the Python source for OEM command
-# encoding from Abbreviated ASCII to ASCII/BINARY.
+# ! \file command_encoding.py
+# ! \brief Demonstrate how to use the Python source for OEM command
+# ! encoding from Abbreviated ASCII to ASCII/BINARY.
 ########################################################################
 
 import sys

@@ -21,7 +21,14 @@ nanobind_add_module(hw_interface_bindings STABLE_ABI NB_STATIC LTO
 )
 nanobind_add_module(decoders_bindings STABLE_ABI NB_STATIC LTO
     ${CMAKE_CURRENT_SOURCE_DIR}/bindings/decoders.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/bindings/common/common.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/bindings/common/json_reader.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/bindings/novatel/commander.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/bindings/novatel/encoder.cpp
 )
+
+target_include_directories(hw_interface_bindings PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/bindings)
+target_include_directories(decoders_bindings PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/bindings)
 
 target_link_libraries(hw_interface_bindings PRIVATE EDIE::stream_interface EDIE::novatel)
 target_link_libraries(decoders_bindings PRIVATE EDIE::stream_interface EDIE::novatel)
