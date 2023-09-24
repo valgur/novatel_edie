@@ -67,6 +67,8 @@ struct ReadDataStructure
         uiDataSize = 0;
         cData = NULL;
     }
+
+    ReadDataStructure(uint32_t uiDataSize, char* cData) : uiDataSize(uiDataSize), cData(cData) {}
 };
 
 /*! A Structure
