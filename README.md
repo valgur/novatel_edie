@@ -132,7 +132,7 @@ The FileParser class provides an interface for parsing GPS files.
 
 ```cpp
 #include <iostream>
-#include <novatel/edie/decoders/fileparser.hpp>
+#include <edie/decoders/novatel/fileparser.hpp>
 
 #include "edie/decoders/novatel/file_parser.hpp"
 
