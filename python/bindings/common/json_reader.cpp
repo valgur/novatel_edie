@@ -1,4 +1,4 @@
-#include "edie/decoders/common/jsonreader.hpp"
+#include "edie/decoders/common/json_reader.hpp"
 
 #include "bindings_core.h"
 
@@ -26,6 +26,6 @@ void init_common_json_reader(nb::module_& m)
         .def("parse_json", &JsonReader::ParseJson, "json_data"_a)
         .def("get_msg_def", nb::overload_cast<const std::string&>(&JsonReader::GetMsgDef, nb::const_), "msg_name"_a)
         .def("get_msg_def", nb::overload_cast<int32_t>(&JsonReader::GetMsgDef, nb::const_), "msg_id"_a)
-        .def("get_enum_def", &JsonReader::GetEnumDefID, "enum_id"_a)
+        .def("get_enum_def", &JsonReader::GetEnumDefId, "enum_id"_a)
         .def("get_enum_def", &JsonReader::GetEnumDefName, "enum_name"_a);
 }

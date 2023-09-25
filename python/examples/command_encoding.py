@@ -24,9 +24,9 @@
 ########################################################################
 #                            DESCRIPTION
 #
-# ! \file command_encoding.py
-# ! \brief Demonstrate how to use the Python source for OEM command
-# ! encoding from Abbreviated ASCII to ASCII/BINARY.
+# \file command_encoding.py
+# \brief Demonstrate how to use the Python source for OEM command
+# encoding from Abbreviated ASCII to ASCII/BINARY.
 ########################################################################
 
 import sys
@@ -34,12 +34,14 @@ import timeit
 from pathlib import Path
 
 import novatel_edie as ne
-import spdlog as spd
+from novatel_edie import Logger, LogLevel
 
 
 def main():
-    logger = spd.ConsoleLogger("CommandEncoder")
-    logger.set_level(spd.LogLevel.DEBUG)
+    logger = Logger().register_logger("CommandEncoder")
+    logger.set_level(LogLevel.DEBUG)
+    Logger.add_console_logging(logger)
+    Logger.add_rotating_file_logger(logger)
 
     if len(sys.argv) < 3:
         logger.error("Format: command_encoding <output format> <abbreviated ascii command>\n")
@@ -48,7 +50,7 @@ def main():
 
     encode_format_str = sys.argv[1]
     encode_format = ne.string_to_encode_format(encode_format_str)
-    if encode_format == ne.ENCODEFORMAT.UNSPECIFIED:
+    if encode_format == ne.ENCODE_FORMAT.UNSPECIFIED:
         logger.error("Unsupported output format. Choose from:\n\tASCII\n\tBINARY")
         exit(1)
 
@@ -58,7 +60,7 @@ def main():
     t1 = timeit.default_timer()
     logger.info(f"Done in {(t1 - t0) * 1e3:.0f} ms")
 
-    logger.info(f'Converting "{sys.argv[2]}" to {encode_format}')
+    logger.info(f'Converting "{sys.argv[2]}" to {encode_format_str}')
     command = sys.argv[2]
     commander = ne.Commander(json_db)
     encoded_command, status = commander.encode(command, encode_format)
