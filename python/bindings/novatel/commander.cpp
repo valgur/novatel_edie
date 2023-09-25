@@ -10,9 +10,7 @@ void init_novatel_commander(nb::module_& m)
    nb::class_<oem::Commander>(m, "Commander")
       .def(nb::init<JsonReader*>(), "json_db"_a)
       .def("open", &oem::Commander::LoadJsonDb, "json_db"_a)
-//      .def_prop_ro("logger", &oem::Commander::GetLogger, "json_db"_a)
-      .def("set_logger_level", &oem::Commander::SetLoggerLevel, "level"_a)
-      .def_static("shutdown_logger", &oem::Commander::ShutdownLogger)
+      .def_prop_ro("logger", &oem::Commander::GetLogger)
       .def("encode", [](oem::Commander& commander, std::string command, ENCODEFORMAT format) {
          char buffer[MESSAGE_SIZE_MAX];
          uint32_t buf_size = MESSAGE_SIZE_MAX;
