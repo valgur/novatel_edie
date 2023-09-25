@@ -1843,7 +1843,7 @@ TEST_F(DecodeEncodeTest, JSON_LOG_ROUNDTRIP_VERSION)
 // -------------------------------------------------------------------------------------------------------
 // Edge Case Log Decode/Encode Unit Tests
 // -------------------------------------------------------------------------------------------------------
-TEST_F(DecodeEncodeTest, ENCODEFORMAT_UNSPECIFIED)
+TEST_F(DecodeEncodeTest, ENCODE_FORMAT_UNSPECIFIED)
 {
    MetaDataStruct stMetaData;
    MessageDataStruct stMessageData;
