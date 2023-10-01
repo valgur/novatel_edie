@@ -57,8 +57,8 @@ int main(int argc, char* argv[])
 
     if (argc < 3)
     {
-        logger->error("Format: command_encoding.exe <path to Json DB> <output format> <abbreviated ascii command>\n");
-        logger->error("Example: command_encoding.exe database/messages_public.json ASCII \"RTKTIMEOUT 30\"\n");
+        logger->error("Format: command_encoding <path to Json DB> <output format> <abbreviated ascii command>\n");
+        logger->error("Example: command_encoding database/messages_public.json ASCII \"RTKTIMEOUT 30\"\n");
         return 1;
     }
 
