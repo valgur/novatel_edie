@@ -100,9 +100,9 @@ void FileParser::SetLoggerLevel(spdlog::level::level_enum eLevel_) { pclMyLogger
 void FileParser::ShutdownLogger() { Logger::Shutdown(); }
 
 // -------------------------------------------------------------------------------------------------------
-void FileParser::SetIgnoreAbbreviatedAsciiResponses(bool bIgnoreAbbreivatedAsciiResponses_)
+void FileParser::SetIgnoreAbbreviatedAsciiResponses(bool bIgnoreAbbreviatedAsciiResponses_)
 {
-    clMyParser.SetIgnoreAbbreviatedAsciiResponses(bIgnoreAbbreivatedAsciiResponses_);
+    clMyParser.SetIgnoreAbbreviatedAsciiResponses(bIgnoreAbbreviatedAsciiResponses_);
 }
 
 // -------------------------------------------------------------------------------------------------------
