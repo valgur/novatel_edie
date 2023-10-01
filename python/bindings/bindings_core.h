@@ -7,3 +7,4 @@
 #include <nanobind/stl/string.h>
 #include <nanobind/stl/string_view.h>
 #include "u32string.h"
+#include "decoder_exception.hpp"
