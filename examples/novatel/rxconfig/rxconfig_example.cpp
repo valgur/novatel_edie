@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
     if (argc < 3)
     {
         pclLogger->error("ERROR: Need to specify a JSON message definitions DB, an input file and an output format.");
-        pclLogger->error("Example: converter.exe <path to Json DB> <path to input file> <output format>");
+        pclLogger->error("Example: converter <path to Json DB> <path to input file> <output format>");
         return 1;
     }
     if (argc == 4) { sEncodeFormat = argv[3]; }
