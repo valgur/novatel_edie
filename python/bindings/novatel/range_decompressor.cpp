@@ -15,8 +15,6 @@ void init_novatel_range_decompressor(nb::module_& m)
       .def("decompress", [](oem::RangeDecompressor& self, nb::bytes data, oem::MetaDataStruct& metadata,
                             ENCODEFORMAT encode_format) {
          STATUS status = self.Decompress((unsigned char*) data.c_str(), data.size(), metadata, encode_format);
-         if (status != STATUS::SUCCESS)
-            throw DecoderException(status);
-         return metadata;
+         return nb::make_tuple(status, metadata);
       }, "data"_a, "metadata"_a, "encode_format"_a = ENCODEFORMAT::UNSPECIFIED);
 }
