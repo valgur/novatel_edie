@@ -127,9 +127,9 @@ FileParser::ShutdownLogger()
 
 // -------------------------------------------------------------------------------------------------------
 void
-FileParser::SetIgnoreAbbreviatedAsciiResponses(bool bIgnoreAbbreivatedAsciiResponses_)
+FileParser::SetIgnoreAbbreviatedAsciiResponses(bool bIgnoreAbbreviatedAsciiResponses_)
 {
-   clMyParser.SetIgnoreAbbreviatedAsciiResponses(bIgnoreAbbreivatedAsciiResponses_);
+   clMyParser.SetIgnoreAbbreviatedAsciiResponses(bIgnoreAbbreviatedAsciiResponses_);
 }
 
 // -------------------------------------------------------------------------------------------------------

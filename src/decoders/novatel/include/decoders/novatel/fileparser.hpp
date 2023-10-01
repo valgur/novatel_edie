@@ -138,11 +138,11 @@ public:
    //----------------------------------------------------------------------------
    //! \brief Set the abbreviated ASCII response option.
    //
-   //! \param [in] bIgnoreAbbreivatedAsciiResponses_ true to ignore abbreivated
+   //! \param [in] bIgnoreAbbreviatedAsciiResponses_ true to ignore abbreviated
    //! ASCII responses.
    //----------------------------------------------------------------------------
    void
-   SetIgnoreAbbreviatedAsciiResponses(bool bIgnoreAbbreivatedAsciiResponses_);
+   SetIgnoreAbbreviatedAsciiResponses(bool bIgnoreAbbreviatedAsciiResponses_);
 
    //----------------------------------------------------------------------------
    //! \brief Get the abbreviated ASCII response option.
