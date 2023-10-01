@@ -28,8 +28,7 @@ void init_novatel_fileparser(nb::module_& m)
                  oem::MessageDataStruct stMessageData;
                  oem::MetaDataStruct stMetaData;
                  STATUS status = self.Read(stMessageData, stMetaData);
-                 if (status != STATUS::SUCCESS) throw DecoderException(status);
-                 return std::make_tuple(stMessageData, stMetaData);
+                 return std::make_tuple(status, stMessageData, stMetaData);
              })
         .def("reset", &oem::FileParser::Reset)
         .def(

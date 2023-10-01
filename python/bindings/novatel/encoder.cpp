@@ -14,13 +14,13 @@ void init_novatel_encoder(nb::module_& m)
         .def_prop_ro("logger", &oem::Encoder::GetLogger)
         .def(
             "encode",
-            [](oem::Encoder& encoder, oem::IntermediateHeader& header, oem::IntermediateMessage& message, oem::MessageDataStruct& message_data,
-               oem::MetaDataStruct& metadata, ENCODEFORMAT format) {
+            [](oem::Encoder& encoder, oem::IntermediateHeader& header, oem::IntermediateMessage& message, oem::MetaDataStruct& metadata,
+               ENCODEFORMAT format) {
                 char buffer[MESSAGE_SIZE_MAX];
                 uint32_t buf_size = MESSAGE_SIZE_MAX;
+                oem::MessageDataStruct message_data;
                 STATUS status = encoder.Encode((unsigned char**)&buffer, buf_size, header, message, message_data, metadata, format);
-                if (status != STATUS::SUCCESS) throw DecoderException(status);
-                return nb::bytes(buffer, buf_size);
+                return nb::make_tuple(status, nb::bytes(buffer, buf_size), message_data);
             },
-            "header"_a, "message"_a, "message_data"_a, "metadata"_a, "encode_format"_a);
+            "header"_a, "message"_a, "metadata"_a, "encode_format"_a);
 }
