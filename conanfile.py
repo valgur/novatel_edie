@@ -56,6 +56,7 @@ class NovatelEdieConan(ConanFile):
     def requirements(self):
         self.requires("nlohmann_json/3.11.2", transitive_headers=True)
         self.requires("spdlog/1.12.0", transitive_headers=True)
+        self.requires("gegles-spdlog_setup/1.1.0", transitive_headers=True)
 
     def validate(self):
         if self.settings.compiler.cppstd:

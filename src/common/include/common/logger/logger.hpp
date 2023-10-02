@@ -44,10 +44,10 @@
 #include <iostream>
 #include <map>
 
-#include "common/spdlog_setup/conf.h"
-#include "spdlog/sinks/rotating_file_sink.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
-#include "spdlog/spdlog.h"
+#include <spdlog/sinks/rotating_file_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/spdlog.h>
+#include <spdlog_setup/spdlog_setup.hpp>
 
 // Typically, we would create a static instance of the Logger,
 // to synchronize registration of Loggers, in a thread-safe application,
