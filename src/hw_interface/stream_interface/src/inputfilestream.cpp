@@ -125,5 +125,5 @@ std::string InputFileStream::GetFileExtension()
 // ---------------------------------------------------------
 std::string InputFileStream::GetFileName()
 {
-   return stFileName;
+   return pInFileStream->GetFileName();
 }
