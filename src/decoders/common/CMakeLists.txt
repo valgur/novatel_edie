@@ -20,7 +20,11 @@ target_include_directories(objcommon
 find_package(nlohmann_json REQUIRED CONFIG)
 find_package(spdlog REQUIRED CONFIG)
 find_package(spdlog_setup REQUIRED CONFIG)
-target_link_libraries(objcommon PUBLIC nlohmann_json::nlohmann_json spdlog::spdlog spdlog_setup::spdlog_setup)
+target_link_libraries(objcommon PUBLIC
+    nlohmann_json::nlohmann_json
+    spdlog::spdlog
+    spdlog_setup::spdlog_setup
+)
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
