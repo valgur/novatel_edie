@@ -101,4 +101,4 @@ std::string InputFileStream::GetFileExtension()
 }
 
 // ---------------------------------------------------------
-std::string InputFileStream::GetFileName() { return stFileName; }
+std::string InputFileStream::GetFileName() { return pInFileStream->GetFileName(); }
