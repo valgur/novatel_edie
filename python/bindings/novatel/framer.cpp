@@ -1,5 +1,5 @@
 #include "decoders/novatel/framer.hpp"
-#include "bindings_core.h"
+#include "bindings_core.hpp"
 
 namespace nb = nanobind;
 using namespace nb::literals;

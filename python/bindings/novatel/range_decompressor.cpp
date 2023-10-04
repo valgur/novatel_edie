@@ -1,5 +1,5 @@
 #include "decoders/novatel/rangecmp/range_decompressor.hpp"
-#include "bindings_core.h"
+#include "bindings_core.hpp"
 #include <cstring>
 
 namespace nb = nanobind;
