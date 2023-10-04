@@ -1,6 +1,6 @@
 #include "decoders/novatel/fileparser.hpp"
 
-#include "bindings_core.h"
+#include "bindings_core.hpp"
 
 namespace nb = nanobind;
 using namespace nb::literals;

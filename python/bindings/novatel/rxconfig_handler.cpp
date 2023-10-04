@@ -1,6 +1,7 @@
 #include "decoders/novatel/rxconfig/rxconfig_handler.hpp"
 
-#include "bindings_core.h"
+#include "bindings_core.hpp"
+#include "py_message_data.hpp"
 
 namespace nb = nanobind;
 using namespace nb::literals;
@@ -16,10 +17,11 @@ void init_novatel_rxconfig_handler(nb::module_& m)
         .def(
             "convert",
             [](oem::RxConfigHandler& self, ENCODEFORMAT encode_format) {
-                oem::MessageDataStruct stRxConfigMessageData, stEmbeddedMessageData;
-                oem::MetaDataStruct stRxConfigMetaData, stEmbeddedMetaData;
-                STATUS status = self.Convert(stRxConfigMessageData, stRxConfigMetaData, stEmbeddedMessageData, stEmbeddedMetaData, encode_format);
-                return nb::make_tuple(status, stRxConfigMessageData, stRxConfigMetaData, stEmbeddedMessageData, stEmbeddedMetaData);
+                oem::MessageDataStruct rx_config_message_data, embedded_message_data;
+                oem::MetaDataStruct rx_config_meta_data, embedded_meta_data;
+                STATUS status = self.Convert(rx_config_message_data, rx_config_meta_data, embedded_message_data, embedded_meta_data, encode_format);
+                return nb::make_tuple(status, oem::PyMessageData(rx_config_message_data), rx_config_meta_data,
+                                      oem::PyMessageData(embedded_message_data), embedded_meta_data);
             },
             "encode_format"_a)
         .def(
