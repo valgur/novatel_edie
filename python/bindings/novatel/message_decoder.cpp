@@ -1,6 +1,6 @@
 #include "edie/decoders/novatel/message_decoder.hpp"
 
-#include "bindings_core.h"
+#include "bindings_core.hpp"
 #include "edie/decoders/novatel/common.hpp"
 
 namespace nb = nanobind;
@@ -15,10 +15,10 @@ void init_novatel_message_decoder(nb::module_& m)
         .def_prop_ro("logger", &oem::MessageDecoder::GetLogger)
         .def(
             "decode",
-            [](oem::MessageDecoder& decoder, nb::bytes message, oem::MetaDataStruct& metadata) {
-                novatel::edie::IntermediateMessage intermediate_message;
-                STATUS status = decoder.Decode((unsigned char*)message.c_str(), intermediate_message, metadata);
-                return nb::make_tuple(status, intermediate_message);
+            [](oem::MessageDecoder& decoder, nb::bytes message_raw, oem::MetaDataStruct& metadata) {
+                novatel::edie::IntermediateMessage message;
+                STATUS status = decoder.Decode((unsigned char*)message_raw.c_str(), message, metadata);
+                return nb::make_tuple(status, message);
             },
-            "header"_a, "metadata"_a);
+            "encoded_message"_a, "metadata"_a);
 }

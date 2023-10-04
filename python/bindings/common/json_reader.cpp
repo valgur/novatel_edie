@@ -1,6 +1,6 @@
 #include "edie/decoders/common/json_reader.hpp"
 
-#include "bindings_core.h"
+#include "bindings_core.hpp"
 
 namespace nb = nanobind;
 using namespace nb::literals;
