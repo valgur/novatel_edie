@@ -11,9 +11,9 @@ void init_novatel_message_decoder(nb::module_& m)
       .def(nb::init<JsonReader*>(), "json_db"_a)
       .def("load_json_db", &oem::MessageDecoder::LoadJsonDb, "json_db"_a)
       .def_prop_ro("logger", &oem::MessageDecoder::GetLogger)
-      .def("decode", [](oem::MessageDecoder& decoder, nb::bytes message, oem::MetaDataStruct& metadata) {
-         oem::IntermediateMessage intermediate_message;
-         STATUS status = decoder.Decode((unsigned char*) message.c_str(), intermediate_message, metadata);
-         return nb::make_tuple(status, intermediate_message);
-      }, "header"_a, "metadata"_a);
+      .def("decode", [](oem::MessageDecoder& decoder, nb::bytes message_raw, oem::MetaDataStruct& metadata) {
+         oem::IntermediateMessage message;
+         STATUS status = decoder.Decode((unsigned char*) message_raw.c_str(), message, metadata);
+         return nb::make_tuple(status, message);
+      }, "encoded_message"_a, "metadata"_a);
 }
