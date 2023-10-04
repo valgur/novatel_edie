@@ -1,6 +1,6 @@
 #include "edie/decoders/common/common.hpp"
 
-#include "bindings_core.h"
+#include "bindings_core.hpp"
 #include "decoder_exception.hpp"
 #include "edie/version.h"
 
