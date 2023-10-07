@@ -60,6 +60,7 @@ struct FieldContainer;
 
 #define novatel_types bool, int8_t, int16_t, int32_t, int64_t, uint8_t, uint16_t, uint32_t, uint64_t, float, double, std::string
 #define container_types novatel_types, std::vector<std::variant<novatel_types> >, std::vector<FieldContainer>, novatel::edie::oem::IntermediateHeader
+using FieldValueVariant = std::variant<container_types>;
 
 //-----------------------------------------------------------------------
 //! \struct FieldContainer
@@ -67,7 +68,7 @@ struct FieldContainer;
 //-----------------------------------------------------------------------
 struct FieldContainer
 {
-   std::variant<container_types> field_value;
+   FieldValueVariant field_value;
    const novatel::edie::BaseField* field_def;
 
    template <class T>
@@ -75,10 +76,10 @@ struct FieldContainer
       : field_value(field_value_), field_def(field_def_)
    {}
 
-   FieldContainer([[maybe_unused]] const FieldContainer& obj)
-   {
-      throw std::runtime_error("FieldContainer: I'm being copied. Implement a proper copy constructor.");
-   }
+//   FieldContainer([[maybe_unused]] const FieldContainer& obj)
+//   {
+//      throw std::runtime_error("FieldContainer: I'm being copied. Implement a proper copy constructor.");
+//   }
 };
 
 typedef std::vector<FieldContainer> IntermediateMessage;
