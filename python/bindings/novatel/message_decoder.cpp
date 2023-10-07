@@ -44,7 +44,7 @@ struct PyIntermediateMessage
     static std::string repr(nb::handle_t<novatel::edie::IntermediateMessage> self)
     {
         std::stringstream repr;
-        repr << "IntermediateMessage(";
+        repr << "Message(";
         bool first = true;
         const auto& message = nb::cast<novatel::edie::IntermediateMessage&>(self);
         for (const auto& field : message)
@@ -60,7 +60,7 @@ struct PyIntermediateMessage
 
 void init_novatel_message_decoder(nb::module_& m)
 {
-    nb::bind_vector<novatel::edie::IntermediateMessage>(m, "IntermediateMessage")
+    nb::bind_vector<novatel::edie::IntermediateMessage>(m, "Message")
         .def_prop_ro("values", &PyIntermediateMessage::values)
         .def_prop_ro("fields", &PyIntermediateMessage::fields)
         .def("__getattr__", &PyIntermediateMessage::get, "field_name"_a)
@@ -81,10 +81,10 @@ void init_novatel_message_decoder(nb::module_& m)
         .def_prop_ro("logger", &oem::MessageDecoder::GetLogger)
         .def(
             "decode",
-            [](oem::MessageDecoder& decoder, nb::bytes message_raw, oem::MetaDataStruct& metadata) {
+            [](oem::MessageDecoder& decoder, nb::bytes mesage_body, oem::MetaDataStruct& metadata) {
                 novatel::edie::IntermediateMessage message;
-                STATUS status = decoder.Decode((unsigned char*)message_raw.c_str(), message, metadata);
+                STATUS status = decoder.Decode((unsigned char*)mesage_body.c_str(), message, metadata);
                 return nb::make_tuple(status, message);
             },
-            "encoded_message"_a, "metadata"_a);
+            "mesage_body"_a, "metadata"_a);
 }
