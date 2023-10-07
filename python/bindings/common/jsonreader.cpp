@@ -45,7 +45,8 @@ void init_common_jsonreader(nb::module_& m)
         .value("R", CONVERSION_STRING::R, "RXCONFIG")
         .value("m", CONVERSION_STRING::m, "MessageName")
         .value("T", CONVERSION_STRING::T, "GPSTime value")
-        .value("UNKNOWN", CONVERSION_STRING::UNKNOWN);
+        .value("UNKNOWN", CONVERSION_STRING::UNKNOWN)
+        .def("__str__", [](nb::handle self) { return nb::str("%") + getattr(self, "__name__"); });
 
     m.attr("str_to_CONVERSION_STRING") = ConversionStringEnumLookup;
 
@@ -67,7 +68,8 @@ void init_common_jsonreader(nb::module_& m)
         .value("EMBEDDED_HEADER", DATA_TYPE_NAME::EMBEDDED_HEADER)
         .value("EMBEDDED_BODY", DATA_TYPE_NAME::EMBEDDED_BODY)
         .value("SATELLITEID", DATA_TYPE_NAME::SATELLITEID)
-        .value("UNKNOWN", DATA_TYPE_NAME::UNKNOWN);
+        .value("UNKNOWN", DATA_TYPE_NAME::UNKNOWN)
+        .def("__str__", [](nb::handle self) { return getattr(self, "__name__"); });
 
     m.attr("str_to_DATA_TYPE") = DataTypeEnumLookup;
 
@@ -83,7 +85,8 @@ void init_common_jsonreader(nb::module_& m)
         .value("RESPONSE_STR", FIELD_TYPE::RESPONSE_STR)
         .value("RXCONFIG_HEADER", FIELD_TYPE::RXCONFIG_HEADER)
         .value("RXCONFIG_BODY", FIELD_TYPE::RXCONFIG_BODY)
-        .value("UNKNOWN", FIELD_TYPE::UNKNOWN);
+        .value("UNKNOWN", FIELD_TYPE::UNKNOWN)
+        .def("__str__", [](nb::handle self) { return getattr(self, "__name__"); });
 
     m.attr("str_to_FIELD_TYPE") = FieldTypeEnumLookup;
 
@@ -133,7 +136,6 @@ void init_common_jsonreader(nb::module_& m)
             ss << field.conversionAfterPoint << ")";
             return ss.str();
         });
-    ;
 
     nb::class_<EnumField, BaseField>(m, "EnumField", "Struct containing elements of enum fields in the UI DB")
         .def(nb::init<>())
