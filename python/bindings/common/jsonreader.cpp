@@ -43,7 +43,8 @@ void init_common_jsonreader(nb::module_& m)
       .value("R", CONVERSION_STRING::R, "RXCONFIG")
       .value("m", CONVERSION_STRING::m, "MessageName")
       .value("T", CONVERSION_STRING::T, "GPSTime value")
-      .value("UNKNOWN", CONVERSION_STRING::UNKNOWN);
+      .value("UNKNOWN", CONVERSION_STRING::UNKNOWN)
+      .def("__str__", [](nb::handle self) { return nb::str("%") + getattr(self, "__name__"); });
 
    m.attr("str_to_CONVERSION_STRING") = ConversionStringEnumLookup;
 
@@ -65,7 +66,8 @@ void init_common_jsonreader(nb::module_& m)
       .value("EMBEDDED_HEADER", DATA_TYPE_NAME::EMBEDDED_HEADER)
       .value("EMBEDDED_BODY", DATA_TYPE_NAME::EMBEDDED_BODY)
       .value("SATELLITEID", DATA_TYPE_NAME::SATELLITEID)
-      .value("UNKNOWN", DATA_TYPE_NAME::UNKNOWN);
+      .value("UNKNOWN", DATA_TYPE_NAME::UNKNOWN)
+      .def("__str__", [](nb::handle self) { return getattr(self, "__name__"); });
 
    m.attr("str_to_DATA_TYPE") = DataTypeEnumLookup;
 
@@ -81,7 +83,8 @@ void init_common_jsonreader(nb::module_& m)
       .value("RESPONSE_STR", FIELD_TYPE::RESPONSE_STR)
       .value("RXCONFIG_HEADER", FIELD_TYPE::RXCONFIG_HEADER)
       .value("RXCONFIG_BODY", FIELD_TYPE::RXCONFIG_BODY)
-      .value("UNKNOWN", FIELD_TYPE::UNKNOWN);
+      .value("UNKNOWN", FIELD_TYPE::UNKNOWN)
+      .def("__str__", [](nb::handle self) { return getattr(self, "__name__"); });
 
    m.attr("str_to_FIELD_TYPE") = FieldTypeEnumLookup;
 
@@ -103,7 +106,8 @@ void init_common_jsonreader(nb::module_& m)
       .def_rw("length", &BaseDataType::length)
       .def_rw("description", &BaseDataType::description);
 
-   nb::class_<SimpleDataType, BaseDataType>(m, "SimpleDataType", "Struct containing elements of simple data type fields in the UI DB")
+   nb::class_<SimpleDataType, BaseDataType>(m, "SimpleDataType",
+                                            "Struct containing elements of simple data type fields in the UI DB")
       .def(nb::init<>())
       .def_rw("enums", &SimpleDataType::enums);
 
@@ -119,7 +123,8 @@ void init_common_jsonreader(nb::module_& m)
       .def_rw("data_type", &BaseField::dataType)
       .def("clone", &BaseField::clone)
       .def("set_conversion", &BaseField::setConversion, "conversion"_a)
-      .def("parse_conversion", &BaseField::parseConversion, "str_stripped_conversion_string"_a, "before_point"_a, "after_point"_a)
+      .def("parse_conversion", &BaseField::parseConversion,
+           "str_stripped_conversion_string"_a, "before_point"_a, "after_point"_a)
       .def("__repr__", [](const BaseField& field) {
          std::stringstream ss;
          ss << "BaseField(" << field.name << ", ";
@@ -131,7 +136,6 @@ void init_common_jsonreader(nb::module_& m)
          ss << field.conversionAfterPoint << ")";
          return ss.str();
       });
-      ;
 
    nb::class_<EnumField, BaseField>(m, "EnumField", "Struct containing elements of enum fields in the UI DB")
       .def(nb::init<>())
@@ -145,14 +149,16 @@ void init_common_jsonreader(nb::module_& m)
       .def_rw("array_length", &ArrayField::arrayLength)
       .def("clone", &ArrayField::clone);
 
-   nb::class_<FieldArrayField, BaseField>(m, "FieldArrayField", "Struct containing elements of field array fields in the UI DB")
+   nb::class_<FieldArrayField, BaseField>(m, "FieldArrayField",
+                                          "Struct containing elements of field array fields in the UI DB")
       .def(nb::init<>())
       .def_rw("array_length", &FieldArrayField::arrayLength)
       .def_rw("field_size", &FieldArrayField::fieldSize)
       .def_rw("fields", &FieldArrayField::fields)
       .def("clone", &FieldArrayField::clone);
 
-   nb::class_<MessageDefinition>(m, "MessageDefinition", "Struct containing elements of message definitions in the UI DB")
+   nb::class_<MessageDefinition>(m, "MessageDefinition",
+                                 "Struct containing elements of message definitions in the UI DB")
       .def(nb::init<>())
       .def_rw("_id", &MessageDefinition::_id)
       .def_rw("log_id", &MessageDefinition::logID)
@@ -171,10 +177,10 @@ void init_common_jsonreader(nb::module_& m)
       .def("load_file", &JsonReader::LoadFile<std::u32string>, "file_path"_a)
       .def("append_messages", &JsonReader::AppendMessages<std::u32string>, "file_path"_a)
       .def("append_enumerations", &JsonReader::AppendEnumerations<std::u32string>, "file_path"_a)
-      .def("remove_message", &JsonReader::RemoveMessage<const std::string&>, "file_path"_a,
-           "generate_mappings"_a = true)
-      .def("remove_enumeration", &JsonReader::RemoveEnumeration<const std::string&>, "file_path"_a,
-           "generate_mappings"_a = true)
+      .def("remove_message", &JsonReader::RemoveMessage<const std::string&>,
+         "file_path"_a, "generate_mappings"_a = true)
+      .def("remove_enumeration", &JsonReader::RemoveEnumeration<const std::string&>,
+         "file_path"_a, "generate_mappings"_a = true)
       .def("parse_json", &JsonReader::ParseJson, "json_data"_a)
       .def("get_msg_def", nb::overload_cast<const std::string&>(&JsonReader::GetMsgDef), "msg_name"_a)
       .def("get_msg_def", nb::overload_cast<int32_t>(&JsonReader::GetMsgDef), "msg_id"_a)

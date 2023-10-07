@@ -43,7 +43,8 @@ void init_common_common(nb::module_& m)
       .value("STREAM_EMPTY", STATUS::STREAM_EMPTY, "The input stream is empty.")
       .value("UNSUPPORTED", STATUS::UNSUPPORTED, "An attempted operation is unsupported by this component.")
       .value("MALFORMED_INPUT", STATUS::MALFORMED_INPUT, "The input is recognizable, but has unexpected formatting.")
-      .value("DECOMPRESSION_FAILURE", STATUS::DECOMPRESSION_FAILURE, "The RANGECMPx log could not be decompressed.");
+      .value("DECOMPRESSION_FAILURE", STATUS::DECOMPRESSION_FAILURE, "The RANGECMPx log could not be decompressed.")
+      .def("__str__", [](nb::handle self) { return getattr(self, "__name__"); });
 
    nb::enum_<ENCODEFORMAT>(m, "ENCODEFORMAT")
       .value("FLATTENED_BINARY", ENCODEFORMAT::FLATTENED_BINARY,
@@ -54,7 +55,8 @@ void init_common_common(nb::module_& m)
       .value("BINARY", ENCODEFORMAT::BINARY,
              "NovAtel Binary. If the log was decoded from a SHORT/compressed format, it will be encoded to the respective SHORT/compressed format.")
       .value("JSON", ENCODEFORMAT::JSON, "A JSON object.  See HTML documentation for information on fields.")
-      .value("UNSPECIFIED", ENCODEFORMAT::UNSPECIFIED, "No encode format was specified.");
+      .value("UNSPECIFIED", ENCODEFORMAT::UNSPECIFIED, "No encode format was specified.")
+      .def("__str__", [](nb::handle self) { return getattr(self, "__name__"); });
 
    m.def("string_to_encode_format", &StringToEncodeFormat, "str"_a);
 
@@ -73,29 +75,34 @@ void init_common_common(nb::module_& m)
       .value("SATTIME", TIME_STATUS::SATTIME,
              "Time from satellite. Only used in logs containing satellite data such as ephemeris and almanac.")
       .value("EXTERN", TIME_STATUS::EXTERN, "Time source is external to the Receiver.")
-      .value("EXACT", TIME_STATUS::EXACT, "Time is exact.");
+      .value("EXACT", TIME_STATUS::EXACT, "Time is exact.")
+      .def("__str__", [](nb::handle self) { return getattr(self, "__name__"); });
 
    nb::enum_<MESSAGEFORMAT>(m, "MESSAGEFORMAT")
       .value("BINARY", MESSAGEFORMAT::BINARY)
       .value("ASCII", MESSAGEFORMAT::ASCII)
       .value("ABBREV", MESSAGEFORMAT::ABBREV)
-      .value("RSRVD", MESSAGEFORMAT::RSRVD);
+      .value("RSRVD", MESSAGEFORMAT::RSRVD)
+      .def("__str__", [](nb::handle self) { return getattr(self, "__name__"); });
 
    nb::enum_<MESSAGETYPEMASK>(m, "MESSAGETYPEMASK")
       .value("MEASSRC", MESSAGETYPEMASK::MEASSRC)
       .value("MSGFORMAT", MESSAGETYPEMASK::MSGFORMAT)
-      .value("RESPONSE", MESSAGETYPEMASK::RESPONSE);
+      .value("RESPONSE", MESSAGETYPEMASK::RESPONSE)
+      .def("__str__", [](nb::handle self) { return getattr(self, "__name__"); });
 
    nb::enum_<MESSAGEIDMASK>(m, "MESSAGEIDMASK")
       .value("LOGID", MESSAGEIDMASK::LOGID)
       .value("MEASSRC", MESSAGEIDMASK::MEASSRC)
       .value("MSGFORMAT", MESSAGEIDMASK::MSGFORMAT)
-      .value("RESPONSE", MESSAGEIDMASK::RESPONSE);
+      .value("RESPONSE", MESSAGEIDMASK::RESPONSE)
+      .def("__str__", [](nb::handle self) { return getattr(self, "__name__"); });
 
    nb::enum_<MEASUREMENT_SOURCE>(m, "MEASUREMENT_SOURCE")
       .value("PRIMARY", MEASUREMENT_SOURCE::PRIMARY)
       .value("SECONDARY", MEASUREMENT_SOURCE::SECONDARY)
-      .value("MAX", MEASUREMENT_SOURCE::MAX);
+      .value("MAX", MEASUREMENT_SOURCE::MAX)
+      .def("__str__", [](nb::handle self) { return getattr(self, "__name__"); });
 
    nb::class_<SATELLITEID>(m, "SATELLITEID")
       .def(nb::init<>())
