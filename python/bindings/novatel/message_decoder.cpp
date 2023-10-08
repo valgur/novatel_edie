@@ -67,6 +67,22 @@ struct PyIntermediateMessage
    }
 };
 
+class MessageDecoderWrapper : public oem::MessageDecoder
+{
+public:
+   [[nodiscard]] STATUS DecodeBinary_(const std::vector<BaseField*> MsgDefFields_, unsigned char** ppucLogBuf_,
+                                      oem::IntermediateMessage& vIntermediateFormat_, uint32_t uiMessageLength_)
+   {
+      return DecodeBinary(MsgDefFields_, ppucLogBuf_, vIntermediateFormat_, uiMessageLength_);
+   }
+
+   [[nodiscard]] STATUS DecodeAscii_(const std::vector<BaseField*> MsgDefFields_, char** ppcLogBuf_,
+                                     oem::IntermediateMessage& vIntermediateFormat_)
+   {
+      return DecodeAscii(MsgDefFields_, ppcLogBuf_, vIntermediateFormat_);
+   }
+};
+
 void init_novatel_message_decoder(nb::module_& m)
 {
    nb::bind_vector<oem::IntermediateMessage>(m, "Message")
@@ -78,6 +94,7 @@ void init_novatel_message_decoder(nb::module_& m)
       .def("__str__", &PyIntermediateMessage::repr);
 
    nb::class_<oem::FieldContainer>(m, "FieldContainer")
+      .def(nb::init<oem::FieldValueVariant, BaseField*>())
       .def_rw("value", &oem::FieldContainer::field_value)
       .def_rw("field_def", &oem::FieldContainer::field_def)
       .def("__repr__", [](const oem::FieldContainer& container) {
@@ -88,9 +105,26 @@ void init_novatel_message_decoder(nb::module_& m)
       .def(nb::init<JsonReader*>(), "json_db"_a)
       .def("load_json_db", &oem::MessageDecoder::LoadJsonDb, "json_db"_a)
       .def_prop_ro("logger", &oem::MessageDecoder::GetLogger)
-      .def("decode", [](oem::MessageDecoder& decoder, nb::bytes mesage_body, oem::MetaDataStruct& metadata) {
+      .def("decode", [](oem::MessageDecoder& decoder, nb::bytes message_body, oem::MetaDataStruct& metadata) {
          oem::IntermediateMessage message;
-         STATUS status = decoder.Decode((unsigned char*) mesage_body.c_str(), message, metadata);
+         STATUS status = decoder.Decode((unsigned char*) message_body.c_str(), message, metadata);
          return nb::make_tuple(status, message);
-      }, "mesage_body"_a, "metadata"_a);
+      }, "message_body"_a, "metadata"_a)
+         // For internal testing purposes only
+      .def("_decode_ascii", [](oem::MessageDecoder& decoder, const std::vector<BaseField*>& msg_def_fields,
+                               nb::bytes message_body) {
+         oem::IntermediateMessage message;
+         const char* data_ptr = message_body.c_str();
+         STATUS status = static_cast<MessageDecoderWrapper*>(&decoder)->DecodeAscii_(
+            msg_def_fields, (char**) &data_ptr, message);
+         return nb::make_tuple(status, message);
+      }, "msg_def_fields"_a, "message_body"_a)
+      .def("_decode_binary", [](oem::MessageDecoder& decoder, const std::vector<BaseField*>& msg_def_fields,
+                                nb::bytes message_body, uint32_t message_length) {
+         oem::IntermediateMessage message;
+         const char* data_ptr = message_body.c_str();
+         STATUS status = static_cast<MessageDecoderWrapper*>(&decoder)->DecodeBinary_(
+            msg_def_fields, (unsigned char**) &data_ptr, message, message_length);
+         return nb::make_tuple(status, message);
+      }, "msg_def_fields"_a, "message_body"_a, "message_length"_a);
 }
