@@ -3343,7 +3343,7 @@ TEST_F(DecodeEncodeTest, CONVERSION_TO_FLAT_BIN_BESTSATS_ABB_AND_ASC)
    ASSERT_BESTSATS_EQ(stMessageData1.pucMessageBody, stMessageData2.pucMessageBody);
 }
 
-TEST_F(DecodeEncodeTest, CONVERSION_TO_FLAT_BIN_BESTSATS_ASC_AND_BIN)
+TEST_F(DecodeEncodeTest, CONVERSION_TO_FLAT_BIN_BESTPOS_ASC_AND_BIN)
 {
    uint8_t aucLog1[] = "#BESTPOSA,COM1,0,58.5,FINESTEERING,2171,232010.000,02010000,b1f6,16248;SOL_COMPUTED,WAAS,51.15043714161,-114.03068190724,1097.1381,-17.0000,WGS84,0.5977,0.5586,0.9357,\"131\",6.000,0.000,41,33,33,26,00,0b,1f,37*f1136906\r\n";
    uint8_t aucLog1EncodeBuffer[MAX_BINARY_MESSAGE_LENGTH];
@@ -3358,7 +3358,7 @@ TEST_F(DecodeEncodeTest, CONVERSION_TO_FLAT_BIN_BESTSATS_ASC_AND_BIN)
    ASSERT_EQ(DecodeEncodeTest::SUCCESS, DecodeEncode(ENCODEFORMAT::FLATTENED_BINARY, aucLog2, aucLog2EncodeBuffer, sizeof(aucLog2EncodeBuffer), stMetaData2, stMessageData2));
 
    ASSERT_HEADER_EQ(stMessageData1.pucMessageHeader, stMessageData2.pucMessageHeader);
-   ASSERT_BESTSATS_EQ(stMessageData1.pucMessageBody, stMessageData2.pucMessageBody);
+   ASSERT_BESTPOS_EQ(stMessageData1.pucMessageBody, stMessageData2.pucMessageBody);
 }
 
 TEST_F(DecodeEncodeTest, CONVERSION_TO_FLAT_BIN_BESTPOS_ABB_AND_ASC)
