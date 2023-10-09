@@ -9,14 +9,12 @@ namespace novatel::edie::oem
 {
 struct PyMessageData
 {
-   PyMessageData(const MessageDataStruct& message_data)
+   PyMessageData(MessageDataStruct message_data)
       : message_((char*) message_data.pucMessage, message_data.uiMessageLength),
         header_offset(message_data.pucMessageHeader - message_data.pucMessage),
         header_size(message_data.uiMessageHeaderLength),
         body_offset(message_data.pucMessageBody - message_data.pucMessage),
-        body_size(message_data.uiMessageBodyLength)
-   {
-   }
+        body_size(message_data.uiMessageBodyLength) {}
 
    const nb::bytes& message() const
    {
