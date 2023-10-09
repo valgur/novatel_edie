@@ -5,58 +5,61 @@
 
 #include "bindings_core.hpp"
 #include "edie/decoders/novatel/common.hpp"
+#include "py_intermediate_message.hpp"
 
 namespace nb = nanobind;
 using namespace nb::literals;
 using namespace novatel::edie;
+using namespace novatel::edie::oem;
 
 NB_MAKE_OPAQUE(novatel::edie::IntermediateMessage);
 
-struct PyIntermediateMessage
+nb::object convert_field(const novatel::edie::FieldContainer& field)
 {
-    static nb::object values(nb::handle_t<novatel::edie::IntermediateMessage> self)
+    if (std::holds_alternative<novatel::edie::IntermediateMessage>(field.fieldValue))
     {
-        nb::dict values;
-        const auto& message = nb::cast<novatel::edie::IntermediateMessage&>(self);
-        // FIXME: should store a pointer instead?
-        for (const auto& field : message) { values[nb::cast(field.fieldDef->name)] = field.fieldValue; }
-        return values;
-    }
-
-    static nb::object fields(nb::handle_t<novatel::edie::IntermediateMessage> self)
-    {
-        nb::dict fields;
-        const auto& message = nb::cast<novatel::edie::IntermediateMessage&>(self);
-        for (const auto& field : message) { fields[nb::cast(field.fieldDef->name)] = field.fieldDef; }
-        return fields;
-    }
-
-    static nb::object get(nb::handle_t<novatel::edie::IntermediateMessage> self, std::string field_name)
-    {
-        auto& message = nb::cast<novatel::edie::IntermediateMessage&>(self);
-        for (auto& field : message)
+        const auto& sub_message = std::get<novatel::edie::IntermediateMessage>(field.fieldValue);
+        if (sub_message.empty()) { return nb::list(); }
+        else if (sub_message[0].fieldDef->type == field.fieldDef->type && sub_message[0].fieldDef->name == field.fieldDef->name)
         {
-            if (field.fieldDef->name == field_name) { return nb::cast(&field.fieldValue); }
+            std::vector<nb::object> sub_values;
+            for (const auto& sub_field : sub_message) { sub_values.push_back(convert_field(sub_field)); }
+            return nb::cast(sub_values);
         }
-        throw nb::key_error(("No '" + field_name + "' field in message").c_str());
+        else { return nb::cast(PyIntermediateMessage(sub_message)); }
     }
-
-    static std::string repr(nb::handle_t<novatel::edie::IntermediateMessage> self)
+    else
     {
-        std::stringstream repr;
-        repr << "Message(";
-        bool first = true;
-        const auto& message = nb::cast<novatel::edie::IntermediateMessage&>(self);
-        for (const auto& field : message)
-        {
-            if (!first) { repr << ", "; }
-            first = false;
-            repr << nb::str("{}={}").format(field.fieldDef->name, field.fieldValue).c_str();
-        }
-        repr << ")";
-        return repr.str();
+        return std::visit([](auto&& value) { return nb::cast(value); }, field.fieldValue);
     }
-};
+}
+
+PyIntermediateMessage::PyIntermediateMessage(novatel::edie::IntermediateMessage message_) : message(std::move(message_))
+{
+    for (const auto& field : message)
+    {
+        nb::str name(field.fieldDef->name.c_str(), field.fieldDef->name.size());
+        fields[name] = field.fieldDef;
+        values[name] = convert_field(field);
+    }
+}
+
+nb::object PyIntermediateMessage::get(nb::str field_name) { return values[std::move(field_name)]; }
+
+std::string PyIntermediateMessage::repr()
+{
+    std::stringstream repr;
+    repr << "Message(";
+    bool first = true;
+    for (const auto& item : values)
+    {
+        if (!first) { repr << ", "; }
+        first = false;
+        repr << nb::str("{}={}").format(item.first, item.second).c_str();
+    }
+    repr << ")";
+    return repr.str();
+}
 
 class MessageDecoderWrapper : public novatel::edie::oem::MessageDecoder
 {
@@ -76,9 +79,9 @@ class MessageDecoderWrapper : public novatel::edie::oem::MessageDecoder
 
 void init_novatel_message_decoder(nb::module_& m)
 {
-    nb::bind_vector<novatel::edie::IntermediateMessage>(m, "Message")
-        .def_prop_ro("values", &PyIntermediateMessage::values)
-        .def_prop_ro("fields", &PyIntermediateMessage::fields)
+    nb::class_<PyIntermediateMessage>(m, "Message")
+        .def_ro("values", &PyIntermediateMessage::values)
+        .def_ro("fields", &PyIntermediateMessage::fields)
         .def("__getattr__", &PyIntermediateMessage::get, "field_name"_a)
         .def("__getitem__", &PyIntermediateMessage::get, "field_name"_a)
         .def("__repr__", &PyIntermediateMessage::repr)
@@ -101,7 +104,7 @@ void init_novatel_message_decoder(nb::module_& m)
             [](oem::MessageDecoder& decoder, nb::bytes message_body, oem::MetaDataStruct& metadata) {
                 novatel::edie::IntermediateMessage message;
                 STATUS status = decoder.Decode((unsigned char*)message_body.c_str(), message, metadata);
-                return nb::make_tuple(status, message);
+                return nb::make_tuple(status, PyIntermediateMessage(std::move(message)));
             },
             "message_body"_a, "metadata"_a)
         // For internal testing purposes only
@@ -111,7 +114,7 @@ void init_novatel_message_decoder(nb::module_& m)
                 novatel::edie::IntermediateMessage message;
                 const char* data_ptr = message_body.c_str();
                 STATUS status = static_cast<MessageDecoderWrapper*>(&decoder)->DecodeAscii_(msg_def_fields, (char**)&data_ptr, message);
-                return nb::make_tuple(status, message);
+                return nb::make_tuple(status, PyIntermediateMessage(std::move(message)));
             },
             "msg_def_fields"_a, "message_body"_a)
         .def(
@@ -121,7 +124,7 @@ void init_novatel_message_decoder(nb::module_& m)
                 const char* data_ptr = message_body.c_str();
                 STATUS status =
                     static_cast<MessageDecoderWrapper*>(&decoder)->DecodeBinary_(msg_def_fields, (unsigned char**)&data_ptr, message, message_length);
-                return nb::make_tuple(status, message);
+                return nb::make_tuple(status, PyIntermediateMessage(std::move(message)));
             },
             "msg_def_fields"_a, "message_body"_a, "message_length"_a);
 }
