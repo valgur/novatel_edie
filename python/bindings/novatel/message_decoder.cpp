@@ -4,6 +4,7 @@
 #include <nanobind/stl/variant.h>
 
 #include "bindings_core.hpp"
+#include "json_db_singleton.hpp"
 #include "py_intermediate_message.hpp"
 
 namespace nb = nanobind;
@@ -132,6 +133,7 @@ void init_novatel_message_decoder(nb::module_& m)
 
     nb::class_<oem::MessageDecoder>(m, "MessageDecoder")
         .def(nb::init<JsonReader*>(), "json_db"_a)
+        .def("__init__", [](oem::MessageDecoder* t) { new (t) oem::MessageDecoder(JsonDbSingleton::get()); })
         .def("load_json_db", &oem::MessageDecoder::LoadJsonDb, "json_db"_a)
         .def_prop_ro("logger", &oem::MessageDecoder::GetLogger)
         .def(
