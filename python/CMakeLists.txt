@@ -38,6 +38,9 @@ nanobind_add_module(decoders_bindings STABLE_ABI NB_STATIC LTO
     ${CMAKE_CURRENT_SOURCE_DIR}/bindings/novatel/rxconfig_handler.cpp
 )
 
+set_target_properties(hw_interface_bindings PROPERTIES OUTPUT_NAME hw_interface)
+set_target_properties(decoders_bindings PROPERTIES OUTPUT_NAME decoders)
+
 target_include_directories(hw_interface_bindings PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/bindings)
 target_include_directories(decoders_bindings PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/bindings)
 
