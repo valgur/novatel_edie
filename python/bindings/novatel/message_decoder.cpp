@@ -17,19 +17,24 @@ nb::object convert_field(const oem::FieldContainer& field)
 {
    if (std::holds_alternative<oem::IntermediateMessage>(field.field_value))
    {
-      const auto& sub_message = std::get<oem::IntermediateMessage>(field.field_value);
-      if (sub_message.empty())
+      const auto& message_field = std::get<oem::IntermediateMessage>(field.field_value);
+      if (message_field.empty())
       {
+         // Empty array
          return nb::list();
       }
-      else if (sub_message[0].field_def->type == field.field_def->type &&
-               sub_message[0].field_def->name == field.field_def->name)
+      else if (message_field[0].field_def->type == field.field_def->type &&
+               message_field[0].field_def->name == field.field_def->name)
       {
+         // Fixed-length, variable-length and field arrays are stored as a field
+         // with a list of sub-fields of the same type and name.
+         // This needs to be un-nested for the translated Python structure.
          if (field.field_def->conversionStripped == CONVERSION_STRING::s)
          {
+            // The array is actually a string
             std::string str;
-            str.reserve(sub_message.size());
-            for (const auto& sub_field: sub_message)
+            str.reserve(message_field.size());
+            for (const auto& sub_field: message_field)
             {
                auto c = std::get<uint8_t>(sub_field.field_value);
                if (c == 0)
@@ -38,17 +43,15 @@ nb::object convert_field(const oem::FieldContainer& field)
             }
             return nb::cast(str);
          }
-         else
-         {
-            std::vector<nb::object> sub_values;
-            for (const auto& sub_field: sub_message)
-               sub_values.push_back(convert_field(sub_field));
-            return nb::cast(sub_values);
-         }
+         std::vector<nb::object> sub_values;
+         for (const auto& sub_field: message_field)
+            sub_values.push_back(convert_field(sub_field));
+         return nb::cast(sub_values);
       }
       else
       {
-         return nb::cast(PyIntermediateMessage(sub_message));
+         // This is an array element of a field array.
+         return nb::cast(PyIntermediateMessage(message_field));
       }
    }
    else if (field.field_def->conversionStripped == CONVERSION_STRING::id)
@@ -61,6 +64,7 @@ nb::object convert_field(const oem::FieldContainer& field)
    }
    else
    {
+      // Handle most types by simply extracting the value from the variant and casting
       return std::visit([](auto&& value) { return nb::cast(value); }, field.field_value);
    }
 }
