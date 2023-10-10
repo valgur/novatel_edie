@@ -2,6 +2,7 @@
 #include "bindings_core.hpp"
 #include "py_intermediate_message.hpp"
 #include "py_message_data.hpp"
+#include "json_db_singleton.hpp"
 
 namespace nb = nanobind;
 using namespace nb::literals;
@@ -13,6 +14,7 @@ void init_novatel_encoder(nb::module_& m)
 
    nb::class_<oem::Encoder>(m, "Encoder")
       .def(nb::init<JsonReader*>(), "json_db"_a)
+      .def("__init__", [](oem::Encoder* t) { new(t) oem::Encoder(JsonDbSingleton::get()); })
       .def("open", &oem::Encoder::LoadJsonDb, "json_db"_a)
       .def_prop_ro("logger", &oem::Encoder::GetLogger)
       .def("encode", [](oem::Encoder& encoder, oem::IntermediateHeader& header, PyIntermediateMessage& py_message,
