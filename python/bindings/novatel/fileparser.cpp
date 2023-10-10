@@ -19,7 +19,7 @@ void init_novatel_fileparser(nb::module_& m)
 //      }, "json_db"_a)
       .def("load_json_db", &oem::FileParser::LoadJsonDb, "json_db_path"_a)
       .def("__init__", [](oem::FileParser* t) { new(t) oem::FileParser(JsonDbSingleton::get()); })
-      .def_prop_ro("logger", &oem::Encoder::GetLogger)
+      .def_prop_ro("logger", &oem::FileParser::GetLogger)
       .def("enable_framer_decoder_logging", &oem::FileParser::EnableFramerDecoderLogging,
            "level"_a = spdlog::level::debug, "filename"_a = "edie.log")
       .def_prop_rw("ignore_abbreviated_ascii_responses", &oem::FileParser::GetIgnoreAbbreviatedAsciiResponses,
