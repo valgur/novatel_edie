@@ -414,7 +414,7 @@ MessageDecoder::DecodeAscii(const std::vector<BaseField*> MsgDefFields_, char** 
          else
          {
             // Remove the "ERROR:" prefix from the response
-            std::string sRespDesc = sResponse.substr(OEM4_ERROR_PREFIX_LENGTH, sResponse.length() - OEM4_ERROR_PREFIX_LENGTH);
+            std::string sRespDesc = sResponse.substr(OEM4_ERROR_PREFIX_LENGTH, std::string::npos);
             // Note: This won't match responses with format specifiers in them (%d, %s, etc), they will be given id=0
             vIntermediateFormat_.emplace_back( GetResponseId(vMyRespDefns, sRespDesc), field);
          }
@@ -613,7 +613,7 @@ MessageDecoder::DecodeAbbrevAscii(const std::vector<BaseField*> MsgDefFields_, c
             else
             {
                // Remove the "ERROR:" prefix from the response
-               std::string sRespDesc = sResponse.substr(OEM4_ERROR_PREFIX_LENGTH, sResponse.length() - OEM4_ERROR_PREFIX_LENGTH);
+               std::string sRespDesc = sResponse.substr(OEM4_ERROR_PREFIX_LENGTH, std::string::npos);
                // Note: This won't match responses with format specifiers in them (%d, %s, etc), they will be given id=0
                vIntermediateFormat_.emplace_back( GetResponseId(vMyRespDefns, sRespDesc), field);
             }
@@ -948,7 +948,7 @@ MessageDecoder::DecodeAsciiField(const BaseField* MessageDataType_, char** ppcTo
       if (sDelimiter != std::string::npos)
       {
          usSlot = static_cast<uint16_t>(strtoul(sTemp.substr(0, sDelimiter).c_str(), nullptr, 10));
-         sFreq  = static_cast<int16_t>(strtol(sTemp.substr(sDelimiter, sTemp.length()).c_str(), nullptr, 10));
+         sFreq  = static_cast<int16_t>(strtol(sTemp.substr(sDelimiter, std::string::npos).c_str(), nullptr, 10));
       }
       else
       {
@@ -1028,7 +1028,7 @@ MessageDecoder::DecodeJson(const std::vector<BaseField*> MsgDefFields_, json clJ
          else
          {
             // Remove the "ERROR:" prefix from the response
-            std::string sRespDesc = sResponse.substr(OEM4_ERROR_PREFIX_LENGTH, sResponse.length() - OEM4_ERROR_PREFIX_LENGTH);
+            std::string sRespDesc = sResponse.substr(OEM4_ERROR_PREFIX_LENGTH, std::string::npos);
             // Note: This won't match responses with format specifiers in them (%d, %s, etc), they will be given id=0
             vIntermediateFormat_.emplace_back( GetResponseId(vMyRespDefns, sRespDesc), field);
          }
@@ -1252,7 +1252,7 @@ MessageDecoder::DecodeJsonField(const BaseField* MessageDataType_, json clJsonFi
       if (sDelimiter != std::string::npos)
       {
          usSlot = static_cast<uint16_t>(strtoul(sTemp.substr(0, sDelimiter).c_str(), nullptr, 10));
-         sFreq = static_cast<int16_t>(strtol(sTemp.substr(sDelimiter, sTemp.length()).c_str(), nullptr, 10));
+         sFreq = static_cast<int16_t>(strtol(sTemp.substr(sDelimiter, std::string::npos).c_str(), nullptr, 10));
       }
       else
       {
