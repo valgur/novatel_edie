@@ -345,9 +345,13 @@ MessageDecoder::DecodeAscii(const std::vector<BaseField*> MsgDefFields_, char** 
 {
     STATUS eStatus = STATUS::SUCCESS;
 
+    char* pcBufEnd = *ppucLogBuf_ + strlen(*ppucLogBuf_);
+
     bool bEarlyEndOfMessage = false;
     for (auto& field : MsgDefFields_)
     {
+        if (*ppucLogBuf_ >= pcBufEnd) // We encountered the end of the buffer unexpectedly
+            return STATUS::MALFORMED_INPUT;
         size_t tokenLength = strcspn(*ppucLogBuf_, ",*");
         if (static_cast<int8_t>(*(*ppucLogBuf_ + tokenLength)) == '*') bEarlyEndOfMessage = true;
 
@@ -527,14 +531,17 @@ MessageDecoder::DecodeAbbrevAscii(const std::vector<BaseField*> MsgDefFields_, c
 {
     STATUS eStatus = STATUS::SUCCESS;
 
+    char* pcBufEnd = *ppucLogBuf_ + strlen(*ppucLogBuf_);
+
     try
     {
         for (auto& field : MsgDefFields_)
         {
+            if (*ppucLogBuf_ >= pcBufEnd) // We encountered the end of the buffer unexpectedly
+                return STATUS::MALFORMED_INPUT;
             size_t tokenLength = strcspn(*ppucLogBuf_, " \r\n");
             if (ConsumeAbbrevFormatting(tokenLength, ppucLogBuf_)) tokenLength = strcspn(*ppucLogBuf_, " \r\n");
-            if (tokenLength == 0) // We encountered the end of the buffer unexpectedly
-                return STATUS::MALFORMED_INPUT;
+            if (tokenLength == 0) return STATUS::MALFORMED_INPUT;
 
             if (field->type == FIELD_TYPE::SIMPLE)
             {
