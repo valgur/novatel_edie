@@ -12,7 +12,7 @@ novatel::edie::DecoderException::DecoderException(nb::handle_t<STATUS> status, s
 {
    std::string name = nb::str(status).c_str();
    if (!msg.empty())
-      msg += ": ";
+      msg += " - ";
    msg += name + ": " + nb::cast<std::string>(status.doc());
 }
 
