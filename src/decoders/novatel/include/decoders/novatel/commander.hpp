@@ -175,7 +175,7 @@ class Commander
         const std::string strAbbrevAsciiCommand = std::string(pcAbbrevAsciiCommand_, uiAbbrevAsciiCommandLength_);
         const size_t ullPos = strAbbrevAsciiCommand.find_first_of(' ');
         const std::string strCmdName = strAbbrevAsciiCommand.substr(0, ullPos);
-        const std::string strCmdParams = strAbbrevAsciiCommand.substr(ullPos + 1, strAbbrevAsciiCommand.length());
+        const std::string strCmdParams = strAbbrevAsciiCommand.substr(ullPos + 1);
 
         unsigned char acCmdParams[MAX_ASCII_MESSAGE_LENGTH];
         unsigned char* pucCmdParams = acCmdParams;
