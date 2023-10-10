@@ -217,4 +217,6 @@ void init_novatel_common(nb::module_& m)
             .format(self.ucSync1, self.ucSync2, self.ucSync3, self.ucLength, self.usMessageId, self.usWeekNo,
                     self.uiWeekMSec);
       });
+
+   m.def("get_default_database", &JsonDbSingleton::get, "Get the default JSON database singleton");
 }
