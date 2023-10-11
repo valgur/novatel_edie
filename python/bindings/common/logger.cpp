@@ -63,7 +63,7 @@ void init_common_logger(nb::module_& m)
          return nb::str("<_SpdlogLogger: {}, {}>").format(logger.name(), logger.level());
       });
 
-   nb::class_<Logger>(m, "Logger")
+   nb::class_<Logger>(m, "Logging")
       .def(nb::init<>())
       .def(nb::init<std::string>(), "logger_config_path_"_a)
       .def_static("get", spdlog::get, "logger_name"_a, "Returns spdlog::get(logger_name).")
