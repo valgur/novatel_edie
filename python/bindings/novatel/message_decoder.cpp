@@ -137,7 +137,7 @@ void init_novatel_message_decoder(nb::module_& m)
 
     nb::class_<novatel::edie::FieldContainer>(m, "FieldContainer")
         .def_rw("value", &novatel::edie::FieldContainer::fieldValue)
-        .def_rw("field_def", &novatel::edie::FieldContainer::fieldDef)
+        .def_rw("field_def", &novatel::edie::FieldContainer::fieldDef, nb::rv_policy::reference_internal)
         .def("__repr__", [](const novatel::edie::FieldContainer& container) {
             return nb::str("FieldContainer(value={}, fieldDef={})").format(container.fieldValue, container.fieldDef);
         });
