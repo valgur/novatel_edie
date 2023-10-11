@@ -108,12 +108,23 @@ void init_novatel_common(nb::module_& m)
       .def_rw("message_id", &oem::MetaDataStruct::usMessageID)
       .def_rw("message_crc", &oem::MetaDataStruct::uiMessageCRC)
       .def_prop_rw("message_name", [](oem::MetaDataStruct& self) {
-         return nb::str(self.acMessageName);
+         return nb::cast(self.acMessageName);
       }, [](oem::MetaDataStruct& self, std::string message_name) {
          if (message_name.length() > oem::OEM4_ASCII_MESSAGE_NAME_MAX)
             throw std::runtime_error("Message name is too long");
          memcpy(self.acMessageName, message_name.c_str(), message_name.length());
          self.acMessageName[message_name.length()] = '\0';
+      })
+      .def_prop_ro("message_description", [](oem::MetaDataStruct& self) {
+         auto* msg_def = JsonDbSingleton::get()->GetMsgDef(self.usMessageID);
+         return msg_def ? nb::cast(msg_def->description) : nb::none();
+      })
+      .def_prop_ro("message_fields", [](oem::MetaDataStruct& self) {
+         auto* msg_def = JsonDbSingleton::get()->GetMsgDef(self.usMessageID);
+         if (!msg_def)
+            return nb::none();
+         auto fields_it = msg_def->fields.find(self.uiMessageCRC);
+         return fields_it == msg_def->fields.end() ? nb::none() : nb::cast(fields_it->second);
       })
       .def("__repr__", [](nb::handle self) {
          auto& metadata = nb::cast<oem::MetaDataStruct&>(self);
@@ -140,18 +151,13 @@ void init_novatel_common(nb::module_& m)
       .def_rw("receiver_status", &oem::IntermediateHeader::uiReceiverStatus)
       .def_rw("message_definition_crc", &oem::IntermediateHeader::uiMessageDefinitionCRC)
       .def_rw("receiver_sw_version", &oem::IntermediateHeader::usReceiverSwVersion)
-      .def("get_msg_def", [](oem::IntermediateHeader& self) {
-         return JsonDbSingleton::get()->GetMsgDef(self.usMessageID);
-      }, "Gets the message definition for the header's message ID from the default database")
       .def("__repr__", [](nb::handle self) {
          auto& header = nb::cast<oem::IntermediateHeader&>(self);
-         auto* msg_def = JsonDbSingleton::get()->GetMsgDef(header.usMessageID);
-         const std::string &msg_name = msg_def ? msg_def->name : "Unknown";
-         return nb::str("Header(message_id=<{}: {}>, message_type={!r}, port_address={!r}, length={!r}, sequence={!r}, "
-                        "idle_time={!r}, time_status={}, week={!r}, milliseconds={!r}, receiver_status={!r}, "
+         return nb::str("Header(message_id={!r}, message_type={!r}, port_address={!r}, length={!r}, sequence={!r}, "
+                        "idle_time={!r}, time_status={!r}, week={!r}, milliseconds={!r}, receiver_status={!r}, "
                         "message_definition_crc={!r}, receiver_sw_version={!r})")
-            .format(msg_name, header.usMessageID, header.ucMessageType, header.uiPortAddress, header.usLength, header.usSequence,
-                    header.ucIdleTime, TIME_STATUS(header.uiTimeStatus), header.usWeek, header.dMilliseconds,
+            .format(header.usMessageID, header.ucMessageType, header.uiPortAddress, header.usLength, header.usSequence,
+                    header.ucIdleTime, header.uiTimeStatus, header.usWeek, header.dMilliseconds,
                     header.uiReceiverStatus, header.uiMessageDefinitionCRC, header.usReceiverSwVersion);
       });
 
