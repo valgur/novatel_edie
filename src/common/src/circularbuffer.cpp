@@ -36,6 +36,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cstring>
+#include <new>
 
 #include "nexcept.h"
 
@@ -45,7 +46,7 @@ void CircularBuffer::SetCapacity(uint32_t uiCapacity_)
     // Set the size of the buffer (bytes)
     if (uiCapacity_ <= uiMyCapacity) return;
 
-    const auto pucBuffer = new unsigned char[uiCapacity_];
+    const auto pucBuffer = new (std::nothrow) unsigned char[uiCapacity_];
 
     // Do nothing if new failed.... just use existing buffer
     if (pucBuffer != nullptr)
