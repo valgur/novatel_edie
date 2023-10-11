@@ -455,6 +455,12 @@ struct MessageDefinition
 
         return *this;
     }
+
+    ~MessageDefinition()
+    {
+        for (const auto& fielddefs : fields)
+            for (const auto& field : fielddefs.second) delete field;
+    }
 };
 
 // Forward declaration of from_json
