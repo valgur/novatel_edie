@@ -30,7 +30,7 @@ void init_novatel_fileparser(nb::module_& m)
       .def_prop_rw("return_unknown_bytes", &oem::FileParser::GetReturnUnknownBytes,
                    &oem::FileParser::SetReturnUnknownBytes)
       .def_prop_rw("encode_format", &oem::FileParser::GetEncodeFormat, &oem::FileParser::SetEncodeFormat)
-      .def_prop_rw("filter", &oem::FileParser::GetFilter, &oem::FileParser::SetFilter)
+      .def_prop_rw("filter", &oem::FileParser::GetFilter, &oem::FileParser::SetFilter, nb::rv_policy::reference_internal)
       .def("set_stream", &oem::FileParser::SetStream, "input_stream"_a)
       .def("read", [](oem::FileParser& self) {
          oem::MessageDataStruct message_data;

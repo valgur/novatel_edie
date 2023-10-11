@@ -223,5 +223,6 @@ void init_novatel_common(nb::module_& m)
                     self.uiWeekMSec);
       });
 
-   m.def("get_default_database", &JsonDbSingleton::get, "Get the default JSON database singleton");
+   m.def("get_default_database", &JsonDbSingleton::get,
+         "Get the default JSON database singleton", nb::rv_policy::reference);
 }
