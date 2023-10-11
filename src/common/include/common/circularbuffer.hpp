@@ -60,9 +60,11 @@ public:
    CircularBuffer() = default;
 
    //----------------------------------------------------------------------------
-   //! \brief Default circular buffer class Destructor.
+   //! \brief Circular buffer class Destructor.
    //----------------------------------------------------------------------------
-   ~CircularBuffer() = default;
+   ~CircularBuffer() {
+      delete[] pucMyBuffer;
+   }
 
    //----------------------------------------------------------------------------
    //! \brief Sets the size of the circular buffer (bytes)
