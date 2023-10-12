@@ -35,8 +35,13 @@ void init_novatel_fileparser(nb::module_& m)
          oem::MessageDataStruct message_data;
          oem::MetaDataStruct meta_data;
          STATUS status = self.Read(message_data, meta_data);
-         return std::make_tuple(status, oem::PyMessageData(std::move(message_data)), std::move(meta_data));
+         return std::make_tuple(status, oem::PyMessageData(message_data), meta_data);
       })
+      .def("read", [](oem::FileParser& self, nb::handle_t<oem::MetaDataStruct> py_metadata) {
+         oem::MessageDataStruct message_data;
+         STATUS status = self.Read(message_data, nb::cast<oem::MetaDataStruct &>(py_metadata));
+         return std::make_tuple(status, oem::PyMessageData(message_data));
+      }, "metadata"_a)
       .def("reset", &oem::FileParser::Reset)
       .def("flush", [](oem::FileParser& self, bool return_flushed_bytes) -> nb::object {
          if (!return_flushed_bytes)
