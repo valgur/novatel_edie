@@ -37,6 +37,7 @@
 // Includes
 //-----------------------------------------------------------------------
 #include <exception>
+#include <memory>
 #include "novatel/edie/common/common.hpp"
 #include "novatel/edie/common/logger/logger.hpp"
 #include "novatel/edie/decoders/common.hpp"
@@ -73,8 +74,8 @@ public:
 private:
    std::shared_ptr<spdlog::logger> pclMyLogger;
 
-   JsonReader clMyJsonReader;
-   Filter* pclMyUserFilter{ nullptr };
+   std::shared_ptr<JsonReader> pclMyJsonReader;
+   std::shared_ptr<Filter> pclMyUserFilter;
    Framer clMyFramer;
    HeaderDecoder clMyHeaderDecoder;
    MessageDecoder clMyMessageDecoder;
@@ -119,7 +120,7 @@ public:
    //
    //! \param[in] pclJsonDb_ A pointer to a JsonReader object. Defaults to nullptr.
    //----------------------------------------------------------------------------
-   Parser(JsonReader* pclJsonDb_ = nullptr);
+   Parser(JsonReader::Ptr pclJsonDb_ = nullptr);
 
    //----------------------------------------------------------------------------
    //! \brief A destructor for the Parser class.
@@ -132,7 +133,7 @@ public:
    //! \param[in] pclJsonDb_ A pointer to a JsonReader object.
    //----------------------------------------------------------------------------
    void
-   LoadJsonDb(JsonReader* pclJsonDb_);
+   LoadJsonDb(JsonReader::Ptr pclJsonDb_);
 
    //----------------------------------------------------------------------------
    //! \brief Get the internal logger.
@@ -237,14 +238,14 @@ public:
    //! \param [in] pclFilter_ A pointer to an OEM message Filter object.
    //----------------------------------------------------------------------------
    void
-   SetFilter(Filter* pclFilter_);
+   SetFilter(const std::shared_ptr<Filter>& pclFilter_);
 
    //----------------------------------------------------------------------------
    //! \brief Get the config for the FileParser.
    //
    //! \return A pointer to the FileParser's OEM message Filter object.
    //----------------------------------------------------------------------------
-   Filter*
+   std::shared_ptr<Filter>&
    GetFilter();
 
    //----------------------------------------------------------------------------

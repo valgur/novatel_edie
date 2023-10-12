@@ -22,17 +22,17 @@ std::string default_json_db_path()
 }
 }
 
-JsonReader* JsonDbSingleton::get()
+JsonReader::Ptr& JsonDbSingleton::get()
 {
-   static std::unique_ptr<JsonReader> json_db = nullptr;
+   static JsonReader::Ptr json_db = nullptr;
    if (!json_db)
    {
       // Using a temp variable to avoid an inconsistent state if LoadFile throws
-      auto db = std::make_unique<JsonReader>();
+      auto db = std::make_shared<JsonReader>();
       db->LoadFile(default_json_db_path());
       json_db = std::move(db);
    }
-   return json_db.get();
+   return json_db;
 }
 
 void init_novatel_common(nb::module_& m)
@@ -116,11 +116,11 @@ void init_novatel_common(nb::module_& m)
          self.acMessageName[message_name.length()] = '\0';
       })
       .def_prop_ro("message_description", [](oem::MetaDataStruct& self) {
-         auto* msg_def = JsonDbSingleton::get()->GetMsgDef(self.usMessageID);
+         auto msg_def = JsonDbSingleton::get()->GetMsgDef(self.usMessageID);
          return msg_def ? nb::cast(msg_def->description) : nb::none();
       })
       .def_prop_ro("message_fields", [](oem::MetaDataStruct& self) {
-         auto* msg_def = JsonDbSingleton::get()->GetMsgDef(self.usMessageID);
+         auto msg_def = JsonDbSingleton::get()->GetMsgDef(self.usMessageID);
          if (!msg_def)
             return nb::none();
          auto fields_it = msg_def->fields.find(self.uiMessageCRC);

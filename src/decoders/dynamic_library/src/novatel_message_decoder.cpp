@@ -55,7 +55,7 @@ void novatel_message_decoder_shutdown_logger(MessageDecoder* pclMessageDecoder_)
 
 MessageDecoder* novatel_message_decoder_init(JsonReader* pclJsonDb_)
 {
-   return pclJsonDb_ ? new MessageDecoder(pclJsonDb_) : nullptr;
+   return pclJsonDb_ ? new MessageDecoder(JsonReader::Ptr(pclJsonDb_, [](auto){})) : nullptr;
 }
 
 void novatel_message_decoder_delete(MessageDecoder* pclMessageDecoder_)
@@ -71,7 +71,7 @@ void novatel_message_decoder_load_json(MessageDecoder* pclMessageDecoder_, JsonR
 {
    if (pclMessageDecoder_ && pclJsonDb_)
    {
-      pclMessageDecoder_->LoadJsonDb(pclJsonDb_);
+      pclMessageDecoder_->LoadJsonDb(JsonReader::Ptr(pclJsonDb_, [](auto){}));
    }
 }
 

@@ -20,10 +20,10 @@ namespace novatel::edie::oem {
 class RangeDecompressor
 {
 public:
-   RangeDecompressor(JsonReader* pclJsonDB_ = nullptr);
+   RangeDecompressor(JsonReader::Ptr pclJsonDb_ = nullptr);
 
    void
-   LoadJsonDb(JsonReader* pclJsonDb_);
+   LoadJsonDb(JsonReader::Ptr pclJsonDb_);
 
    //----------------------------------------------------------------------------
    //! \brief Get the internal logger.
@@ -73,7 +73,7 @@ private:
    Encoder clMyEncoder;
 
    std::shared_ptr<spdlog::logger> pclMyLogger;
-   JsonReader* pclMyMsgDB;
+   JsonReader::Ptr pclMyMsgDB;
 
    // Store the last primary reference blocks for each measurement source.
    RangeCmp4MeasurementSignalBlockStruct astMyLastPrimaryReferenceBlocks[static_cast<uint32_t>(MEASUREMENT_SOURCE::MAX)];

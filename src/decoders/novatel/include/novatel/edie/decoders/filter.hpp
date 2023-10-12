@@ -280,6 +280,10 @@ public:
    //----------------------------------------------------------------------------
    bool
    DoFiltering(MetaDataStruct& stMetaData_);
+
+public:
+   using Ptr = std::shared_ptr<Filter>;
+   using ConstPtr = std::shared_ptr<const Filter>;
 };
 }
 #endif // NOVATEL_FILTER_HPP

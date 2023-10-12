@@ -55,7 +55,7 @@ void novatel_header_decoder_shutdown_logger(HeaderDecoder* pclHeaderDecoder_)
 
 HeaderDecoder* novatel_header_decoder_init(JsonReader* pclJsonDb_)
 {
-   return pclJsonDb_ ? new HeaderDecoder(pclJsonDb_) : nullptr;
+   return pclJsonDb_ ? new HeaderDecoder(JsonReader::Ptr(pclJsonDb_, [](auto){})) : nullptr;
 }
 
 void novatel_header_decoder_delete(HeaderDecoder* pclHeaderDecoder_)
@@ -71,7 +71,7 @@ void novatel_header_decoder_load_json(HeaderDecoder* pclHeaderDecoder_, JsonRead
 {
    if (pclHeaderDecoder_ && pclJsonDb_)
    {
-      pclHeaderDecoder_->LoadJsonDb(pclJsonDb_);
+      pclHeaderDecoder_->LoadJsonDb(JsonReader::Ptr(pclJsonDb_, [](auto){}));
    }
 }
 

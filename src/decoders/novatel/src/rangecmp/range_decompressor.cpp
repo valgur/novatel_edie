@@ -267,7 +267,7 @@ constexpr float afTheRangeCmp4LockTimeValues[] =
 };
 
 //------------------------------------------------------------------------------
-RangeDecompressor::RangeDecompressor(JsonReader* pclJsonDB_) :
+RangeDecompressor::RangeDecompressor(JsonReader::Ptr pclJsonDB_) :
    clMyHeaderDecoder(pclJsonDB_),
    clMyMessageDecoder(pclJsonDB_),
    clMyEncoder(pclJsonDB_)
@@ -294,7 +294,7 @@ RangeDecompressor::RangeDecompressor(JsonReader* pclJsonDB_) :
 
 //------------------------------------------------------------------------------
 void
-RangeDecompressor::LoadJsonDb(JsonReader* pclJsonDB_)
+RangeDecompressor::LoadJsonDb(JsonReader::Ptr pclJsonDB_)
 {
    pclMyMsgDB = pclJsonDB_;
    clMyHeaderDecoder.LoadJsonDb(pclJsonDB_);

@@ -61,11 +61,11 @@ class HeaderDecoder
 {
 private:
    std::shared_ptr<spdlog::logger> pclMyLogger;
-   JsonReader* pclMyMsgDb{ nullptr };
-   EnumDefinition* vMyRespDefns{ nullptr };
-   EnumDefinition* vMyCommandDefns{ nullptr };
-   EnumDefinition* vMyPortAddrDefns{ nullptr };
-   EnumDefinition* vMyGPSTimeStatusDefns{ nullptr };
+   JsonReader::Ptr pclMyMsgDb{ nullptr };
+   EnumDefinition::Ptr vMyRespDefns{ nullptr };
+   EnumDefinition::Ptr vMyCommandDefns{ nullptr };
+   EnumDefinition::Ptr vMyPortAddrDefns{ nullptr };
+   EnumDefinition::Ptr vMyGPSTimeStatusDefns{ nullptr };
 
    char* pucTempBufConvert{ nullptr };
    char* pucBeginningConvert{ nullptr };
@@ -87,7 +87,7 @@ public:
    //
    //! \param[in] pclJsonDb_ A pointer to a JsonReader object. Defaults to nullptr.
    //----------------------------------------------------------------------------
-   HeaderDecoder(JsonReader* pclJsonDb_ = nullptr);
+   HeaderDecoder(JsonReader::Ptr pclJsonDb_ = nullptr);
 
    //----------------------------------------------------------------------------
    //! \brief Load a JsonReader object.
@@ -95,7 +95,7 @@ public:
    //! \param[in] pclJsonDb_ A pointer to a JsonReader object.
    //----------------------------------------------------------------------------
    void
-   LoadJsonDb(JsonReader* pclJsonDb_);
+   LoadJsonDb(JsonReader::Ptr pclJsonDb_);
 
    //----------------------------------------------------------------------------
    //! \brief Get the internal logger.

@@ -40,7 +40,7 @@ using namespace novatel::edie::oem;
 
 FileParser* novatel_fileparser_init(JsonReader* pclJsonDb_)
 {
-   return pclJsonDb_ ? new FileParser(pclJsonDb_) : nullptr;
+   return pclJsonDb_ ? new FileParser(JsonReader::Ptr(pclJsonDb_, [](auto){})) : nullptr;
 }
 
 void novatel_fileparser_delete(FileParser* pclFileParser_)
@@ -56,7 +56,7 @@ void novatel_fileparser_load_json_db(FileParser* pclFileParser_, JsonReader* pcl
 {
    if (pclFileParser_ && pclJsonDb_)
    {
-      pclFileParser_->LoadJsonDb(pclJsonDb_);
+      pclFileParser_->LoadJsonDb(JsonReader::Ptr(pclJsonDb_, [](auto){}));
    }
 }
 
@@ -119,14 +119,14 @@ unsigned char* novatel_fileparser_get_buffer(FileParser* pclFileParser_)
 
 Filter* novatel_fileparser_get_filter(FileParser* pclFileParser_)
 {
-   return pclFileParser_ ? pclFileParser_->GetFilter() : nullptr;
+   return pclFileParser_ ? pclFileParser_->GetFilter().get() : nullptr;
 }
 
 void novatel_fileparser_set_filter(FileParser* pclFileParser_, Filter* pclFilter_)
 {
    if (pclFileParser_ && pclFilter_)
    {
-      pclFileParser_->SetFilter(pclFilter_);
+      pclFileParser_->SetFilter(Filter::Ptr(pclFilter_, [](auto){}));
    }
 }
 

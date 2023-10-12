@@ -59,12 +59,12 @@ class Encoder
 private:
    std::shared_ptr<spdlog::logger> pclMyLogger;
    uint32_t uiMyAbbrevAsciiIndentationLevel;
-   JsonReader* pclMyMsgDb{ nullptr };
+   JsonReader::Ptr pclMyMsgDb{ nullptr };
    MessageDefinition stMyRespDef;
-   EnumDefinition* vMyRespDefns{ nullptr };
-   EnumDefinition* vMyCommandDefns{ nullptr };
-   EnumDefinition* vMyPortAddrDefns{ nullptr };
-   EnumDefinition* vMyGPSTimeStatusDefns{ nullptr };
+   EnumDefinition::Ptr vMyRespDefns{ nullptr };
+   EnumDefinition::Ptr vMyCommandDefns{ nullptr };
+   EnumDefinition::Ptr vMyPortAddrDefns{ nullptr };
+   EnumDefinition::Ptr vMyGPSTimeStatusDefns{ nullptr };
 
    // Inline buffer functions
    [[nodiscard]] bool PrintToBuffer(char** ppcBuffer_, uint32_t& uiBufferBytesRemaining_, const char* szFormat_, ...)
@@ -144,7 +144,7 @@ private:
    std::string MsgIdToMsgName(uint32_t uiMessageID_) const;
    std::string JsonHeaderToMsgName(const IntermediateHeader& stIntermediateHeader_) const;
 
-   MsgFieldsVector* GetMsgDefFromCRC(const MessageDefinition* pclMessageDef_, uint32_t& uiMsgDefCRC_) const;
+   MsgFieldsVector* GetMsgDefFromCRC(const MessageDefinition& pclMessageDef_, uint32_t& uiMsgDefCRC_) const;
 
 protected:
    // Encode binary
@@ -174,7 +174,7 @@ public:
    //
    //! \param[in] pclJsonDb_ A pointer to a JsonReader object.  Defaults to nullptr.
    //----------------------------------------------------------------------------
-   Encoder(JsonReader* pclJsonDb_ = nullptr);
+   Encoder(JsonReader::Ptr pclJsonDb_ = nullptr);
 
    //----------------------------------------------------------------------------
    //! \brief Load a JsonReader object.
@@ -182,7 +182,7 @@ public:
    //! \param[in] pclJsonDb_ A pointer to a JsonReader object.
    //----------------------------------------------------------------------------
    void
-   LoadJsonDb(JsonReader* pclJsonDb_);
+   LoadJsonDb(JsonReader::Ptr pclJsonDb_);
 
    //----------------------------------------------------------------------------
    //! \brief Get the internal logger.

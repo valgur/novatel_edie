@@ -40,7 +40,7 @@ using namespace novatel::edie::oem;
 
 Parser* novatel_parser_init(JsonReader* pclJsonDb_)
 {
-   return pclJsonDb_ ? new Parser(pclJsonDb_) : nullptr;
+   return pclJsonDb_ ? new Parser(JsonReader::Ptr(pclJsonDb_, [](auto){})) : nullptr;
 }
 
 void novatel_parser_delete(Parser* pclParser_)
@@ -56,7 +56,7 @@ void novatel_parser_load_json_db(Parser* pclParser_, JsonReader* pclJsonDb_)
 {
    if (pclParser_ && pclJsonDb_)
    {
-      pclParser_->LoadJsonDb(pclJsonDb_);
+      pclParser_->LoadJsonDb(JsonReader::Ptr(pclJsonDb_, [](auto){}));
    }
 }
 
@@ -114,14 +114,14 @@ ENCODEFORMAT novatel_parser_get_encodeformat(Parser* pclParser_)
 
 Filter* novatel_parser_get_filter(Parser* pclParser_)
 {
-   return pclParser_ ? pclParser_->GetFilter() : nullptr;
+   return pclParser_ ? pclParser_->GetFilter().get() : nullptr;
 }
 
 void novatel_parser_set_filter(Parser* pclParser_, Filter* pclFilter_)
 {
    if (pclParser_ && pclFilter_)
    {
-      pclParser_->SetFilter(pclFilter_);
+      pclParser_->SetFilter(Filter::Ptr(pclFilter_, [](auto){}));
    }
 }
 

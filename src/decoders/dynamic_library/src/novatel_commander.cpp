@@ -55,7 +55,7 @@ void novatel_commander_shutdown_logger(Commander* pclCommander_)
 
 Commander* novatel_commander_init(JsonReader* pclJsonDb_)
 {
-   return pclJsonDb_ ? new Commander(pclJsonDb_) : nullptr;
+   return pclJsonDb_ ? new Commander(JsonReader::Ptr(pclJsonDb_, [](auto){})) : nullptr;
 }
 
 void novatel_commander_delete(Commander* pclCommander_)
@@ -71,7 +71,7 @@ void novatel_commander_load_json(Commander* pclCommander_, JsonReader* pclJsonDb
 {
    if (pclCommander_ && pclJsonDb_)
    {
-      pclCommander_->LoadJsonDb(pclJsonDb_);
+      pclCommander_->LoadJsonDb(JsonReader::Ptr(pclJsonDb_, [](auto){}));
    }
 }
 

@@ -13,8 +13,8 @@ void init_novatel_fileparser(nb::module_& m)
       .def("__init__", [](oem::FileParser* t, nb::handle_t<nb::str> json_db_path) {
          new(t) oem::FileParser(nb::cast<std::u32string>(json_db_path));
       }, "json_db"_a)
-      .def("__init__", [](oem::FileParser* t, nb::handle_t<JsonReader> json_db) {
-         new(t) oem::FileParser(&nb::cast<JsonReader&>(json_db));
+      .def("__init__", [](oem::FileParser* t, JsonReader::Ptr& json_db) {
+         new(t) oem::FileParser(json_db);
       }, "json_db"_a)
       .def("load_json_db", &oem::FileParser::LoadJsonDb, "json_db_path"_a)
       .def("__init__", [](oem::FileParser* t) { new(t) oem::FileParser(JsonDbSingleton::get()); })
@@ -29,7 +29,7 @@ void init_novatel_fileparser(nb::module_& m)
       .def_prop_rw("return_unknown_bytes", &oem::FileParser::GetReturnUnknownBytes,
                    &oem::FileParser::SetReturnUnknownBytes)
       .def_prop_rw("encode_format", &oem::FileParser::GetEncodeFormat, &oem::FileParser::SetEncodeFormat)
-      .def_prop_rw("filter", &oem::FileParser::GetFilter, &oem::FileParser::SetFilter, nb::rv_policy::reference_internal)
+      .def_prop_rw("filter", &oem::FileParser::GetFilter, &oem::FileParser::SetFilter)
       .def("set_stream", &oem::FileParser::SetStream, "input_stream"_a)
       .def("read", [](oem::FileParser& self) {
          oem::MessageDataStruct message_data;

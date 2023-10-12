@@ -102,10 +102,10 @@ int main(int argc, char* argv[])
    }
 
    // Load the database
-   JsonReader clJsonDb;
+   auto clJsonDb = std::make_shared<JsonReader>();
    pclLogger->info("Loading Database...");
    auto tStart = chrono::high_resolution_clock::now();
-   clJsonDb.LoadFile(sJsonDB);
+   clJsonDb->LoadFile(sJsonDB);
    pclLogger->info("Done in {}ms", chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - tStart).count());
 
    // Setup timers
@@ -120,17 +120,17 @@ int main(int argc, char* argv[])
    clFramer.SetPayloadOnly(false);
    clFramer.SetFrameJson(false);
 
-   HeaderDecoder clHeaderDecoder(& clJsonDb);
+   HeaderDecoder clHeaderDecoder(clJsonDb);
    clHeaderDecoder.SetLoggerLevel(spdlog::level::debug);
    Logger::AddConsoleLogging(clHeaderDecoder.GetLogger());
    Logger::AddRotatingFileLogger(clHeaderDecoder.GetLogger());
 
-   MessageDecoder clMessageDecoder(&clJsonDb);
+   MessageDecoder clMessageDecoder(clJsonDb);
    clMessageDecoder.SetLoggerLevel(spdlog::level::debug);
    Logger::AddConsoleLogging(clMessageDecoder.GetLogger());
    Logger::AddRotatingFileLogger(clMessageDecoder.GetLogger());
 
-   Encoder clEncoder(&clJsonDb);
+   Encoder clEncoder(clJsonDb);
    clEncoder.SetLoggerLevel(spdlog::level::debug);
    Logger::AddConsoleLogging(clEncoder.GetLogger());
    Logger::AddRotatingFileLogger(clEncoder.GetLogger());
