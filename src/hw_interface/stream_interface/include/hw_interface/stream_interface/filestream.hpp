@@ -180,7 +180,7 @@ class FileStream
     StreamReadStatus ReadFile(char* cData, uint32_t uiSize);
 
     /*! \fn uint32_t WriteFile(const char* cData, uint32_t uiSize)
-     *  \brief Writes the first uiSize character poited by cData into fstream
+     *  \brief Writes the first uiSize character pointed by cData into fstream
      *
      *  \param [in] cData Data to be written to the fstream.
      *  \param [in] uiSize Size of the data to be write to the file.
