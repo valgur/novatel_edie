@@ -130,7 +130,7 @@ void from_json(const json& j_, EnumDefinition& ed_)
 }
 
 //-----------------------------------------------------------------------
-uint32_t ParseFields(const json& j_, std::vector<BaseField*>& vFields_)
+uint32_t ParseFields(const json& j_, std::vector<BaseField::Ptr>& vFields_)
 {
     uint32_t uiFieldSize = 0;
     for (const auto& field : j_)
@@ -140,14 +140,14 @@ uint32_t ParseFields(const json& j_, std::vector<BaseField*>& vFields_)
 
         if (sFieldType == "SIMPLE")
         {
-            auto pstField = new BaseField;
+            auto pstField = std::make_shared<novatel::edie::BaseField>();
             *pstField = field;
             vFields_.push_back(pstField);
             uiFieldSize += stDataType.length;
         }
         else if (sFieldType == "ENUM")
         {
-            auto pstField = new EnumField;
+            auto pstField = std::make_shared<novatel::edie::EnumField>();
             *pstField = field;
             pstField->length = stDataType.length;
             vFields_.push_back(pstField);
@@ -155,7 +155,7 @@ uint32_t ParseFields(const json& j_, std::vector<BaseField*>& vFields_)
         }
         else if (sFieldType == "FIXED_LENGTH_ARRAY" || sFieldType == "VARIABLE_LENGTH_ARRAY" || sFieldType == "STRING")
         {
-            auto pstField = new ArrayField;
+            auto pstField = std::make_shared<novatel::edie::ArrayField>();
             *pstField = field;
             vFields_.push_back(pstField);
             uint32_t uiArrayLength = field.at("arrayLength").get<uint32_t>();
@@ -163,7 +163,7 @@ uint32_t ParseFields(const json& j_, std::vector<BaseField*>& vFields_)
         }
         else if (sFieldType == "FIELD_ARRAY")
         {
-            auto pstField = new FieldArrayField;
+            auto pstField = std::make_shared<novatel::edie::FieldArrayField>();
             *pstField = field;
             vFields_.push_back(pstField);
         }
@@ -192,13 +192,15 @@ template <typename T> void JsonReader::LoadFile(T filePath_)
         vMessageDefinitions.clear();
         for (const auto& msg : jDefinitions["messages"])
         {
-            vMessageDefinitions.push_back(msg); // The JSON object is converted to a MessageDefinition object here
+            vMessageDefinitions.push_back(
+                std::make_shared<novatel::edie::MessageDefinition>(msg)); // The JSON object is converted to a MessageDefinition object here
         }
 
         vEnumDefinitions.clear();
         for (const auto& enm : jDefinitions["enums"])
         {
-            vEnumDefinitions.push_back(enm); // The JSON object is converted to a EnumDefinition object here
+            vEnumDefinitions.push_back(
+                std::make_shared<novatel::edie::EnumDefinition>(enm)); // The JSON object is converted to a EnumDefinition object here
         }
 
         GenerateMappings();
@@ -222,13 +224,15 @@ template <> void JsonReader::LoadFile<std::string>(std::string filePath_)
 
         for (auto& msg : jDefinitions["messages"])
         {
-            vMessageDefinitions.push_back(msg); // The JSON object is converted to a MessageDefinition object here
+            vMessageDefinitions.push_back(
+                std::make_shared<novatel::edie::MessageDefinition>(msg)); // The JSON object is converted to a MessageDefinition object here
         }
 
         vEnumDefinitions.clear();
         for (auto& enm : jDefinitions["enums"])
         {
-            vEnumDefinitions.push_back(enm); // The JSON object is converted to a EnumDefinition object here
+            vEnumDefinitions.push_back(
+                std::make_shared<novatel::edie::EnumDefinition>(enm)); // The JSON object is converted to a EnumDefinition object here
         }
 
         GenerateMappings();
@@ -253,7 +257,7 @@ template <typename T> void JsonReader::AppendMessages(T filePath_)
             // Convert JSON object to an MessageDefinition object
             const novatel::edie::MessageDefinition msgDef(msg);
             RemoveMessage(msgDef.logID, false);
-            vMessageDefinitions.push_back(msg);
+            vMessageDefinitions.push_back(std::make_shared<novatel::edie::MessageDefinition>(msg));
         }
 
         for (const auto& enm : jDefinitions["enums"])
@@ -261,7 +265,7 @@ template <typename T> void JsonReader::AppendMessages(T filePath_)
             // Convert JSON object to an EnumDefinition object
             const novatel::edie::EnumDefinition enmDef(enm);
             RemoveEnumeration(enmDef.name, false);
-            vEnumDefinitions.push_back(enm);
+            vEnumDefinitions.push_back(std::make_shared<novatel::edie::EnumDefinition>(enm));
         }
 
         GenerateMappings();
@@ -283,7 +287,8 @@ template <typename T> void JsonReader::AppendEnumerations(T filePath_)
 
         for (const auto& enm : jDefinitions["enums"])
         {
-            vEnumDefinitions.push_back(enm); // The JSON object is converted to a EnumDefinition object here
+            vEnumDefinitions.push_back(
+                std::make_shared<novatel::edie::EnumDefinition>(enm)); // The JSON object is converted to a EnumDefinition object here
         }
 
         GenerateMappings();
@@ -312,9 +317,11 @@ void JsonReader::RemoveMessage(const uint32_t iMsgId_, const bool bGenerateMappi
 {
     auto iTer = GetMessageIt(iMsgId_);
 
+    iTer = GetMessageIt(iMsgId_);
+
     if (iTer != vMessageDefinitions.end())
     {
-        RemoveMessageMapping(*iTer);
+        RemoveMessageMapping(**iTer);
         vMessageDefinitions.erase(iTer);
     }
 
@@ -328,7 +335,7 @@ void JsonReader::RemoveEnumeration(const std::string& strEnumeration_, const boo
 
     if (iTer != vEnumDefinitions.end())
     {
-        RemoveEnumerationMapping(*iTer);
+        RemoveEnumerationMapping(**iTer);
         vEnumDefinitions.erase(iTer);
     }
 
@@ -343,13 +350,15 @@ void JsonReader::ParseJson(const std::string& strJsonData_)
     vMessageDefinitions.clear();
     for (const auto& msg : jDefinitions["logs"])
     {
-        vMessageDefinitions.push_back(msg); // The JSON object is converted to a MessageDefinition object here
+        vMessageDefinitions.push_back(
+            std::make_shared<novatel::edie::MessageDefinition>(msg)); // The JSON object is converted to a MessageDefinition object here
     }
 
     vEnumDefinitions.clear();
     for (const auto& enm : jDefinitions["enums"])
     {
-        vEnumDefinitions.push_back(enm); // The JSON object is converted to a EnumDefinition object here
+        vEnumDefinitions.push_back(
+            std::make_shared<novatel::edie::EnumDefinition>(enm)); // The JSON object is converted to a EnumDefinition object here
     }
 
     GenerateMappings();
@@ -370,7 +379,7 @@ uint32_t JsonReader::MsgNameToMsgId(std::string sMsgName_) const
     }
 
     // If this is an abbrev msg (no format information), we will be able to find the MsgDef
-    const novatel::edie::MessageDefinition* pclMessageDef = GetMsgDef(sMsgName_);
+    auto pclMessageDef = GetMsgDef(sMsgName_);
     if (pclMessageDef)
     {
         uiResponse = static_cast<uint32_t>(false);
@@ -417,8 +426,8 @@ std::string JsonReader::MsgIdToMsgName(const uint32_t uiMessageId_) const
 
     UnpackMsgId(uiMessageId_, usLogId, uiSiblingId, uiMessageFormat, uiResponse);
 
-    const novatel::edie::MessageDefinition* pstMessageDefinition = GetMsgDef(usLogId);
-    std::string strMessageName = pstMessageDefinition ? pstMessageDefinition->name : GetEnumString(vEnumDefinitions.data(), usLogId);
+    auto pstMessageDefinition = GetMsgDef(usLogId);
+    std::string strMessageName = pstMessageDefinition ? pstMessageDefinition->name : GetEnumString(vEnumDefinitions[0], usLogId);
 
     std::string strMessageFormatSuffix = uiResponse                                                                        ? "R"
                                          : uiMessageFormat == static_cast<uint32_t>(novatel::edie::MESSAGE_FORMAT::BINARY) ? "B"
@@ -432,7 +441,7 @@ std::string JsonReader::MsgIdToMsgName(const uint32_t uiMessageId_) const
 }
 
 //-----------------------------------------------------------------------
-const novatel::edie::MessageDefinition* JsonReader::GetMsgDef(const std::string& strMsgName_) const
+novatel::edie::MessageDefinition::ConstPtr JsonReader::GetMsgDef(const std::string& strMsgName_) const
 {
     const auto it = mMessageName.find(strMsgName_);
     return it != mMessageName.end() ? it->second : nullptr;
@@ -440,22 +449,22 @@ const novatel::edie::MessageDefinition* JsonReader::GetMsgDef(const std::string&
 
 //-----------------------------------------------------------------------
 // TODO need to look into the map and find the right crc and return the msg def for that CRC
-const novatel::edie::MessageDefinition* JsonReader::GetMsgDef(const int32_t iMsgId_) const
+novatel::edie::MessageDefinition::ConstPtr JsonReader::GetMsgDef(const int32_t iMsgId_) const
 {
     const auto it = mMessageId.find(iMsgId_);
     return it != mMessageId.end() ? it->second : nullptr;
 }
 
 // -------------------------------------------------------------------------------------------------------
-const std::vector<novatel::edie::BaseField*>* novatel::edie::MessageDefinition::GetMsgDefFromCrc(const std::shared_ptr<spdlog::logger>& pclLogger_,
-                                                                                                 uint32_t& uiMsgDefCrc_) const
+const std::vector<novatel::edie::BaseField::Ptr>& novatel::edie::MessageDefinition::GetMsgDefFromCrc(spdlog::logger& pclLogger_,
+                                                                                                     uint32_t uiMsgDefCrc_) const
 {
     // If we can't find the correct CRC just default to the latest.
     if (!fields.contains(uiMsgDefCrc_))
     {
-        pclLogger_->info("Log DB is missing the log definition {} - {}.  Defaulting to newest version of the log definition.", name, uiMsgDefCrc_);
+        pclLogger_.info("Log DB is missing the log definition {} - {}.  Defaulting to newest version of the log definition.", name, uiMsgDefCrc_);
         uiMsgDefCrc_ = latestMessageCrc;
     }
 
-    return &fields.at(uiMsgDefCrc_);
+    return fields.at(uiMsgDefCrc_);
 }

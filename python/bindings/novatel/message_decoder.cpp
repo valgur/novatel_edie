@@ -112,13 +112,13 @@ std::string PyIntermediateMessage::repr() const
 class DecoderTester : public oem::MessageDecoder
 {
   public:
-    [[nodiscard]] STATUS TestDecodeBinary(const std::vector<BaseField*> MsgDefFields_, unsigned char** ppucLogBuf_,
+    [[nodiscard]] STATUS TestDecodeBinary(const std::vector<BaseField::Ptr> MsgDefFields_, unsigned char** ppucLogBuf_,
                                           novatel::edie::IntermediateMessage& vIntermediateFormat_, uint32_t uiMessageLength_)
     {
         return DecodeBinary(MsgDefFields_, ppucLogBuf_, vIntermediateFormat_, uiMessageLength_);
     }
 
-    [[nodiscard]] STATUS TestDecodeAscii(const std::vector<BaseField*> MsgDefFields_, char** ppcLogBuf_,
+    [[nodiscard]] STATUS TestDecodeAscii(const std::vector<BaseField::Ptr> MsgDefFields_, char** ppcLogBuf_,
                                          novatel::edie::IntermediateMessage& vIntermediateFormat_)
     {
         return DecodeAscii<false>(MsgDefFields_, ppcLogBuf_, vIntermediateFormat_);
@@ -144,7 +144,7 @@ void init_novatel_message_decoder(nb::module_& m)
         });
 
     nb::class_<oem::MessageDecoder>(m, "MessageDecoder")
-        .def(nb::init<JsonReader*>(), "json_db"_a)
+        .def(nb::init<JsonReader::Ptr>(), "json_db"_a)
         .def("__init__", [](oem::MessageDecoder* t) { new (t) oem::MessageDecoder(JsonDbSingleton::get()); })
         .def("load_json_db", &oem::MessageDecoder::LoadJsonDb, "json_db"_a)
         .def_prop_ro("logger", &oem::MessageDecoder::GetLogger)
@@ -159,7 +159,7 @@ void init_novatel_message_decoder(nb::module_& m)
         // For internal testing purposes only
         .def(
             "_decode_ascii",
-            [](oem::MessageDecoder& decoder, const std::vector<BaseField*>& msg_def_fields, nb::bytes message_body) {
+            [](oem::MessageDecoder& decoder, const std::vector<BaseField::Ptr>& msg_def_fields, nb::bytes message_body) {
                 novatel::edie::IntermediateMessage message;
                 // Copy to ensure that the byte string is zero-delimited
                 std::string body_str(message_body.c_str(), message_body.size());
@@ -170,7 +170,7 @@ void init_novatel_message_decoder(nb::module_& m)
             "msg_def_fields"_a, "message_body"_a)
         .def(
             "_decode_binary",
-            [](oem::MessageDecoder& decoder, const std::vector<BaseField*>& msg_def_fields, nb::bytes message_body, uint32_t message_length) {
+            [](oem::MessageDecoder& decoder, const std::vector<BaseField::Ptr>& msg_def_fields, nb::bytes message_body, uint32_t message_length) {
                 novatel::edie::IntermediateMessage message;
                 const char* data_ptr = message_body.c_str();
                 STATUS status =

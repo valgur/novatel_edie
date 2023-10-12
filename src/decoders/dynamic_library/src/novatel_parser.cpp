@@ -31,7 +31,10 @@
 using namespace novatel::edie;
 using namespace novatel::edie::oem;
 
-Parser* NovatelParserInit(JsonReader* pclJsonDb_) { return new Parser(pclJsonDb_); }
+Parser* NovatelParserInit(JsonReader* pclJsonDb_)
+{
+    return pclJsonDb_ ? new Parser(JsonReader::Ptr(pclJsonDb_, [](auto) {})) : nullptr;
+}
 
 void NovatelParserDelete(Parser* pclParser_)
 {
@@ -44,7 +47,10 @@ void NovatelParserDelete(Parser* pclParser_)
 
 void NovatelParserLoadJsonDb(Parser* pclParser_, JsonReader* pclJsonDb_)
 {
-    if (pclParser_ && pclJsonDb_) { pclParser_->LoadJsonDb(pclJsonDb_); }
+    if (pclParser_ && pclJsonDb_)
+    {
+        pclParser_->LoadJsonDb(JsonReader::Ptr(pclJsonDb_, [](auto) {}));
+    }
 }
 
 void NovatelParserSetIgnoreAbbrevAsciiResponses(Parser* pclParser_, bool bIgnoreAbbrevAsciiResponsesCmp_)
@@ -75,11 +81,14 @@ void NovatelParserSetEncodeFormat(Parser* pclParser_, ENCODE_FORMAT eEncodeForma
 
 ENCODE_FORMAT NovatelParserGetEncodeFormat(Parser* pclParser_) { return pclParser_ ? pclParser_->GetEncodeFormat() : ENCODE_FORMAT::UNSPECIFIED; }
 
-Filter* NovatelParserGetFilter(Parser* pclParser_) { return pclParser_ ? pclParser_->GetFilter() : nullptr; }
+Filter* NovatelParserGetFilter(Parser* pclParser_) { return pclParser_ ? pclParser_->GetFilter().get() : nullptr; }
 
 void NovatelParserSetFilter(Parser* pclParser_, Filter* pclFilter_)
 {
-    if (pclParser_ && pclFilter_) { pclParser_->SetFilter(pclFilter_); }
+    if (pclParser_ && pclFilter_)
+    {
+        pclParser_->SetFilter(Filter::Ptr(pclFilter_, [](auto) {}));
+    }
 }
 
 unsigned char* NovatelParserGetBuffer(Parser* pclParser_) { return pclParser_ ? pclParser_->GetInternalBuffer() : nullptr; }

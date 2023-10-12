@@ -84,10 +84,10 @@ int main(int argc, char* argv[])
     }
 
     // Load the database
-    JsonReader clJsonDb;
+    auto clJsonDb = std::make_shared<JsonReader>();
     pclLogger->info("Loading Database...");
     auto tStart = std::chrono::high_resolution_clock::now();
-    clJsonDb.LoadFile(sJsonDb);
+    clJsonDb->LoadFile(sJsonDb);
     pclLogger->info("Done in {}ms",
                     std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - tStart).count());
 
@@ -108,7 +108,7 @@ int main(int argc, char* argv[])
     MessageDataStruct stMessageData;
     MessageDataStruct stEmbeddedMessageData;
 
-    RxConfigHandler clRxConfigHandler(&clJsonDb);
+    RxConfigHandler clRxConfigHandler(clJsonDb);
     auto eStatus = STATUS::UNKNOWN;
 
     while (!stReadStatus.bEOS)

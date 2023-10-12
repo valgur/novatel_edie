@@ -35,19 +35,19 @@
 namespace novatel::edie {
 
 // -------------------------------------------------------------------------------------------------------
-constexpr bool PrintAsString(const BaseField* pstFieldDef_)
+constexpr bool PrintAsString(const BaseField& pstFieldDef_)
 {
     // Printing as a string means two things:
     // 1. The field will be surrounded by quotes
     // 2. The field will not contain null-termination or padding
-    return pstFieldDef_->type == FIELD_TYPE::STRING || pstFieldDef_->sConversionStripped == "%s" || pstFieldDef_->sConversionStripped == "%S";
+    return pstFieldDef_.type == FIELD_TYPE::STRING || pstFieldDef_.sConversionStripped == "%s" || pstFieldDef_.sConversionStripped == "%S";
 }
 
 // -------------------------------------------------------------------------------------------------------
-constexpr bool IsCommaSeparated(const BaseField* pstFieldDef_)
+constexpr bool IsCommaSeparated(const BaseField& pstFieldDef_)
 {
     // In certain cases there are no separators printed between array elements
-    return !PrintAsString(pstFieldDef_) && pstFieldDef_->sConversionStripped != "%Z" && pstFieldDef_->sConversionStripped != "%P";
+    return !PrintAsString(pstFieldDef_) && pstFieldDef_.sConversionStripped != "%Z" && pstFieldDef_.sConversionStripped != "%P";
 }
 
 // -------------------------------------------------------------------------------------------------------
@@ -122,11 +122,11 @@ class EncoderBase
 {
   protected:
     std::shared_ptr<spdlog::logger> pclMyLogger{Logger::RegisterLogger("encoder")};
-    JsonReader* pclMyMsgDb{nullptr};
+    JsonReader::Ptr pclMyMsgDb{nullptr};
 
-    EnumDefinition* vMyCommandDefinitions{nullptr};
-    EnumDefinition* vMyPortAddressDefinitions{nullptr};
-    EnumDefinition* vMyGpsTimeStatusDefinitions{nullptr};
+    EnumDefinition::Ptr vMyCommandDefinitions{nullptr};
+    EnumDefinition::Ptr vMyPortAddressDefinitions{nullptr};
+    EnumDefinition::Ptr vMyGpsTimeStatusDefinitions{nullptr};
 
     static std::unordered_map<uint64_t, std::function<bool(const FieldContainer&, char**, uint32_t&, [[maybe_unused]] JsonReader*)>> asciiFieldMap;
     static std::unordered_map<uint64_t, std::function<bool(const FieldContainer&, char**, uint32_t&, [[maybe_unused]] JsonReader*)>> jsonFieldMap;
@@ -159,7 +159,7 @@ class EncoderBase
     //
     //! \param[in] pclJsonDb_ A pointer to a JsonReader object.  Defaults to nullptr.
     //----------------------------------------------------------------------------
-    EncoderBase(JsonReader* pclJsonDb_ = nullptr);
+    EncoderBase(JsonReader::Ptr pclJsonDb_ = nullptr);
 
     //----------------------------------------------------------------------------
     //! \brief A destructor for the Encoder class.
@@ -171,7 +171,7 @@ class EncoderBase
     //
     //! \param[in] pclJsonDb_ A pointer to a JsonReader object.
     //----------------------------------------------------------------------------
-    void LoadJsonDb(JsonReader* pclJsonDb_);
+    void LoadJsonDb(JsonReader::Ptr pclJsonDb_);
 
     //----------------------------------------------------------------------------
     //! \brief Get the internal logger.
