@@ -203,6 +203,7 @@ int main(int argc, char* argv[])
                     if (!clFilter.DoFiltering(stMetaData)) { continue; }
 
                     pucFrameBuffer += stMetaData.uiHeaderLength;
+                    uint32_t uiBodyLength = stMetaData.uiLength - stMetaData.uiHeaderLength;
                     // Decode the Log, pass the meta data and populate the intermediate log.
                     eDecoderStatus = clMessageDecoder.Decode(pucFrameBuffer, stMessage, stMetaData);
 
@@ -219,13 +220,13 @@ int main(int argc, char* argv[])
                         }
                         else
                         {
-                            clUnknownBytesOFS.WriteData(reinterpret_cast<char*>(pucFrameBuffer), stMetaData.uiLength);
+                            clUnknownBytesOFS.WriteData(reinterpret_cast<char*>(pucFrameBuffer), uiBodyLength);
                             pclLogger->warn("Encoder returned with status code {}", static_cast<int>(eEncoderStatus));
                         }
                     }
                     else
                     {
-                        clUnknownBytesOFS.WriteData(reinterpret_cast<char*>(pucFrameBuffer), stMetaData.uiLength);
+                        clUnknownBytesOFS.WriteData(reinterpret_cast<char*>(pucFrameBuffer), uiBodyLength);
                         pclLogger->warn("MessageDecoder returned with status code {}", static_cast<int>(eDecoderStatus));
                     }
                 }
