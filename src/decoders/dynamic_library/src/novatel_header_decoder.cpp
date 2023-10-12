@@ -41,7 +41,10 @@ void NovatelHeaderDecoderShutdownLogger(HeaderDecoder* pclHeaderDecoder_)
     if (pclHeaderDecoder_) { pclHeaderDecoder_->ShutdownLogger(); } // TODO: ShutdownLogger is static, this function signature should be changed
 }
 
-HeaderDecoder* NovatelHeaderDecoderInit(JsonReader* pclJsonDb_) { return new HeaderDecoder(pclJsonDb_); }
+HeaderDecoder* NovatelHeaderDecoderInit(JsonReader* pclJsonDb_)
+{
+    return pclJsonDb_ ? new HeaderDecoder(JsonReader::Ptr(pclJsonDb_, [](auto) {})) : nullptr;
+}
 
 void NovatelHeaderDecoderDelete(HeaderDecoder* pclHeaderDecoder_)
 {
@@ -54,7 +57,10 @@ void NovatelHeaderDecoderDelete(HeaderDecoder* pclHeaderDecoder_)
 
 void NovatelHeaderDecoderLoadJson(HeaderDecoder* pclHeaderDecoder_, JsonReader* pclJsonDb_)
 {
-    if (pclHeaderDecoder_ && pclJsonDb_) { pclHeaderDecoder_->LoadJsonDb(pclJsonDb_); }
+    if (pclHeaderDecoder_ && pclJsonDb_)
+    {
+        pclHeaderDecoder_->LoadJsonDb(JsonReader::Ptr(pclJsonDb_, [](auto) {}));
+    }
 }
 
 STATUS NovatelHeaderDecoderDecode(HeaderDecoder* pclHeaderDecoder_, unsigned char* pucLogBuf_, IntermediateHeader* pstInterHeader_,

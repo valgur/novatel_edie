@@ -69,13 +69,13 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    JsonReader clJsonDb;
+    auto clJsonDb = std::make_shared<JsonReader>();
     auto tStart = std::chrono::high_resolution_clock::now();
     logger->info("Loading Database... ");
-    clJsonDb.LoadFile(sJsonDb);
+    clJsonDb->LoadFile(sJsonDb);
     logger->info("Done in {}ms", std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - tStart).count());
 
-    Commander clCommander(&clJsonDb);
+    Commander clCommander(clJsonDb);
 
     char acEncodeBuffer[MAX_ASCII_MESSAGE_LENGTH];
     char* pcEncodedMessageBuffer = acEncodeBuffer;

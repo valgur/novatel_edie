@@ -41,7 +41,10 @@ void NovatelCommanderShutdownLogger(Commander* pclCommander_)
     if (pclCommander_) { pclCommander_->ShutdownLogger(); } // TODO: ShutdownLogger is static, this function signature should be changed
 }
 
-Commander* NovatelCommanderInit(JsonReader* pclJsonDb_) { return new Commander(pclJsonDb_); }
+Commander* NovatelCommanderInit(JsonReader* pclJsonDb_)
+{
+    return pclJsonDb_ ? new Commander(JsonReader::Ptr(pclJsonDb_, [](auto) {})) : nullptr;
+}
 
 void NovatelCommanderDelete(Commander* pclCommander_)
 {
@@ -54,7 +57,10 @@ void NovatelCommanderDelete(Commander* pclCommander_)
 
 void NovatelCommanderLoadJson(Commander* pclCommander_, JsonReader* pclJsonDb_)
 {
-    if (pclCommander_ && pclJsonDb_) { pclCommander_->LoadJsonDb(pclJsonDb_); }
+    if (pclCommander_ && pclJsonDb_)
+    {
+        pclCommander_->LoadJsonDb(JsonReader::Ptr(pclJsonDb_, [](auto) {}));
+    }
 }
 
 STATUS NovatelCommanderEncode(Commander* pclCommander_, char* pcAbbrevAsciiCommand_, uint32_t uicAbbrevAsciiCommandLength_, char* pcEncodeBuffer_,

@@ -191,7 +191,8 @@ constexpr double afTheRangeCmp4LockTimeValues[] = {
     2048.0, 4096.0, 8192.0, 16384.0, 32768.0, 65536.0, 131072.0, 262144.0};
 
 //------------------------------------------------------------------------------
-RangeDecompressor::RangeDecompressor(JsonReader* pclJsonDB_) : clMyHeaderDecoder(pclJsonDB_), clMyMessageDecoder(pclJsonDB_), clMyEncoder(pclJsonDB_)
+RangeDecompressor::RangeDecompressor(JsonReader::Ptr pclJsonDB_)
+    : clMyHeaderDecoder(pclJsonDB_), clMyMessageDecoder(pclJsonDB_), clMyEncoder(pclJsonDB_)
 {
     pclMyLogger = Logger::RegisterLogger("range_decompressor");
     pclMyLogger->debug("RangeDecompressor initializing...");
@@ -211,7 +212,7 @@ RangeDecompressor::RangeDecompressor(JsonReader* pclJsonDB_) : clMyHeaderDecoder
 }
 
 //------------------------------------------------------------------------------
-void RangeDecompressor::LoadJsonDb(JsonReader* pclJsonDB_)
+void RangeDecompressor::LoadJsonDb(JsonReader::Ptr pclJsonDB_)
 {
     pclMyMsgDB = pclJsonDB_;
     clMyHeaderDecoder.LoadJsonDb(pclJsonDB_);

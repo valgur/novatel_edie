@@ -41,7 +41,7 @@ void AppendSiblingId(std::string& sMsgName_, const IntermediateHeader& stInterHe
 }
 
 // -------------------------------------------------------------------------------------------------------
-Encoder::Encoder(JsonReader* pclJsonDb_) : EncoderBase(pclJsonDb_)
+Encoder::Encoder(JsonReader::Ptr pclJsonDb_) : EncoderBase(pclJsonDb_)
 {
     InitFieldMaps();
     if (pclJsonDb_ != nullptr) { LoadJsonDb(pclJsonDb_); }
@@ -207,7 +207,7 @@ bool Encoder::EncodeAsciiHeader(const IntermediateHeader& stInterHeader_, char**
     if (!PrintToBuffer(ppcOutBuf_, uiBytesLeft_, "%c", OEM4_ASCII_SYNC)) { return false; }
 
     // Message name
-    const MessageDefinition* pclMessageDef = pclMyMsgDb->GetMsgDef(stInterHeader_.usMessageId);
+    MessageDefinition::ConstPtr pclMessageDef = pclMyMsgDb->GetMsgDef(stInterHeader_.usMessageId);
     std::string sMsgName(pclMessageDef ? pclMessageDef->name : GetEnumString(vMyCommandDefinitions, stInterHeader_.usMessageId));
     const uint32_t uiResponse = (stInterHeader_.ucMessageType & static_cast<uint32_t>(MESSAGE_TYPE_MASK::RESPONSE)) >> 7;
     sMsgName.append(uiResponse ? "R" : "A"); // Append 'A' for ascii, or 'R' for ascii response
@@ -235,7 +235,7 @@ bool Encoder::EncodeAbbrevAsciiHeader(const IntermediateHeader& stInterHeader_, 
     if (!bIsEmbeddedHeader_ && !PrintToBuffer(ppcOutBuf_, uiBytesLeft_, "%c", OEM4_ABBREV_ASCII_SYNC)) { return false; }
 
     // Message name
-    const MessageDefinition* pclMessageDef = pclMyMsgDb->GetMsgDef(stInterHeader_.usMessageId);
+    MessageDefinition::ConstPtr pclMessageDef = pclMyMsgDb->GetMsgDef(stInterHeader_.usMessageId);
     std::string sMsgName(pclMessageDef ? pclMessageDef->name : GetEnumString(vMyCommandDefinitions, stInterHeader_.usMessageId));
     AppendSiblingId(sMsgName, stInterHeader_);
 
@@ -292,7 +292,7 @@ bool Encoder::EncodeAbbrevAsciiShortHeader(const IntermediateHeader& stInterHead
 std::string Encoder::JsonHeaderToMsgName(const IntermediateHeader& stInterHeader_) const
 {
     // Message name
-    const MessageDefinition* pclMessageDef = pclMyMsgDb->GetMsgDef(stInterHeader_.usMessageId);
+    MessageDefinition::ConstPtr pclMessageDef = pclMyMsgDb->GetMsgDef(stInterHeader_.usMessageId);
     std::string sMsgName(pclMessageDef ? pclMessageDef->name : GetEnumString(vMyCommandDefinitions, stInterHeader_.usMessageId));
     AppendSiblingId(sMsgName, stInterHeader_);
 

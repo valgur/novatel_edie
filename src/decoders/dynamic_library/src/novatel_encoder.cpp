@@ -41,7 +41,10 @@ void NovatelEncoderShutdownLogger(Encoder* pclEncoder_)
     if (pclEncoder_) { pclEncoder_->ShutdownLogger(); } // TODO: ShutdownLogger is static, this function signature should be changed
 }
 
-Encoder* NovatelEncoderInit(JsonReader* pclJsonDb_) { return new Encoder(pclJsonDb_); }
+Encoder* NovatelEncoderInit(JsonReader* pclJsonDb_)
+{
+    return pclJsonDb_ ? new Encoder(JsonReader::Ptr(pclJsonDb_, [](auto) {})) : nullptr;
+}
 
 void NovatelEncoderDelete(Encoder* pclEncoder_)
 {
@@ -54,7 +57,10 @@ void NovatelEncoderDelete(Encoder* pclEncoder_)
 
 void NovatelEncoderLoadJson(Encoder* pclEncoder_, JsonReader* pclJsonDb_)
 {
-    if (pclEncoder_ && pclJsonDb_) { pclEncoder_->LoadJsonDb(pclJsonDb_); }
+    if (pclEncoder_ && pclJsonDb_)
+    {
+        pclEncoder_->LoadJsonDb(JsonReader::Ptr(pclJsonDb_, [](auto) {}));
+    }
 }
 
 STATUS NovatelEncoderEncode(Encoder* pclEncoder_, unsigned char* pucEncodeBuffer_, uint32_t uiEncodeBufferSize_, IntermediateHeader* pstInterHeader_,

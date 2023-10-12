@@ -54,7 +54,7 @@ TEST_F(JsonReaderTest, AppendEnumerations)
     JsonReader clJson;
     clJson.AppendEnumerations(std::filesystem::path(std::getenv("TEST_DATABASE_PATH")).string());
 
-    const novatel::edie::EnumDefinition* pstEnumDef = clJson.GetEnumDefId(strID);
+    auto pstEnumDef = clJson.GetEnumDefId(strID);
     ASSERT_NE(pstEnumDef, nullptr);
     ASSERT_EQ(pstEnumDef->name, "Datum");
 
@@ -69,7 +69,7 @@ TEST_F(JsonReaderTest, AppendMessages)
     JsonReader clJson;
     clJson.AppendMessages(std::filesystem::path(std::getenv("TEST_DATABASE_PATH")).string());
 
-    const novatel::edie::MessageDefinition* pstMsgDef = clJson.GetMsgDef(uiMsgID);
+    auto pstMsgDef = clJson.GetMsgDef(uiMsgID);
     ASSERT_NE(pstMsgDef, nullptr);
     ASSERT_EQ(pstMsgDef->name, "PASSAUX");
 

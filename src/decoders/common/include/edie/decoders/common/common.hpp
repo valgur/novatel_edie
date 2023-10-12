@@ -29,7 +29,9 @@
 
 #include <cstdint>
 #include <cstring>
+#include <memory>
 #include <string>
+#include <utility>
 
 namespace novatel::edie {
 
@@ -347,6 +349,7 @@ unsigned char PackMsgType(uint32_t uiSiblingId_, uint32_t uiMsgFormat_, uint32_t
 //! \return The enum in string form.
 //-----------------------------------------------------------------------
 std::string GetEnumString(const novatel::edie::EnumDefinition* stEnumDef_, uint32_t uiEnum_);
+std::string GetEnumString(const std::shared_ptr<const novatel::edie::EnumDefinition>& stEnumDef_, uint32_t uiEnum_);
 
 //-----------------------------------------------------------------------
 //! \brief Get the value of an enum string in integer form.
@@ -357,6 +360,7 @@ std::string GetEnumString(const novatel::edie::EnumDefinition* stEnumDef_, uint3
 //! \return The enum in integer form.
 //-----------------------------------------------------------------------
 int32_t GetEnumValue(const novatel::edie::EnumDefinition* stEnumDef_, const std::string& strEnum_);
+int32_t GetEnumValue(const std::shared_ptr<const novatel::edie::EnumDefinition>& stEnumDef_, std::string strEnum_);
 
 //-----------------------------------------------------------------------
 //! \brief Get the value of a response string in integer form.
@@ -367,6 +371,7 @@ int32_t GetEnumValue(const novatel::edie::EnumDefinition* stEnumDef_, const std:
 //! \return The response in integer form.
 //-----------------------------------------------------------------------
 int32_t GetResponseId(const novatel::edie::EnumDefinition* stRespDef_, const std::string& strResp_);
+int32_t GetResponseId(const std::shared_ptr<const novatel::edie::EnumDefinition>& stRespDef_, std::string strResp_);
 
 //-----------------------------------------------------------------------
 //! \brief Get the char as an integer.
