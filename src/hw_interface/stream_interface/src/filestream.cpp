@@ -124,7 +124,7 @@ void FileStream::CloseFile()
 {
       MyStream.close();
       if(MyStream.fail())
-         throw nExcept("\"%s\" close file failed", clFilePath.u32string().c_str());
+         throw nExcept("\"%ls\" close file failed", clFilePath.u32string().c_str());
 }
 
 // ---------------------------------------------------------
@@ -146,7 +146,7 @@ StreamReadStatus FileStream::ReadFile(char* cData, uint32_t uiSize)
    MyStream.read(cData, uiSize);
    if (MyStream.bad())
    {
-      throw nExcept("\"%s\" file  read failed", clFilePath.generic_u32string().c_str());
+      throw nExcept("\"%ls\" file read failed", clFilePath.generic_u32string().c_str());
    }
 
    // This size will be used to calculate file read percentage
@@ -186,14 +186,14 @@ StreamReadStatus FileStream::ReadLine(std::string& szLine)
 }
 
 // ---------------------------------------------------------
-// Writes the first uiSize character poited by cData into
+// Writes the first uiSize character pointed by cData into
 // fstream
 uint32_t FileStream::WriteFile(const char* cData, uint32_t uiSize)
 {
    MyStream.write(cData, uiSize);
    if (MyStream.bad())
    {
-      throw nExcept("\"%s\" file  write failed", clFilePath.generic_u32string().c_str());
+      throw nExcept("\"%ls\" file write failed", clFilePath.generic_u32string().c_str());
    }
    FlushFile();
    return uiSize;
