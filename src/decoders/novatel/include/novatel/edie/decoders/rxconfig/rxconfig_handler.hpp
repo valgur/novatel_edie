@@ -72,10 +72,10 @@ class RxConfigHandler
     Encoder clMyEncoder;
 
     std::shared_ptr<spdlog::logger> pclMyLogger;
-    JsonReader* pclMyMsgDB;
-    EnumDefinition* vMyCommandDefns;
-    EnumDefinition* vMyPortAddrDefns;
-    EnumDefinition* vMyGPSTimeStatusDefns;
+    JsonReader::Ptr pclMyMsgDB;
+    EnumDefinition::Ptr vMyCommandDefns;
+    EnumDefinition::Ptr vMyPortAddrDefns;
+    EnumDefinition::Ptr vMyGPSTimeStatusDefns;
     MessageDefinition stMyRXConfigMsgDef;
 
     uint32_t uiMyBufferBytesRemaining;
@@ -120,7 +120,7 @@ class RxConfigHandler
     //
     //! \param[in] pclJsonDb_ A pointer to a JsonReader object. Defaults to nullptr.
     //----------------------------------------------------------------------------
-    RxConfigHandler(JsonReader* pclJsonDb_ = nullptr);
+    RxConfigHandler(JsonReader::Ptr pclJsonDb_ = nullptr);
 
     //----------------------------------------------------------------------------
     //! \brief A destructor for the RxConfigHandler class.
@@ -132,7 +132,7 @@ class RxConfigHandler
     //
     //! \param[in] pclJsonDb_ A pointer to a JsonReader object.
     //----------------------------------------------------------------------------
-    void LoadJsonDb(JsonReader* pclJsonDb_);
+    void LoadJsonDb(JsonReader::Ptr pclJsonDb_);
 
     //----------------------------------------------------------------------------
     //! \brief Get the internal logger.

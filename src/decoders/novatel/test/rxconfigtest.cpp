@@ -41,13 +41,13 @@ class RxConfigTest : public ::testing::Test
 {
 
   protected:
-    static JsonReader* pclMyJsonDb;
+    static JsonReader::Ptr pclMyJsonDb;
     static RxConfigHandler* pclMyRxConfigHandler;
 
     // Per-test-suite setup
     static void SetUpTestSuite()
     {
-        pclMyJsonDb = new JsonReader();
+        pclMyJsonDb = std::make_shared<JsonReader>();
         pclMyJsonDb->LoadFile(*TEST_DB_PATH);
 
         pclMyRxConfigHandler = new RxConfigHandler(pclMyJsonDb);
@@ -56,12 +56,6 @@ class RxConfigTest : public ::testing::Test
     // Per-test-suite teardown
     static void TearDownTestSuite()
     {
-        if (pclMyJsonDb)
-        {
-            delete pclMyJsonDb;
-            pclMyJsonDb = nullptr;
-        }
-
         if (pclMyRxConfigHandler)
         {
             pclMyRxConfigHandler->ShutdownLogger();
@@ -147,7 +141,7 @@ class RxConfigTest : public ::testing::Test
         return true;
     }
 };
-JsonReader* RxConfigTest::pclMyJsonDb = nullptr;
+JsonReader::Ptr RxConfigTest::pclMyJsonDb = nullptr;
 RxConfigHandler* RxConfigTest::pclMyRxConfigHandler = nullptr;
 
 // -------------------------------------------------------------------------------------------------------

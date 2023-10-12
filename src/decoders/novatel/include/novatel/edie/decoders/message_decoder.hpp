@@ -71,9 +71,10 @@ using FieldValueVariant = std::variant<container_types>;
 struct FieldContainer
 {
     FieldValueVariant field_value;
-    const novatel::edie::BaseField* field_def;
+    novatel::edie::BaseField::ConstPtr field_def;
 
-    template <class T> FieldContainer(T field_value_, const novatel::edie::BaseField* field_def_) : field_value(field_value_), field_def(field_def_)
+    template <class T>
+    FieldContainer(T field_value_, novatel::edie::BaseField::ConstPtr field_def_) : field_value(field_value_), field_def(std::move(field_def_))
     {
     }
 
@@ -84,7 +85,7 @@ struct FieldContainer
 };
 
 typedef std::vector<FieldContainer> IntermediateMessage;
-typedef const std::vector<novatel::edie::BaseField*> MsgFieldsVector;
+typedef const std::vector<novatel::edie::BaseField::Ptr> MsgFieldsVector;
 
 //============================================================================
 //! \class MessageDecoder
@@ -94,17 +95,17 @@ class MessageDecoder
 {
   private:
     std::shared_ptr<spdlog::logger> pclMyLogger;
-    JsonReader* pclMyMsgDb{nullptr};
-    EnumDefinition* vMyRespDefns{nullptr};
-    EnumDefinition* vMyCommandDefns{nullptr};
-    EnumDefinition* vMyPortAddrDefns{nullptr};
-    EnumDefinition* vMyGPSTimeStatusDefns{nullptr};
+    JsonReader::Ptr pclMyMsgDb{nullptr};
+    EnumDefinition::Ptr vMyRespDefns{nullptr};
+    EnumDefinition::Ptr vMyCommandDefns{nullptr};
+    EnumDefinition::Ptr vMyPortAddrDefns{nullptr};
+    EnumDefinition::Ptr vMyGPSTimeStatusDefns{nullptr};
 
     unsigned char* pucTempBufConvert{nullptr};
     unsigned char* pucBeginningConvert{nullptr};
     uint32_t uiMyBufferBytesRemaining;
     uint32_t uiMyAbbrevAsciiIndentationLevel;
-    MessageDefinition stMyRespDef;
+    MessageDefinition::Ptr stMyRespDef;
 
     // Inline buffer functions
     [[nodiscard]] bool PrintToBuffer(char** ppcBuffer_, char* szFormat_, ...)
@@ -143,26 +144,26 @@ class MessageDecoder
     uint32_t MsgNameToMsgId(std::string sMsgName_);
     std::string MsgIdToMsgName(const uint32_t uiMessageID_);
 
-    MsgFieldsVector* GetMsgDefFromCRC(const MessageDefinition* pclMessageDef_, uint32_t& uiMsgDefCRC_);
+    MsgFieldsVector* GetMsgDefFromCRC(const MessageDefinition& pclMessageDef_, uint32_t& uiMsgDefCRC_);
 
     // Decode binary body
-    void DecodeBinaryField(const BaseField* MessageDataType_, unsigned char** ppcLogBuf_, std::vector<FieldContainer>& vIntermediateFormat);
+    void DecodeBinaryField(BaseField::ConstPtr MessageDataType_, unsigned char** ppcLogBuf_, std::vector<FieldContainer>& vIntermediateFormat);
 
     // Decode ascii body
-    [[nodiscard]] STATUS DecodeAbbrevAscii(const std::vector<BaseField*> MsgDefFields_, char** ppcLogBuf_,
+    [[nodiscard]] STATUS DecodeAbbrevAscii(const std::vector<BaseField::Ptr>& MsgDefFields_, char** ppcLogBuf_,
                                            std::vector<FieldContainer>& vIntermediateFormat_);
-    void DecodeAsciiField(const BaseField* MessageDataType_, char** ppcToken_, const size_t tokenLength_,
+    void DecodeAsciiField(BaseField::ConstPtr MessageDataType_, char** ppcToken_, const size_t tokenLength_,
                           std::vector<FieldContainer>& vIntermediateFormat);
 
     // Decode json body
-    [[nodiscard]] STATUS DecodeJson(const std::vector<BaseField*> MsgDefFields_, json clJsonFields_,
+    [[nodiscard]] STATUS DecodeJson(const std::vector<BaseField::Ptr>& MsgDefFields_, json clJsonFields_,
                                     std::vector<FieldContainer>& vIntermediateFormat_);
-    void DecodeJsonField(const BaseField* MessageDataType_, json clJsonField_, std::vector<FieldContainer>& vIntermediateFormat);
+    void DecodeJsonField(BaseField::ConstPtr MessageDataType_, json clJsonField_, std::vector<FieldContainer>& vIntermediateFormat);
 
   protected:
-    [[nodiscard]] STATUS DecodeBinary(const std::vector<BaseField*> MsgDefFields_, unsigned char** ppucLogBuf_,
+    [[nodiscard]] STATUS DecodeBinary(const std::vector<BaseField::Ptr>& MsgDefFields_, unsigned char** ppucLogBuf_,
                                       std::vector<FieldContainer>& vIntermediateFormat_, uint32_t uiMessageLength_);
-    [[nodiscard]] STATUS DecodeAscii(const std::vector<BaseField*> MsgDefFields_, char** ppcLogBuf_,
+    [[nodiscard]] STATUS DecodeAscii(const std::vector<BaseField::Ptr>& MsgDefFields_, char** ppcLogBuf_,
                                      std::vector<FieldContainer>& vIntermediateFormat_);
 
   public:
@@ -171,14 +172,14 @@ class MessageDecoder
     //
     //! \param[in] pclJsonDb_ A pointer to a JsonReader object.  Defaults to nullptr.
     //----------------------------------------------------------------------------
-    MessageDecoder(JsonReader* pclJsonDb_ = nullptr);
+    MessageDecoder(JsonReader::Ptr pclJsonDb_ = nullptr);
 
     //----------------------------------------------------------------------------
     //! \brief Load a JsonReader object.
     //
     //! \param[in] pclJsonDb_ A pointer to a JsonReader object.
     //----------------------------------------------------------------------------
-    void LoadJsonDb(JsonReader* pclJsonDb_);
+    void LoadJsonDb(JsonReader::Ptr pclJsonDb_);
 
     //----------------------------------------------------------------------------
     //! \brief Get the internal logger.

@@ -38,7 +38,10 @@
 using namespace novatel::edie;
 using namespace novatel::edie::oem;
 
-FileParser* novatel_fileparser_init(JsonReader* pclJsonDb_) { return pclJsonDb_ ? new FileParser(pclJsonDb_) : nullptr; }
+FileParser* novatel_fileparser_init(JsonReader* pclJsonDb_)
+{
+    return pclJsonDb_ ? new FileParser(JsonReader::Ptr(pclJsonDb_, [](auto) {})) : nullptr;
+}
 
 void novatel_fileparser_delete(FileParser* pclFileParser_)
 {
@@ -51,7 +54,10 @@ void novatel_fileparser_delete(FileParser* pclFileParser_)
 
 void novatel_fileparser_load_json_db(FileParser* pclFileParser_, JsonReader* pclJsonDb_)
 {
-    if (pclFileParser_ && pclJsonDb_) { pclFileParser_->LoadJsonDb(pclJsonDb_); }
+    if (pclFileParser_ && pclJsonDb_)
+    {
+        pclFileParser_->LoadJsonDb(JsonReader::Ptr(pclJsonDb_, [](auto) {}));
+    }
 }
 
 void novatel_fileparser_set_ignore_abbrev_ascii_responses(FileParser* pclFileParser_, bool bIgnoreAbbrevASCIIResponsesCmp_)
@@ -96,11 +102,14 @@ ENCODEFORMAT novatel_fileparser_get_encodeformat(FileParser* pclFileParser_)
 
 unsigned char* novatel_fileparser_get_buffer(FileParser* pclFileParser_) { return pclFileParser_ ? pclFileParser_->GetInternalBuffer() : nullptr; }
 
-Filter* novatel_fileparser_get_filter(FileParser* pclFileParser_) { return pclFileParser_ ? pclFileParser_->GetFilter() : nullptr; }
+Filter* novatel_fileparser_get_filter(FileParser* pclFileParser_) { return pclFileParser_ ? pclFileParser_->GetFilter().get() : nullptr; }
 
 void novatel_fileparser_set_filter(FileParser* pclFileParser_, Filter* pclFilter_)
 {
-    if (pclFileParser_ && pclFilter_) { pclFileParser_->SetFilter(pclFilter_); }
+    if (pclFileParser_ && pclFilter_)
+    {
+        pclFileParser_->SetFilter(Filter::Ptr(pclFilter_, [](auto) {}));
+    }
 }
 
 bool novatel_fileparser_set_stream(FileParser* pclFileParser_, InputFileStream* pclIFS_)

@@ -41,13 +41,14 @@ Parser::Parser(const std::string sDbPath_)
 {
     pclMyLogger = Logger().RegisterLogger("novatel_parser");
 
-    clMyJsonReader.LoadFile(sDbPath_);
+    pclMyJsonReader = std::make_shared<JsonReader>();
+    pclMyJsonReader->LoadFile(sDbPath_);
 
-    clMyHeaderDecoder.LoadJsonDb(&clMyJsonReader);
-    clMyMessageDecoder.LoadJsonDb(&clMyJsonReader);
-    clMyEncoder.LoadJsonDb(&clMyJsonReader);
-    clMyRangeDecompressor.LoadJsonDb(&clMyJsonReader);
-    clMyRxConfigHandler.LoadJsonDb(&clMyJsonReader);
+    clMyHeaderDecoder.LoadJsonDb(pclMyJsonReader);
+    clMyMessageDecoder.LoadJsonDb(pclMyJsonReader);
+    clMyEncoder.LoadJsonDb(pclMyJsonReader);
+    clMyRangeDecompressor.LoadJsonDb(pclMyJsonReader);
+    clMyRxConfigHandler.LoadJsonDb(pclMyJsonReader);
 
     clMyRangeCmpFilter.IncludeMessageId(RANGECMP_MSG_ID, HEADERFORMAT::ALL, MEASUREMENT_SOURCE::PRIMARY);
     clMyRangeCmpFilter.IncludeMessageId(RANGECMP_MSG_ID, HEADERFORMAT::ALL, MEASUREMENT_SOURCE::SECONDARY);
@@ -69,13 +70,14 @@ Parser::Parser(const std::u32string sDbPath_)
 {
     pclMyLogger = Logger().RegisterLogger("novatel_parser");
 
-    clMyJsonReader.LoadFile(sDbPath_);
+    pclMyJsonReader = std::make_shared<JsonReader>();
+    pclMyJsonReader->LoadFile(sDbPath_);
 
-    clMyHeaderDecoder.LoadJsonDb(&clMyJsonReader);
-    clMyMessageDecoder.LoadJsonDb(&clMyJsonReader);
-    clMyEncoder.LoadJsonDb(&clMyJsonReader);
-    clMyRangeDecompressor.LoadJsonDb(&clMyJsonReader);
-    clMyRxConfigHandler.LoadJsonDb(&clMyJsonReader);
+    clMyHeaderDecoder.LoadJsonDb(pclMyJsonReader);
+    clMyMessageDecoder.LoadJsonDb(pclMyJsonReader);
+    clMyEncoder.LoadJsonDb(pclMyJsonReader);
+    clMyRangeDecompressor.LoadJsonDb(pclMyJsonReader);
+    clMyRxConfigHandler.LoadJsonDb(pclMyJsonReader);
 
     clMyRangeCmpFilter.IncludeMessageId(RANGECMP_MSG_ID, HEADERFORMAT::ALL, MEASUREMENT_SOURCE::PRIMARY);
     clMyRangeCmpFilter.IncludeMessageId(RANGECMP_MSG_ID, HEADERFORMAT::ALL, MEASUREMENT_SOURCE::SECONDARY);
@@ -92,7 +94,7 @@ Parser::Parser(const std::u32string sDbPath_)
 }
 
 // -------------------------------------------------------------------------------------------------------
-Parser::Parser(JsonReader* pclJsonDb_)
+Parser::Parser(JsonReader::Ptr pclJsonDb_)
     : pcMyEncodeBuffer(new unsigned char[uiPARSER_INTERNAL_BUFFER_SIZE]), pcMyFrameBuffer(new unsigned char[uiPARSER_INTERNAL_BUFFER_SIZE])
 {
     pclMyLogger = Logger().RegisterLogger("novatel_parser");
@@ -100,7 +102,7 @@ Parser::Parser(JsonReader* pclJsonDb_)
     if (pclJsonDb_ != nullptr)
     {
         LoadJsonDb(pclJsonDb_);
-        clMyJsonReader = *pclJsonDb_;
+        pclMyJsonReader = pclJsonDb_;
     }
     pclMyLogger->debug("Parser initialized");
 }
@@ -114,7 +116,7 @@ Parser::~Parser()
 }
 
 // -------------------------------------------------------------------------------------------------------
-void Parser::LoadJsonDb(JsonReader* pclJsonDb_)
+void Parser::LoadJsonDb(JsonReader::Ptr pclJsonDb_)
 {
     if (pclJsonDb_ != nullptr)
     {
@@ -135,7 +137,7 @@ void Parser::LoadJsonDb(JsonReader* pclJsonDb_)
         clMyRxConfigFilter.IncludeMessageId(usRXConfigMsgID, HEADERFORMAT::ALL, MEASUREMENT_SOURCE::PRIMARY);
         clMyRxConfigFilter.IncludeMessageId(usRXConfigMsgID, HEADERFORMAT::ALL, MEASUREMENT_SOURCE::SECONDARY);
 
-        clMyJsonReader = *pclJsonDb_;
+        pclMyJsonReader = pclJsonDb_;
     }
     else { pclMyLogger->debug("JSON DB is a nullptr."); }
 }
@@ -174,10 +176,10 @@ void Parser::SetIgnoreAbbreviatedAsciiResponses(bool bIgnoreAbbreivatedAsciiResp
 bool Parser::GetIgnoreAbbreviatedAsciiResponses() { return bMyIgnoreAbbreviatedASCIIResponse; }
 
 // -------------------------------------------------------------------------------------------------------
-void Parser::SetFilter(Filter* pclFilter_) { pclMyUserFilter = pclFilter_; }
+void Parser::SetFilter(const std::shared_ptr<Filter>& pclFilter_) { pclMyUserFilter = pclFilter_; }
 
 // -------------------------------------------------------------------------------------------------------
-Filter* Parser::GetFilter() { return pclMyUserFilter; }
+std::shared_ptr<Filter>& Parser::GetFilter() { return pclMyUserFilter; }
 
 // -------------------------------------------------------------------------------------------------------
 void Parser::SetDecompressRangeCmp(bool bDecompressRangeCmp_) { bMyDecompressRangeCmp = bDecompressRangeCmp_; }

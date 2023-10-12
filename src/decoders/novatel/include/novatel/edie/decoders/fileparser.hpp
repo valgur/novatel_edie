@@ -36,6 +36,7 @@
 //-----------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------
+#include <memory>
 #include <unordered_map>
 
 #include "novatel/edie/common/common.hpp"
@@ -89,7 +90,7 @@ class FileParser
     //
     //! \param[in] pclJsonDb_ A pointer to a JsonReader object.  Defaults to nullptr.
     //----------------------------------------------------------------------------
-    FileParser(JsonReader* pclJsonDb_ = nullptr);
+    FileParser(JsonReader::Ptr pclJsonDb_ = nullptr);
 
     //----------------------------------------------------------------------------
     //! \brief A destructor for the FileParser class.
@@ -101,7 +102,7 @@ class FileParser
     //
     //! \param[in] pclJsonDb_ A pointer to a JsonReader object.
     //----------------------------------------------------------------------------
-    void LoadJsonDb(JsonReader* pclJsonDb_);
+    void LoadJsonDb(JsonReader::Ptr pclJsonDb_);
 
     //----------------------------------------------------------------------------
     //! \brief Get the internal logger.
@@ -201,14 +202,14 @@ class FileParser
     //
     //! \param [in] pclFilter_ A pointer to an OEM message Filter object.
     //----------------------------------------------------------------------------
-    void SetFilter(Filter* pclFilter_);
+    void SetFilter(const std::shared_ptr<Filter>& pclFilter_);
 
     //----------------------------------------------------------------------------
     //! \brief Get the config for the FileParser.
     //
     //! \return A pointer to the FileParser's OEM message Filter object.
     //----------------------------------------------------------------------------
-    Filter* GetFilter();
+    std::shared_ptr<Filter>& GetFilter();
 
     //----------------------------------------------------------------------------
     //! \brief Set the InputFileStream for the FileParser.

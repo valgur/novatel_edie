@@ -48,7 +48,10 @@ void novatel_message_decoder_shutdown_logger(MessageDecoder* pclMessageDecoder_)
     if (pclMessageDecoder_) { pclMessageDecoder_->ShutdownLogger(); }
 }
 
-MessageDecoder* novatel_message_decoder_init(JsonReader* pclJsonDb_) { return pclJsonDb_ ? new MessageDecoder(pclJsonDb_) : nullptr; }
+MessageDecoder* novatel_message_decoder_init(JsonReader* pclJsonDb_)
+{
+    return pclJsonDb_ ? new MessageDecoder(JsonReader::Ptr(pclJsonDb_, [](auto) {})) : nullptr;
+}
 
 void novatel_message_decoder_delete(MessageDecoder* pclMessageDecoder_)
 {
@@ -61,7 +64,10 @@ void novatel_message_decoder_delete(MessageDecoder* pclMessageDecoder_)
 
 void novatel_message_decoder_load_json(MessageDecoder* pclMessageDecoder_, JsonReader* pclJsonDb_)
 {
-    if (pclMessageDecoder_ && pclJsonDb_) { pclMessageDecoder_->LoadJsonDb(pclJsonDb_); }
+    if (pclMessageDecoder_ && pclJsonDb_)
+    {
+        pclMessageDecoder_->LoadJsonDb(JsonReader::Ptr(pclJsonDb_, [](auto) {}));
+    }
 }
 
 STATUS novatel_message_decoder_decode(MessageDecoder* pclMessageDecoder_, unsigned char* pucLogBuf_, IntermediateMessage* pstIntermediateMessage_,

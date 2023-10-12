@@ -55,12 +55,12 @@ class Commander
     std::shared_ptr<spdlog::logger> pclMyLogger;
     MessageDecoder clMyMessageDecoder;
     Encoder clMyEncoder;
-    JsonReader* pclMyMsgDb{nullptr};
+    JsonReader::Ptr pclMyMsgDb{nullptr};
 
-    EnumDefinition* vMyRespDefns{nullptr};
-    EnumDefinition* vMyCommandDefns{nullptr};
-    EnumDefinition* vMyPortAddrDefns{nullptr};
-    EnumDefinition* vMyGPSTimeStatusDefns{nullptr};
+    EnumDefinition::Ptr vMyRespDefns{nullptr};
+    EnumDefinition::Ptr vMyCommandDefns{nullptr};
+    EnumDefinition::Ptr vMyPortAddrDefns{nullptr};
+    EnumDefinition::Ptr vMyGPSTimeStatusDefns{nullptr};
 
     MessageDefinition stMyRespDef;
 
@@ -74,14 +74,14 @@ class Commander
     //
     //! \param[in] pclJsonDb_ A pointer to a JsonReader object. Defaults to nullptr.
     //----------------------------------------------------------------------------
-    Commander(JsonReader* pclJsonDb_ = nullptr);
+    Commander(JsonReader::Ptr pclJsonDb_ = nullptr);
 
     //----------------------------------------------------------------------------
     //! \brief Load a JsonReader object.
     //
     //! \param[in] pclJsonDb_ A pointer to a JsonReader object.
     //----------------------------------------------------------------------------
-    void LoadJsonDb(JsonReader* pclJsonDb_);
+    void LoadJsonDb(JsonReader::Ptr pclJsonDb_);
 
     //----------------------------------------------------------------------------
     //! \brief Get the internal logger.
@@ -181,7 +181,7 @@ class Commander
         unsigned char* pucCmdParams = acCmdParams;
         strcpy(reinterpret_cast<char*>(acCmdParams), strCmdParams.c_str());
 
-        const MessageDefinition* pclMessageDef = clJsonDb_.GetMsgDef(strCmdName);
+        MessageDefinition::ConstPtr pclMessageDef = clJsonDb_.GetMsgDef(strCmdName);
         if (!pclMessageDef) { return STATUS::NO_DEFINITION; }
 
         MessageDataStruct stMessageData;

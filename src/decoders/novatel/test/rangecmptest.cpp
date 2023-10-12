@@ -44,7 +44,7 @@ class RangeCmpTest : public ::testing::Test
     class RangeDecompressorTester : public RangeDecompressor
     {
       public:
-        RangeDecompressorTester(JsonReader* pclJsonDb_) : RangeDecompressor(pclJsonDb_) {}
+        RangeDecompressorTester(JsonReader::Ptr pclJsonDb_) : RangeDecompressor(pclJsonDb_) {}
 
         // Access protected member of RangeDecompressor
         void SetBitoffset(uint32_t uiBitOffset_) { uiMyBitOffset = uiBitOffset_; }
@@ -69,12 +69,12 @@ class RangeCmpTest : public ::testing::Test
 
   protected:
     static RangeDecompressorTester* pclMyRangeDecompressor;
-    static JsonReader* pclMyJsonDb;
+    static JsonReader::Ptr pclMyJsonDb;
 
     // Per-test-suite setup
     static void SetUpTestSuite()
     {
-        pclMyJsonDb = new JsonReader();
+        pclMyJsonDb = std::make_shared<JsonReader>();
         pclMyJsonDb->LoadFile(*TEST_DB_PATH);
         pclMyRangeDecompressor = new RangeDecompressorTester(pclMyJsonDb);
     }
@@ -88,18 +88,12 @@ class RangeCmpTest : public ::testing::Test
             delete pclMyRangeDecompressor;
             pclMyRangeDecompressor = nullptr;
         }
-
-        if (pclMyJsonDb)
-        {
-            delete pclMyJsonDb;
-            pclMyJsonDb = nullptr;
-        }
     }
 
     void SetUp() { pclMyRangeDecompressor->ResetLocktimes(); }
 };
 RangeCmpTest::RangeDecompressorTester* RangeCmpTest::pclMyRangeDecompressor = nullptr;
-JsonReader* RangeCmpTest::pclMyJsonDb = nullptr;
+JsonReader::Ptr RangeCmpTest::pclMyJsonDb = nullptr;
 
 // -------------------------------------------------------------------------------------------------------
 // Logger Framer Unit Tests

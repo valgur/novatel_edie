@@ -38,7 +38,7 @@ using namespace novatel::edie;
 using namespace novatel::edie::oem;
 
 // -------------------------------------------------------------------------------------------------------
-HeaderDecoder::HeaderDecoder(JsonReader* pclJsonDb_)
+HeaderDecoder::HeaderDecoder(JsonReader::Ptr pclJsonDb_)
 {
     pclMyLogger = Logger().RegisterLogger("novatel_header_decoder");
 
@@ -49,7 +49,7 @@ HeaderDecoder::HeaderDecoder(JsonReader* pclJsonDb_)
 }
 
 // -------------------------------------------------------------------------------------------------------
-void HeaderDecoder::LoadJsonDb(JsonReader* pclJsonDb_)
+void HeaderDecoder::LoadJsonDb(JsonReader::Ptr pclJsonDb_)
 {
     pclMyMsgDb = pclJsonDb_;
 
@@ -82,7 +82,7 @@ uint32_t HeaderDecoder::MsgNameToMsgId(std::string sMsgName_)
     }
 
     // If this is an abbrev msg (no format information), we will be able to find the MsgDef
-    const MessageDefinition* pclMessageDef = pclMyMsgDb->GetMsgDef(sMsgName_);
+    MessageDefinition::ConstPtr pclMessageDef = pclMyMsgDb->GetMsgDef(sMsgName_);
     if (pclMessageDef)
     {
         uiResponse = static_cast<uint32_t>(false);
@@ -130,9 +130,9 @@ std::string HeaderDecoder::MsgIdToMsgName(const uint32_t uiMessageID_)
 
     UnpackMsgID(uiMessageID_, usLogID, uiSiblingID, uiMessageFormat, uiResponse);
 
-    const MessageDefinition* pstMessageDefinition = pclMyMsgDb->GetMsgDef(usLogID);
+    MessageDefinition::ConstPtr pstMessageDefinition = pclMyMsgDb->GetMsgDef(usLogID);
 
-    std::string strMessageName = pstMessageDefinition ? pstMessageDefinition->name : GetEnumString(vMyCommandDefns, usLogID);
+    std::string strMessageName = pstMessageDefinition ? pstMessageDefinition->name : GetEnumString(vMyCommandDefns.get(), usLogID);
     std::string strMessageFormatSuffix = uiResponse                                                        ? "R"
                                          : uiMessageFormat == static_cast<uint32_t>(MESSAGEFORMAT::BINARY) ? "B"
                                          : uiMessageFormat == static_cast<uint32_t>(MESSAGEFORMAT::ASCII)  ? "A"
@@ -172,12 +172,12 @@ template <ASCIIHEADER eField> bool HeaderDecoder::DecodeAsciiHeaderField(Interme
         break;
     }
     case ASCIIHEADER::PORT:
-        stIntermediateHeader_.uiPortAddress = static_cast<uint32_t>(GetEnumValue(vMyPortAddrDefns, std::string(*ppcLogBuf_, ullTokenLength)));
+        stIntermediateHeader_.uiPortAddress = static_cast<uint32_t>(GetEnumValue(vMyPortAddrDefns.get(), std::string(*ppcLogBuf_, ullTokenLength)));
         break;
     case ASCIIHEADER::SEQUENCE: stIntermediateHeader_.usSequence = static_cast<uint16_t>(strtoul(*ppcLogBuf_, nullptr, 10)); break;
     case ASCIIHEADER::IDLETIME: stIntermediateHeader_.ucIdleTime = static_cast<uint8_t>(std::lround(2.0f * strtof(*ppcLogBuf_, nullptr))); break;
     case ASCIIHEADER::TIME_STATUS:
-        stIntermediateHeader_.uiTimeStatus = GetEnumValue(vMyGPSTimeStatusDefns, std::string(*ppcLogBuf_, ullTokenLength));
+        stIntermediateHeader_.uiTimeStatus = GetEnumValue(vMyGPSTimeStatusDefns.get(), std::string(*ppcLogBuf_, ullTokenLength));
         break;
     case ASCIIHEADER::WEEK: stIntermediateHeader_.usWeek = static_cast<uint16_t>(strtoul(*ppcLogBuf_, nullptr, 10)); break;
     case ASCIIHEADER::SECONDS: stIntermediateHeader_.dMilliseconds = 1000.0 * strtod(*ppcLogBuf_, nullptr); break;
@@ -202,10 +202,11 @@ template <ASCIIHEADER... eFields> bool HeaderDecoder::DecodeAsciiHeaderFields(In
 void HeaderDecoder::DecodeJsonHeader(json clJsonHeader_, IntermediateHeader& stIntermediateHeader_)
 {
     stIntermediateHeader_.usMessageID = clJsonHeader_["id"].get<uint16_t>();
-    stIntermediateHeader_.uiPortAddress = static_cast<uint32_t>(GetEnumValue(vMyPortAddrDefns, clJsonHeader_["port"].get<std::string>()));
+    stIntermediateHeader_.uiPortAddress = static_cast<uint32_t>(GetEnumValue(vMyPortAddrDefns.get(), clJsonHeader_["port"].get<std::string>()));
     stIntermediateHeader_.usSequence = clJsonHeader_["sequence_num"].get<uint16_t>();
     stIntermediateHeader_.ucIdleTime = static_cast<uint8_t>(clJsonHeader_["percent_idle_time"].get<float>() * 2.0);
-    stIntermediateHeader_.uiTimeStatus = static_cast<uint32_t>(GetEnumValue(vMyGPSTimeStatusDefns, clJsonHeader_["time_status"].get<std::string>()));
+    stIntermediateHeader_.uiTimeStatus =
+        static_cast<uint32_t>(GetEnumValue(vMyGPSTimeStatusDefns.get(), clJsonHeader_["time_status"].get<std::string>()));
     stIntermediateHeader_.usWeek = clJsonHeader_["week"].get<uint16_t>();
     stIntermediateHeader_.dMilliseconds = clJsonHeader_["seconds"].get<double>() * 1000.0;
     stIntermediateHeader_.uiReceiverStatus = clJsonHeader_["receiver_status"].get<uint32_t>();

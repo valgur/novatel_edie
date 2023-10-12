@@ -38,7 +38,7 @@ using namespace novatel::edie::oem;
 const char* RxConfigHandler::szAbbrevASCIIEmbeddedHeaderPrefix = "<     ";
 
 // -------------------------------------------------------------------------------------------------------
-RxConfigHandler::RxConfigHandler(JsonReader* pclJsonDB_)
+RxConfigHandler::RxConfigHandler(JsonReader::Ptr pclJsonDB_)
     : clMyHeaderDecoder(pclJsonDB_), clMyMessageDecoder(pclJsonDB_), clMyEncoder(pclJsonDB_),
       pcMyFrameBuffer(new unsigned char[uiINTERNAL_BUFFER_SIZE]), pcMyEncodeBuffer(new unsigned char[uiINTERNAL_BUFFER_SIZE])
 {
@@ -60,7 +60,7 @@ RxConfigHandler::~RxConfigHandler()
 }
 
 // -------------------------------------------------------------------------------------------------------
-void RxConfigHandler::LoadJsonDb(JsonReader* pclJsonDB_)
+void RxConfigHandler::LoadJsonDb(JsonReader::Ptr pclJsonDB_)
 {
     pclMyMsgDB = pclJsonDB_;
     clMyHeaderDecoder.LoadJsonDb(pclJsonDB_);
@@ -100,7 +100,7 @@ uint32_t RxConfigHandler::MsgNameToMsgId(std::string sMsgName_)
     }
 
     // If this is an abbrev msg (no format information), we will be able to find the MsgDef
-    const MessageDefinition* pclMessageDef = pclMyMsgDB->GetMsgDef(sMsgName_);
+    MessageDefinition::ConstPtr pclMessageDef = pclMyMsgDB->GetMsgDef(sMsgName_);
     if (pclMessageDef)
     {
         uiResponse = static_cast<uint32_t>(false);
@@ -134,7 +134,7 @@ uint32_t RxConfigHandler::MsgNameToMsgId(std::string sMsgName_)
     if (pclMessageDef)
     {
         uint32_t uiMessageID =
-            CreateMsgID(pclMessageDef ? pclMessageDef->logID : GetEnumValue(vMyCommandDefns, sTemp), uiSiblingID, uiMsgFormat, uiResponse);
+            CreateMsgID(pclMessageDef ? pclMessageDef->logID : GetEnumValue(vMyCommandDefns.get(), sTemp), uiSiblingID, uiMsgFormat, uiResponse);
         return uiMessageID;
     }
 
@@ -152,10 +152,10 @@ std::string RxConfigHandler::MsgIdToMsgName(const uint32_t uiMessageID_)
     UnpackMsgID(uiMessageID_, usLogID, uiSiblingID, uiMessageFormat, uiResponse);
 
     std::string strMessageName;
-    const MessageDefinition* pstMessageDefinition = pclMyMsgDB->GetMsgDef(usLogID);
+    MessageDefinition::ConstPtr pstMessageDefinition = pclMyMsgDB->GetMsgDef(usLogID);
 
     if (pstMessageDefinition) { strMessageName = pstMessageDefinition->name; }
-    else { strMessageName = GetEnumString(vMyCommandDefns, usLogID); }
+    else { strMessageName = GetEnumString(vMyCommandDefns.get(), usLogID); }
 
     std::string strMessageFormatSuffix = uiResponse                                                        ? "R"
                                          : uiMessageFormat == static_cast<uint32_t>(MESSAGEFORMAT::BINARY) ? "B"
@@ -195,8 +195,8 @@ void RxConfigHandler::CreateRXConfigMsgDefn()
     stMyRXConfigMsgDef = MessageDefinition();
     stMyRXConfigMsgDef.name = std::string("rxconfig");
     stMyRXConfigMsgDef.fields[0];
-    stMyRXConfigMsgDef.fields[0].push_back(stEmbeddedHeader.clone());
-    stMyRXConfigMsgDef.fields[0].push_back(stEmbeddedBody.clone());
+    stMyRXConfigMsgDef.fields[0].emplace_back(stEmbeddedHeader.clone());
+    stMyRXConfigMsgDef.fields[0].emplace_back(stEmbeddedBody.clone());
 }
 
 // -------------------------------------------------------------------------------------------------------

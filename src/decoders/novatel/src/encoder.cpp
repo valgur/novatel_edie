@@ -38,25 +38,24 @@ using namespace novatel::edie;
 using namespace novatel::edie::oem;
 
 // -------------------------------------------------------------------------------------------------------
-constexpr bool PrintAsString(const BaseField* field_def)
+constexpr bool PrintAsString(const BaseField& field_def)
 {
     // Printing as a string means two things:
     // 1. The field will be surrounded by quotes
     // 2. The field will not contain null-termination or padding
-    return field_def->type == FIELD_TYPE::STRING || field_def->conversionStripped == CONVERSION_STRING::s ||
-           field_def->conversionStripped == CONVERSION_STRING::S;
+    return field_def.type == FIELD_TYPE::STRING || field_def.conversionStripped == CONVERSION_STRING::s ||
+           field_def.conversionStripped == CONVERSION_STRING::S;
 }
 
 // -------------------------------------------------------------------------------------------------------
-constexpr bool IsCommaSeparated(const BaseField* field_def)
+constexpr bool IsCommaSeparated(const BaseField& field_def)
 {
     // In certain cases there are no separators printed between array elements
-    return !PrintAsString(field_def) && field_def->conversionStripped != CONVERSION_STRING::Z &&
-           field_def->conversionStripped != CONVERSION_STRING::P;
+    return !PrintAsString(field_def) && field_def.conversionStripped != CONVERSION_STRING::Z && field_def.conversionStripped != CONVERSION_STRING::P;
 }
 
 // -------------------------------------------------------------------------------------------------------
-Encoder::Encoder(JsonReader* pclJsonDb_) : uiMyAbbrevAsciiIndentationLevel(1)
+Encoder::Encoder(JsonReader::Ptr pclJsonDb_) : uiMyAbbrevAsciiIndentationLevel(1)
 {
     pclMyLogger = Logger().RegisterLogger("novatel_encoder");
 
@@ -67,7 +66,7 @@ Encoder::Encoder(JsonReader* pclJsonDb_) : uiMyAbbrevAsciiIndentationLevel(1)
 }
 
 // -------------------------------------------------------------------------------------------------------
-void Encoder::LoadJsonDb(JsonReader* pclJsonDb_)
+void Encoder::LoadJsonDb(JsonReader::Ptr pclJsonDb_)
 {
     pclMyMsgDb = pclJsonDb_;
 
@@ -123,8 +122,8 @@ void Encoder::CreateResponseMsgDefns()
     // Message Definition
     stMyRespDef = MessageDefinition();
     stMyRespDef.name = std::string("response");
-    stMyRespDef.fields[0].push_back(stRespIdField.clone());
-    stMyRespDef.fields[0].push_back(stRespStrField.clone());
+    stMyRespDef.fields[0].emplace_back(stRespIdField.clone());
+    stMyRespDef.fields[0].emplace_back(stRespStrField.clone());
 }
 
 // -------------------------------------------------------------------------------------------------------
@@ -142,7 +141,7 @@ uint32_t Encoder::MsgNameToMsgId(std::string sMsgName_) const
     }
 
     // If this is an abbrev msg (no format information), we will be able to find the MsgDef
-    const MessageDefinition* pclMessageDef = pclMyMsgDb->GetMsgDef(sMsgName_);
+    MessageDefinition::ConstPtr pclMessageDef = pclMyMsgDb->GetMsgDef(sMsgName_);
     if (pclMessageDef)
     {
         uiResponse = static_cast<uint32_t>(false);
@@ -177,9 +176,9 @@ uint32_t Encoder::MsgNameToMsgId(std::string sMsgName_) const
 
     pclMessageDef = pclMyMsgDb->GetMsgDef(sMsgName_);
 
-    return pclMessageDef
-               ? CreateMsgID(pclMessageDef ? pclMessageDef->logID : GetEnumValue(vMyCommandDefns, sMsgName_), uiSiblingID, uiMsgFormat, uiResponse)
-               : 0;
+    return pclMessageDef ? CreateMsgID(pclMessageDef ? pclMessageDef->logID : GetEnumValue(vMyCommandDefns.get(), sMsgName_), uiSiblingID,
+                                       uiMsgFormat, uiResponse)
+                         : 0;
 }
 
 // -------------------------------------------------------------------------------------------------------
@@ -192,8 +191,8 @@ std::string Encoder::MsgIdToMsgName(const uint32_t uiMessageID_) const
 
     UnpackMsgID(uiMessageID_, usLogID, uiSiblingID, uiMessageFormat, uiResponse);
 
-    const MessageDefinition* pstMessageDefinition = pclMyMsgDb->GetMsgDef(usLogID);
-    std::string strMessageName = pstMessageDefinition ? pstMessageDefinition->name : GetEnumString(vMyCommandDefns, usLogID);
+    MessageDefinition::ConstPtr pstMessageDefinition = pclMyMsgDb->GetMsgDef(usLogID);
+    std::string strMessageName = pstMessageDefinition ? pstMessageDefinition->name : GetEnumString(vMyCommandDefns.get(), usLogID);
 
     std::string strMessageFormatSuffix = uiResponse                                                        ? "R"
                                          : uiMessageFormat == static_cast<uint32_t>(MESSAGEFORMAT::BINARY) ? "B"
@@ -206,18 +205,18 @@ std::string Encoder::MsgIdToMsgName(const uint32_t uiMessageID_) const
 }
 
 // -------------------------------------------------------------------------------------------------------
-MsgFieldsVector* Encoder::GetMsgDefFromCRC(const MessageDefinition* pclMessageDef_, uint32_t& uiMsgDefCRC_) const
+MsgFieldsVector* Encoder::GetMsgDefFromCRC(const MessageDefinition& pclMessageDef_, uint32_t& uiMsgDefCRC_) const
 {
     // If we can't find the correct CRC just default to the latest.
     MsgFieldsVector* pvMsgFields;
-    if (pclMessageDef_->fields.count(uiMsgDefCRC_) == 0)
+    if (pclMessageDef_.fields.count(uiMsgDefCRC_) == 0)
     {
-        pclMyLogger->info("Log DB is missing the log definition {} - {}.  Defaulting to newest version of the log definition.", pclMessageDef_->name,
+        pclMyLogger->info("Log DB is missing the log definition {} - {}.  Defaulting to newest version of the log definition.", pclMessageDef_.name,
                           uiMsgDefCRC_);
-        pvMsgFields = &pclMessageDef_->fields.at(pclMessageDef_->latestMessageCrc);
-        uiMsgDefCRC_ = pclMessageDef_->latestMessageCrc;
+        pvMsgFields = &pclMessageDef_.fields.at(pclMessageDef_.latestMessageCrc);
+        uiMsgDefCRC_ = pclMessageDef_.latestMessageCrc;
     }
-    else { pvMsgFields = &pclMessageDef_->fields.at(uiMsgDefCRC_); }
+    else { pvMsgFields = &pclMessageDef_.fields.at(uiMsgDefCRC_); }
     return pvMsgFields;
 }
 
@@ -303,11 +302,11 @@ bool Encoder::EncodeBinaryBody(const IntermediateMessage& stIntermediateMessage_
                 }
 
                 // If the user wishes to receive a flattened version of the log, fill in the remaining fields that are not used with 0x00.
-                if (bFlatten_ &&
-                    (static_cast<uint32_t>(*ppcOutBuf_ - pucTempStart) < dynamic_cast<const FieldArrayField*>(field.field_def)->fieldSize))
+                if (bFlatten_ && (static_cast<uint32_t>(*ppcOutBuf_ - pucTempStart) <
+                                  std::dynamic_pointer_cast<const FieldArrayField>(field.field_def)->fieldSize))
                 {
                     if (!SetInBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, '\0',
-                                     dynamic_cast<const FieldArrayField*>(field.field_def)->fieldSize -
+                                     std::dynamic_pointer_cast<const FieldArrayField>(field.field_def)->fieldSize -
                                          static_cast<uint32_t>(*ppcOutBuf_ - pucTempStart)))
                     {
                         return false;
@@ -335,7 +334,7 @@ bool Encoder::EncodeBinaryBody(const IntermediateMessage& stIntermediateMessage_
                 if (bFlatten_)
                 {
                     const uint32_t uiMaxArraySize =
-                        (dynamic_cast<const ArrayField*>(field.field_def)->arrayLength) * (field.field_def->dataType.length);
+                        (std::dynamic_pointer_cast<const ArrayField>(field.field_def)->arrayLength) * (field.field_def->dataType.length);
                     if (static_cast<uint32_t>(*ppcOutBuf_ - pucTempStart) < uiMaxArraySize)
                     {
                         if (!SetInBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, '\0',
@@ -357,7 +356,8 @@ bool Encoder::EncodeBinaryBody(const IntermediateMessage& stIntermediateMessage_
             if (bFlatten_)
             {
                 const auto uiStringLength = static_cast<uint32_t>(strlen(szString));
-                const uint32_t uiMaxArraySize = dynamic_cast<const ArrayField*>(field.field_def)->arrayLength * field.field_def->dataType.length;
+                const uint32_t uiMaxArraySize =
+                    std::dynamic_pointer_cast<const ArrayField>(field.field_def)->arrayLength * field.field_def->dataType.length;
                 if (uiStringLength < uiMaxArraySize && !SetInBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, '\0', uiMaxArraySize - uiStringLength))
                 {
                     return false;
@@ -438,8 +438,8 @@ bool Encoder::EncodeAsciiHeader(const IntermediateHeader& stIntermediateHeader_,
     if (!PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, "%c", OEM4_ASCII_SYNC)) { return false; }
 
     // Message name
-    const MessageDefinition* pclMessageDef = pclMyMsgDb->GetMsgDef(stIntermediateHeader_.usMessageID);
-    std::string sMsgName(pclMessageDef ? pclMessageDef->name : GetEnumString(vMyCommandDefns, stIntermediateHeader_.usMessageID));
+    MessageDefinition::ConstPtr pclMessageDef = pclMyMsgDb->GetMsgDef(stIntermediateHeader_.usMessageID);
+    std::string sMsgName(pclMessageDef ? pclMessageDef->name : GetEnumString(vMyCommandDefns.get(), stIntermediateHeader_.usMessageID));
     const uint32_t uiSiblingID = stIntermediateHeader_.ucMessageType & static_cast<uint32_t>(MESSAGETYPEMASK::MEASSRC);
     const uint32_t uiResponse = (stIntermediateHeader_.ucMessageType & static_cast<uint32_t>(MESSAGETYPEMASK::RESPONSE)) >> 7;
     sMsgName.append(uiResponse ? "R" : "A"); // Append 'A' for ascii, or 'R' for ascii response
@@ -447,12 +447,12 @@ bool Encoder::EncodeAsciiHeader(const IntermediateHeader& stIntermediateHeader_,
         sMsgName.append("_").append(std::to_string(uiSiblingID));
 
     return PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, "%s%c", sMsgName.c_str(), OEM4_ASCII_FIELD_SEPARATOR) &&
-           PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, "%s%c", GetEnumString(vMyPortAddrDefns, stIntermediateHeader_.uiPortAddress).c_str(),
-                         OEM4_ASCII_FIELD_SEPARATOR) &&
+           PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, "%s%c",
+                         GetEnumString(vMyPortAddrDefns.get(), stIntermediateHeader_.uiPortAddress).c_str(), OEM4_ASCII_FIELD_SEPARATOR) &&
            PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, "%hu%c", stIntermediateHeader_.usSequence, OEM4_ASCII_FIELD_SEPARATOR) &&
            PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, "%.1f%c", stIntermediateHeader_.ucIdleTime * 0.500, OEM4_ASCII_FIELD_SEPARATOR) &&
            PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, "%s%c",
-                         GetEnumString(vMyGPSTimeStatusDefns, stIntermediateHeader_.uiTimeStatus).c_str(), OEM4_ASCII_FIELD_SEPARATOR) &&
+                         GetEnumString(vMyGPSTimeStatusDefns.get(), stIntermediateHeader_.uiTimeStatus).c_str(), OEM4_ASCII_FIELD_SEPARATOR) &&
            PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, "%hu%c", stIntermediateHeader_.usWeek, OEM4_ASCII_FIELD_SEPARATOR) &&
            PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, "%.3f%c", stIntermediateHeader_.dMilliseconds / 1000.0, OEM4_ASCII_FIELD_SEPARATOR) &&
            PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, "%08lx%c", stIntermediateHeader_.uiReceiverStatus, OEM4_ASCII_FIELD_SEPARATOR) &&
@@ -468,20 +468,21 @@ bool Encoder::EncodeAbbrevAsciiHeader(const IntermediateHeader& stIntermediateHe
     if (!bIsEmbeddedHeader_ && !PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, "%c", OEM4_ABBREV_ASCII_SYNC)) { return false; }
 
     // Message name
-    const MessageDefinition* pclMessageDef = pclMyMsgDb->GetMsgDef(stIntermediateHeader_.usMessageID);
-    std::string sMsgName(pclMessageDef ? pclMessageDef->name : GetEnumString(vMyCommandDefns, stIntermediateHeader_.usMessageID));
+    MessageDefinition::ConstPtr pclMessageDef = pclMyMsgDb->GetMsgDef(stIntermediateHeader_.usMessageID);
+    std::string sMsgName(pclMessageDef ? pclMessageDef->name : GetEnumString(vMyCommandDefns.get(), stIntermediateHeader_.usMessageID));
     const uint32_t uiSiblingID = stIntermediateHeader_.ucMessageType & static_cast<uint32_t>(MESSAGETYPEMASK::MEASSRC);
     if (uiSiblingID) // Append sibling i.e. the _1 of RANGEA_1
         sMsgName.append("_").append(std::to_string(uiSiblingID));
 
     return PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, "%s%c", sMsgName.c_str(), OEM4_ABBREV_ASCII_SEPARATOR) &&
                    PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, "%s%c",
-                                 GetEnumString(vMyPortAddrDefns, stIntermediateHeader_.uiPortAddress).c_str(), OEM4_ABBREV_ASCII_SEPARATOR) &&
+                                 GetEnumString(vMyPortAddrDefns.get(), stIntermediateHeader_.uiPortAddress).c_str(), OEM4_ABBREV_ASCII_SEPARATOR) &&
                    PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, "%hu%c", stIntermediateHeader_.usSequence, OEM4_ABBREV_ASCII_SEPARATOR) &&
                    PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, "%.1f%c", stIntermediateHeader_.ucIdleTime * 0.500,
                                  OEM4_ABBREV_ASCII_SEPARATOR) &&
                    PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, "%s%c",
-                                 GetEnumString(vMyGPSTimeStatusDefns, stIntermediateHeader_.uiTimeStatus).c_str(), OEM4_ABBREV_ASCII_SEPARATOR) &&
+                                 GetEnumString(vMyGPSTimeStatusDefns.get(), stIntermediateHeader_.uiTimeStatus).c_str(),
+                                 OEM4_ABBREV_ASCII_SEPARATOR) &&
                    PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, "%hu%c", stIntermediateHeader_.usWeek, OEM4_ABBREV_ASCII_SEPARATOR) &&
                    PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, "%.3f%c", stIntermediateHeader_.dMilliseconds / 1000.0,
                                  OEM4_ABBREV_ASCII_SEPARATOR) &&
@@ -560,8 +561,8 @@ bool Encoder::EncodeAsciiBody(const std::vector<FieldContainer>& vIntermediateFo
             }
             else
             {
-                const bool bPrintAsString = PrintAsString(field.field_def);
-                const bool bIsCommaSeparated = IsCommaSeparated(field.field_def);
+                const bool bPrintAsString = PrintAsString(*field.field_def);
+                const bool bIsCommaSeparated = IsCommaSeparated(*field.field_def);
 
                 // if the field is a variable array, print the size first
                 if ((field.field_def->type == FIELD_TYPE::VARIABLE_LENGTH_ARRAY &&
@@ -615,9 +616,9 @@ bool Encoder::EncodeAsciiBody(const std::vector<FieldContainer>& vIntermediateFo
         }
         else if (field.field_def->type == FIELD_TYPE::ENUM)
         {
-            const auto enumField = dynamic_cast<const EnumField*>(field.field_def);
+            const auto enumField = std::dynamic_pointer_cast<const EnumField>(field.field_def);
             if (!PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, "%s%c",
-                               GetEnumString(enumField->enumDef, std::get<int32_t>(field.field_value)).c_str(), OEM4_ASCII_FIELD_SEPARATOR))
+                               GetEnumString(enumField->enumDef.get(), std::get<int32_t>(field.field_value)).c_str(), OEM4_ASCII_FIELD_SEPARATOR))
             {
                 return false;
             }
@@ -701,8 +702,8 @@ bool Encoder::EncodeAbbrevAsciiBody(const std::vector<FieldContainer>& vIntermed
             }
             else
             {
-                const bool bPrintAsString = PrintAsString(field.field_def);
-                const bool bIsCommaSeparated = IsCommaSeparated(field.field_def);
+                const bool bPrintAsString = PrintAsString(*field.field_def);
+                const bool bIsCommaSeparated = IsCommaSeparated(*field.field_def);
 
                 // if the field is a variable array, print the size first
                 if (field.field_def->type == FIELD_TYPE::VARIABLE_LENGTH_ARRAY)
@@ -758,9 +759,9 @@ bool Encoder::EncodeAbbrevAsciiBody(const std::vector<FieldContainer>& vIntermed
         }
         else if (field.field_def->type == FIELD_TYPE::ENUM)
         {
-            const auto enumField = dynamic_cast<const EnumField*>(field.field_def);
+            const auto enumField = std::dynamic_pointer_cast<const EnumField>(field.field_def);
             if (!PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, "%s%c",
-                               GetEnumString(enumField->enumDef, std::get<int32_t>(field.field_value)).c_str(), OEM4_ABBREV_ASCII_SEPARATOR))
+                               GetEnumString(enumField->enumDef.get(), std::get<int32_t>(field.field_value)).c_str(), OEM4_ABBREV_ASCII_SEPARATOR))
             {
                 return false;
             }
@@ -867,8 +868,8 @@ bool Encoder::FieldToAscii(const FieldContainer& fc_, char** ppcOutBuf_, uint32_
 std::string Encoder::JsonHeaderToMsgName(const IntermediateHeader& stIntermediateHeader_) const
 {
     // Message name
-    const MessageDefinition* pclMessageDef = pclMyMsgDb->GetMsgDef(stIntermediateHeader_.usMessageID);
-    std::string sMsgName(pclMessageDef ? pclMessageDef->name : GetEnumString(vMyCommandDefns, stIntermediateHeader_.usMessageID));
+    MessageDefinition::ConstPtr pclMessageDef = pclMyMsgDb->GetMsgDef(stIntermediateHeader_.usMessageID);
+    std::string sMsgName(pclMessageDef ? pclMessageDef->name : GetEnumString(vMyCommandDefns.get(), stIntermediateHeader_.usMessageID));
     uint32_t uiSiblingID = stIntermediateHeader_.ucMessageType & 0b00011111;
     if (uiSiblingID) // Append sibling i.e. the _1 of RANGEA_1
         sMsgName.append("_").append(std::to_string(uiSiblingID));
@@ -883,12 +884,12 @@ bool Encoder::EncodeJsonHeader(const IntermediateHeader& stIntermediateHeader_, 
            PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, R"("message": "%s",)", JsonHeaderToMsgName(stIntermediateHeader_).c_str()) &&
            PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, R"("id": %hu,)", stIntermediateHeader_.usMessageID) &&
            PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, R"("port": "%s",)",
-                         GetEnumString(vMyPortAddrDefns, stIntermediateHeader_.uiPortAddress).c_str()) &&
+                         GetEnumString(vMyPortAddrDefns.get(), stIntermediateHeader_.uiPortAddress).c_str()) &&
            PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, R"("sequence_num": %hu,)", stIntermediateHeader_.usSequence) &&
            PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, R"("percent_idle_time": %.1f,)",
                          static_cast<float>(stIntermediateHeader_.ucIdleTime) * 0.500) &&
            PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, R"("time_status": "%s",)",
-                         GetEnumString(vMyGPSTimeStatusDefns, stIntermediateHeader_.uiTimeStatus).c_str()) &&
+                         GetEnumString(vMyGPSTimeStatusDefns.get(), stIntermediateHeader_.uiTimeStatus).c_str()) &&
            PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, R"("week": %hu,)", stIntermediateHeader_.usWeek) &&
            PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, R"("seconds": %.3f,)", (stIntermediateHeader_.dMilliseconds / 1000.0)) &&
            PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, R"("receiver_status": %ld,)", stIntermediateHeader_.uiReceiverStatus) &&
@@ -944,7 +945,7 @@ bool Encoder::EncodeJsonBody(const std::vector<FieldContainer>& vIntermediateFor
             }
             else
             {
-                const bool bPrintAsString = PrintAsString(field.field_def);
+                const bool bPrintAsString = PrintAsString(*field.field_def);
 
                 if (bPrintAsString)
                 {
@@ -1001,8 +1002,10 @@ bool Encoder::EncodeJsonBody(const std::vector<FieldContainer>& vIntermediateFor
         }
         else if (field.field_def->type == FIELD_TYPE::ENUM)
         {
-            if (!PrintToBuffer(ppcOutBuf_, uiMyBufferBytesRemaining_, R"("%s": "%s",)", field.field_def->name.c_str(),
-                               GetEnumString(dynamic_cast<const EnumField*>(field.field_def)->enumDef, std::get<int32_t>(field.field_value)).c_str()))
+            if (!PrintToBuffer(
+                    ppcOutBuf_, uiMyBufferBytesRemaining_, R"("%s": "%s",)", field.field_def->name.c_str(),
+                    GetEnumString(std::dynamic_pointer_cast<const EnumField>(field.field_def)->enumDef.get(), std::get<int32_t>(field.field_value))
+                        .c_str()))
             {
                 return false;
             }

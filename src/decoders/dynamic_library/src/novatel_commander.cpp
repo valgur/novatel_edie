@@ -48,7 +48,10 @@ void novatel_commander_shutdown_logger(Commander* pclCommander_)
     if (pclCommander_) { pclCommander_->ShutdownLogger(); }
 }
 
-Commander* novatel_commander_init(JsonReader* pclJsonDb_) { return pclJsonDb_ ? new Commander(pclJsonDb_) : nullptr; }
+Commander* novatel_commander_init(JsonReader* pclJsonDb_)
+{
+    return pclJsonDb_ ? new Commander(JsonReader::Ptr(pclJsonDb_, [](auto) {})) : nullptr;
+}
 
 void novatel_commander_delete(Commander* pclCommander_)
 {
@@ -61,7 +64,10 @@ void novatel_commander_delete(Commander* pclCommander_)
 
 void novatel_commander_load_json(Commander* pclCommander_, JsonReader* pclJsonDb_)
 {
-    if (pclCommander_ && pclJsonDb_) { pclCommander_->LoadJsonDb(pclJsonDb_); }
+    if (pclCommander_ && pclJsonDb_)
+    {
+        pclCommander_->LoadJsonDb(JsonReader::Ptr(pclJsonDb_, [](auto) {}));
+    }
 }
 
 STATUS novatel_commander_encode(Commander* pclCommander_, char* pcAbbrevAsciiCommand_, uint32_t uicAbbrevAsciiCommandLength_, char* pcEncodeBuffer_,

@@ -7,7 +7,7 @@
 class JsonDbSingleton
 {
   public:
-    static JsonReader* get();
+    static JsonReader::Ptr& get();
 
   private:
     JsonDbSingleton() = default;

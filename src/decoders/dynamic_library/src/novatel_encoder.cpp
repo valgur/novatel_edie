@@ -48,7 +48,10 @@ void novatel_encoder_shutdown_logger(Encoder* pclEncoder_)
     if (pclEncoder_) { pclEncoder_->ShutdownLogger(); }
 }
 
-Encoder* novatel_encoder_init(JsonReader* pclJsonDb_) { return pclJsonDb_ ? new Encoder(pclJsonDb_) : nullptr; }
+Encoder* novatel_encoder_init(JsonReader* pclJsonDb_)
+{
+    return pclJsonDb_ ? new Encoder(JsonReader::Ptr(pclJsonDb_, [](auto) {})) : nullptr;
+}
 
 void novatel_encoder_delete(Encoder* pclEncoder_)
 {
@@ -61,7 +64,10 @@ void novatel_encoder_delete(Encoder* pclEncoder_)
 
 void novatel_encoder_load_json(Encoder* pclEncoder_, JsonReader* pclJsonDb_)
 {
-    if (pclEncoder_ && pclJsonDb_) { pclEncoder_->LoadJsonDb(pclJsonDb_); }
+    if (pclEncoder_ && pclJsonDb_)
+    {
+        pclEncoder_->LoadJsonDb(JsonReader::Ptr(pclJsonDb_, [](auto) {}));
+    }
 }
 
 STATUS novatel_encoder_encode(Encoder* pclEncoder_, unsigned char* pucEncodeBuffer_, uint32_t uiEncodeBufferSize_,
