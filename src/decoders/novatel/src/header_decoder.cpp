@@ -175,7 +175,7 @@ template <ASCIIHEADER eField> bool HeaderDecoder::DecodeAsciiHeaderField(Interme
         stIntermediateHeader_.uiPortAddress = static_cast<uint32_t>(GetEnumValue(vMyPortAddrDefns, std::string(*ppcLogBuf_, ullTokenLength)));
         break;
     case ASCIIHEADER::SEQUENCE: stIntermediateHeader_.usSequence = static_cast<uint16_t>(strtoul(*ppcLogBuf_, nullptr, 10)); break;
-    case ASCIIHEADER::IDLETIME: stIntermediateHeader_.ucIdleTime = static_cast<uint8_t>(2.0 * strtof(*ppcLogBuf_, nullptr)); break;
+    case ASCIIHEADER::IDLETIME: stIntermediateHeader_.ucIdleTime = static_cast<uint8_t>(std::lround(2.0f * strtof(*ppcLogBuf_, nullptr))); break;
     case ASCIIHEADER::TIME_STATUS:
         stIntermediateHeader_.uiTimeStatus = GetEnumValue(vMyGPSTimeStatusDefns, std::string(*ppcLogBuf_, ullTokenLength));
         break;
