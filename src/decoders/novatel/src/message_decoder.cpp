@@ -230,11 +230,12 @@ MessageDecoder::DecodeBinary(const std::vector<BaseField*> MsgDefFields_, unsign
    unsigned char* pucTempStart = *ppucLogBuf_;
    for (auto& field : MsgDefFields_)
    {
-      // Realign to type byte boundry if needed
-      uint8_t usTypeAlightment = field->dataType.length >= 4 ? 4 : field->dataType.length;
-      if (reinterpret_cast<uint64_t>(*ppucLogBuf_) % usTypeAlightment != 0)
+      // Realign to type byte boundary if needed
+      uint8_t usTypeAlignment = field->dataType.length >= 4 ? 4 : field->dataType.length;
+      uint64_t usAlignmentOffset = static_cast<uint64_t>(*ppucLogBuf_ - pucTempStart) % usTypeAlignment;
+      if (usAlignmentOffset != 0)
       {
-         *ppucLogBuf_ += usTypeAlightment - (reinterpret_cast<uint64_t>(*ppucLogBuf_) % usTypeAlightment);
+         *ppucLogBuf_ += usTypeAlignment - usAlignmentOffset;
       }
 
       if (field->type == FIELD_TYPE::SIMPLE)
