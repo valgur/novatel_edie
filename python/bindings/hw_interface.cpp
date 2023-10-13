@@ -30,7 +30,7 @@ class MultiOutputFileStreamTest : public MultiOutputFileStream
     static const MultiOutputFileStreamTest& cast(const MultiOutputFileStream& fs) { return *static_cast<const MultiOutputFileStreamTest*>(&fs); }
 };
 
-NB_MODULE(hw_interface, m)
+void init_hw_interface(nb::module_& m)
 {
     // # stream_interface/common.hpp
 
