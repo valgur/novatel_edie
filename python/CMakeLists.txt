@@ -16,11 +16,9 @@ find_package(nanobind CONFIG REQUIRED)
 
 add_compile_definitions(VERSION_INFO=${SKBUILD_PROJECT_VERSION})
 
-nanobind_add_module(hw_interface_bindings STABLE_ABI NB_STATIC LTO
+nanobind_add_module(python_bindings STABLE_ABI NB_STATIC LTO
+    ${CMAKE_CURRENT_SOURCE_DIR}/bindings/bindings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/bindings/hw_interface.cpp
-)
-nanobind_add_module(decoders_bindings STABLE_ABI NB_STATIC LTO
-    ${CMAKE_CURRENT_SOURCE_DIR}/bindings/decoders.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/bindings/common/common.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/bindings/common/jsonreader.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/bindings/common/logger.cpp
@@ -38,14 +36,11 @@ nanobind_add_module(decoders_bindings STABLE_ABI NB_STATIC LTO
     ${CMAKE_CURRENT_SOURCE_DIR}/bindings/novatel/rxconfig_handler.cpp
 )
 
-set_target_properties(hw_interface_bindings PROPERTIES OUTPUT_NAME hw_interface)
-set_target_properties(decoders_bindings PROPERTIES OUTPUT_NAME decoders)
+set_target_properties(python_bindings PROPERTIES OUTPUT_NAME bindings)
 
-target_include_directories(hw_interface_bindings PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/bindings)
-target_include_directories(decoders_bindings PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/bindings)
+target_include_directories(python_bindings PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/bindings)
 
-target_link_libraries(hw_interface_bindings PRIVATE EDIE::stream_interface EDIE::novatel)
-target_link_libraries(decoders_bindings PRIVATE EDIE::stream_interface EDIE::novatel)
+target_link_libraries(python_bindings PRIVATE EDIE::stream_interface EDIE::novatel)
 
 if(DEFINED SKBUILD_PROJECT_NAME)
     set(PYTHON_INSTALL_DIR ${SKBUILD_PROJECT_NAME})
@@ -53,7 +48,7 @@ elseif(NOT DEFINED PYTHON_INSTALL_DIR)
     set(PYTHON_INSTALL_DIR lib/python${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}/site-packages/novatel_edie)
 endif()
 
-install(TARGETS hw_interface_bindings decoders_bindings
+install(TARGETS python_bindings
     LIBRARY DESTINATION ${PYTHON_INSTALL_DIR}
     COMPONENT python)
 install(DIRECTORY novatel_edie/

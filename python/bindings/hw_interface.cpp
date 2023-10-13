@@ -30,7 +30,7 @@ private:
    }
 };
 
-NB_MODULE(hw_interface, m)
+void init_hw_interface(nb::module_& m)
 {
    // # stream_interface/common.hpp
 
