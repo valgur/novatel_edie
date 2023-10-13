@@ -32,6 +32,7 @@
 //-----------------------------------------------------------------------
 #include "decoders/novatel/message_decoder.hpp"
 #include <bitset>
+#include <cmath>
 #include <sstream>
 
 using namespace novatel::edie;
@@ -991,7 +992,7 @@ MessageDecoder::DecodeAsciiField(const BaseField* MessageDataType_, char** ppcTo
    }
    else if (MessageDataType_->conversionStripped == CONVERSION_STRING::T) // GPSTime msec field
    {
-      vIntermediateFormat_.emplace_back(static_cast<uint32_t>(strtod(*ppcToken_, nullptr) * SEC_TO_MSEC), MessageDataType_);
+      vIntermediateFormat_.emplace_back(static_cast<uint32_t>(std::llround(strtod(*ppcToken_, nullptr) * SEC_TO_MSEC)), MessageDataType_);
    }
    else
    {
@@ -1290,7 +1291,7 @@ MessageDecoder::DecodeJsonField(const BaseField* MessageDataType_, json clJsonFi
    }
    else if (MessageDataType_->conversionStripped == CONVERSION_STRING::T) // GPSTime msec field
    {
-      vIntermediateFormat_.emplace_back(static_cast<uint32_t>(clJsonField_.get<double>() * SEC_TO_MSEC), MessageDataType_);
+      vIntermediateFormat_.emplace_back(static_cast<uint32_t>(std::llround(clJsonField_.get<double>() * SEC_TO_MSEC)), MessageDataType_);
    }
    else
    {
