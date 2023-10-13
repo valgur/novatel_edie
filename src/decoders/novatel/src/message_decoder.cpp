@@ -140,5 +140,3 @@ void MessageDecoder::InitOemFieldMaps()
         vIntermediateFormat_.emplace_back(pclMessageDef ? CreateMsgId(pclMessageDef->logID, 0, 1, 0) : 0, pstMessageDataType_);
     };
 }
-
-
