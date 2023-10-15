@@ -37,10 +37,11 @@ nanobind_add_module(python_bindings STABLE_ABI NB_STATIC LTO
 )
 
 set_target_properties(python_bindings PROPERTIES OUTPUT_NAME bindings)
-
 target_include_directories(python_bindings PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/bindings)
-
 target_link_libraries(python_bindings PRIVATE EDIE::stream_interface EDIE::novatel)
+
+# https://github.com/boostorg/system/issues/32#issuecomment-462912013
+target_compile_definitions(python_bindings PRIVATE HAVE_SNPRINTF)
 
 if(DEFINED SKBUILD_PROJECT_NAME)
     set(PYTHON_INSTALL_DIR ${SKBUILD_PROJECT_NAME})
