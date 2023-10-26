@@ -42,8 +42,6 @@ if(MSVC)
     if(NOT DEFINED CMAKE_MSVC_RUNTIME_LIBRARY)
         set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
     endif()
-    # FIXME: add missing exports to decoders
-    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
     add_compile_options(/utf-8 $<$<CONFIG:Debug>:/Zi>)
     add_compile_options($<$<COMPILE_LANGUAGE:CXX>:/W4>)
     message("CMAKE_GENERATOR_PLATFORM: " ${CMAKE_GENERATOR_PLATFORM})
