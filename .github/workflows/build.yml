@@ -67,7 +67,9 @@ jobs:
           - [Linux, ubuntu-latest, gcc]
           - [Linux, ubuntu-latest, clang]
           - [Windows, windows-latest, msvc]
-          - [MacOS, macos-latest, apple-clang]
+          - [MacOS, macos-11, apple-clang]
+          # macos-latest with v12.7 is too new for Conan at the moment
+          # - [MacOS, macos-latest, apple-clang]
     steps:
       - uses: actions/checkout@v3
 
@@ -93,13 +95,13 @@ jobs:
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
-        run: cmake --build build --parallel
+        run: cmake --build build --parallel --config Release
 
       - name: Test
         run: ctest --test-dir build --build-config Release
 
       - name: Install
-        run: cmake --install build --prefix install
+        run: cmake --install build --prefix install --config Release
 
       - name: Inspect prep
         if: matrix.platform[0] == 'MacOS'
