@@ -11,7 +11,7 @@ add_executable(CommonTest ${COMMONTEST_SOURCES})
 set_property(TARGET CommonTest PROPERTY FOLDER "decoders/tests")
 target_link_libraries(CommonTest PUBLIC
     edie::novatel
-    GTest::GTest GTest::Main
+    GTest::gtest GTest::gtest_main
 )
 
 add_test(NAME CommonTest COMMAND CommonTest)

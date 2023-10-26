@@ -11,7 +11,7 @@ add_executable(StreamInterfaceTest ${STREAMINTERFACETEST_SOURCES})
 set_property(TARGET StreamInterfaceTest PROPERTY FOLDER "hw_interface/tests")
 target_link_libraries(StreamInterfaceTest PUBLIC
     edie::stream_interface
-    GTest::GTest GTest::Main
+    GTest::gtest GTest::gtest_main
 )
 
 add_test(

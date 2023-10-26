@@ -1,3 +1,8 @@
+if(VCPKG_TOOLCHAIN)
+  # vcpkg is in use, disable automatic dependency management with Conan
+  return()
+endif()
+
 set(USE_CONAN ON CACHE BOOL "Use Conan to automatically manage dependencies")
 
 string(FIND "${CMAKE_TOOLCHAIN_FILE}" "conan_toolchain.cmake" FOUND_CONAN_TOOLCHAIN)
