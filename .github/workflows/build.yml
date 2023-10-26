@@ -1,0 +1,109 @@
+name: Build
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+      - '.gitignore'
+      - 'resources/**'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+      - '.gitignore'
+      - 'resources/**'
+  workflow_dispatch:
+jobs:
+  conan:
+    name: Conan - ${{ matrix.platform[0] }} - ${{ matrix.platform[2] }}
+    runs-on: ${{ matrix.platform[1] }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - [Linux, ubuntu-latest, gcc]
+          - [Linux, ubuntu-latest, clang]
+          - [Windows, windows-latest, msvc]
+          - [MacOS, macos-latest, apple-clang]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Clang
+        if: matrix.platform[2] == 'clang'
+        uses: KyleMayes/install-llvm-action@v1
+        with:
+          version: "17.0"
+
+      - name: Set env vars for Clang
+        if: matrix.platform[2] == 'clang'
+        run: echo "CC=clang" >> $GITHUB_ENV && echo "CXX=clang++" >> $GITHUB_ENV
+
+      - name: Install Conan
+        id: conan
+        uses: turtlebrowser/get-conan@main
+
+      - name: Create default profile
+        run: conan profile detect
+
+      - name: Set compiler.cppstd to 17
+        shell: bash
+        run: |
+          if [[ "$RUNNER_OS" == "macOS" ]]; then sed_i='sed -i ""'; else sed_i='sed -i'; fi
+          $sed_i 's/compiler.cppstd=.*/compiler.cppstd=17/' "$(conan config home)/profiles/default"
+
+      - name: Build Conan package - static
+        run: conan create . --build missing
+
+      - name: Build Conan package - shared
+        run: conan create . --build missing -o "*/*:shared=True"
+
+  standalone:
+    name: CMake - ${{ matrix.platform[0] }} - ${{ matrix.platform[2] }}
+    runs-on: ${{ matrix.platform[1] }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - [Linux, ubuntu-latest, gcc]
+          - [Linux, ubuntu-latest, clang]
+          - [Windows, windows-latest, msvc]
+          - [MacOS, macos-latest, apple-clang]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Clang
+        if: matrix.platform[2] == 'clang'
+        uses: KyleMayes/install-llvm-action@v1
+        with:
+          version: "17.0"
+
+      - name: Set env vars for Clang
+        if: matrix.platform[2] == 'clang'
+        run: echo "CC=clang" >> $GITHUB_ENV && echo "CXX=clang++" >> $GITHUB_ENV
+
+      - uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: "~3.27"
+
+      - name: Install Conan
+        id: conan
+        uses: turtlebrowser/get-conan@main
+
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Test
+        run: ctest --test-dir build --build-config Release
+
+      - name: Install
+        run: cmake --install build --prefix install
+
+      - name: Inspect prep
+        if: matrix.platform[0] == 'MacOS'
+        run: brew install tree
+
+      - name: Inspect
+        run: tree install/
