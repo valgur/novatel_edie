@@ -11,7 +11,7 @@ add_executable(NovatelTest ${NOVATELTEST_SOURCES})
 set_property(TARGET NovatelTest PROPERTY FOLDER "decoders/tests")
 target_link_libraries(NovatelTest PUBLIC
     edie::novatel edie::stream_interface
-    GTest::GTest GTest::Main
+    GTest::gtest GTest::gtest_main
 )
 
 add_test(
