@@ -1,17 +1,13 @@
-file (GLOB SOURCES
+file(GLOB COMMONTEST_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/*.c*
     ${CMAKE_CURRENT_SOURCE_DIR}/*.h*
 )
-set(COMMONTEST_SOURCES)
-list(APPEND COMMONTEST_SOURCES ${SOURCES})
 
 find_package(GTest REQUIRED CONFIG)
 
-add_executable(CommonTest ${COMMONTEST_SOURCES})
+add_executable(CommonTest ${COMMONTEST_SOURCES} $<TARGET_OBJECTS:objcommon>)
 set_property(TARGET CommonTest PROPERTY FOLDER "edie/decoders/tests")
-target_link_libraries(CommonTest PUBLIC
-    edie::novatel
-    GTest::gtest GTest::gtest_main
-)
+target_link_libraries(CommonTest PUBLIC EDIE::common_dependencies GTest::gtest GTest::gtest_main)
+target_include_directories(CommonTest PRIVATE "$<TARGET_PROPERTY:objnovatel,INCLUDE_DIRECTORIES>")
 
 add_test(NAME CommonTest COMMAND CommonTest)

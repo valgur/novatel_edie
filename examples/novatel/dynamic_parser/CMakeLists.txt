@@ -1,3 +1,3 @@
 add_executable(NovAtelDynamic_Parser dynamic_parser.cpp)
-target_link_libraries(NovAtelDynamic_Parser edie::decoders_dynamic_library)
+target_link_libraries(NovAtelDynamic_Parser EDIE::decoders_dynamic_library)
 set_property(TARGET NovAtelDynamic_Parser PROPERTY FOLDER "examples")
