@@ -14,6 +14,9 @@ add_library(decoders_dynamic_library SHARED
 add_library(EDIE::decoders_dynamic_library ALIAS decoders_dynamic_library)
 target_link_libraries(decoders_dynamic_library PUBLIC EDIE::hwinterface_dynamic_library EDIE::common_dependencies)
 
+# FIXME: symbols from novatel and stream_interface classes are currently not exported correctly
+set_property(TARGET decoders_dynamic_library PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
 set_property(TARGET decoders_dynamic_library PROPERTY FOLDER "decoders")
 
 if (WINDOWS)
