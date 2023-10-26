@@ -1,16 +1,14 @@
-file (GLOB SOURCES
+file(GLOB STREAMINTERFACETEST_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/*.c*
     ${CMAKE_CURRENT_SOURCE_DIR}/*.h*
 )
-set(STREAMINTERFACETEST_SOURCES)
-list(APPEND STREAMINTERFACETEST_SOURCES ${SOURCES})
 
 find_package(GTest REQUIRED CONFIG)
 
-add_executable(StreamInterfaceTest ${STREAMINTERFACETEST_SOURCES})
+add_executable(StreamInterfaceTest ${STREAMINTERFACETEST_SOURCES} $<TARGET_OBJECTS:objcommon>)
 set_property(TARGET StreamInterfaceTest PROPERTY FOLDER "hw_interface/tests")
 target_link_libraries(StreamInterfaceTest PUBLIC
-    edie::stream_interface
+    EDIE::stream_interface
     GTest::gtest GTest::gtest_main
 )
 
