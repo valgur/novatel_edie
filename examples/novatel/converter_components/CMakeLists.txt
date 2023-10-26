@@ -1,3 +1,3 @@
 add_executable(NovAtelConverter_Components converter_components.cpp)
-target_link_libraries(NovAtelConverter_Components edie::novatel edie::stream_interface)
+target_link_libraries(NovAtelConverter_Components EDIE::novatel EDIE::stream_interface)
 set_property(TARGET NovAtelConverter_Components PROPERTY FOLDER "examples")

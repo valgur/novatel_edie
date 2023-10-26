@@ -1,3 +1,3 @@
 add_executable(NovAtelConverter_FileParser converter_fileparser.cpp)
-target_link_libraries(NovAtelConverter_FileParser edie::novatel edie::stream_interface)
+target_link_libraries(NovAtelConverter_FileParser EDIE::novatel EDIE::stream_interface)
 set_property(TARGET NovAtelConverter_FileParser PROPERTY FOLDER "examples")
