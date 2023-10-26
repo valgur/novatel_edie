@@ -14,6 +14,9 @@ add_library(hwinterface_dynamic_library SHARED
 add_library(EDIE::hwinterface_dynamic_library ALIAS hwinterface_dynamic_library)
 target_link_libraries(hwinterface_dynamic_library PUBLIC EDIE::common_dependencies)
 
+# FIXME: symbols from novatel and stream_interface classes are currently not exported correctly
+set_property(TARGET hwinterface_dynamic_library PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
 set_property(TARGET hwinterface_dynamic_library PROPERTY FOLDER "hw_interface")
 
 if (WINDOWS)
