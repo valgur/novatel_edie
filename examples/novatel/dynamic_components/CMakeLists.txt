@@ -1,3 +1,3 @@
 add_executable(NovAtelDynamic_Components dynamic_components.cpp)
-target_link_libraries(NovAtelDynamic_Components edie::decoders_dynamic_library)
+target_link_libraries(NovAtelDynamic_Components EDIE::decoders_dynamic_library)
 set_property(TARGET NovAtelDynamic_Components PROPERTY FOLDER "examples")

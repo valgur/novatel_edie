@@ -1,34 +1,31 @@
-
-file(GLOB_RECURSE SOURCES
+file(GLOB_RECURSE NOVATEL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c*
     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h*
 )
-set(NOVATEL_SOURCES)
-list(APPEND NOVATEL_SOURCES ${SOURCES})
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${NOVATEL_SOURCES})
 
 # Creating an object file which can be used for both static and shared build without recompilation.
-add_library(objnovatel OBJECT ${NOVATEL_SOURCES})
-add_library(obj::novatel ALIAS objnovatel)
-target_link_libraries(objnovatel PUBLIC obj::common edie::stream_interface)
+add_library(objnovatel OBJECT ${NOVATEL_SOURCES} $<TARGET_OBJECTS:objcommon>)
+target_link_libraries(objnovatel PUBLIC EDIE::stream_interface EDIE::common_dependencies)
 
 # Creating a static lib, with the project name, using available object file, without recompilation.
-add_library(novatel $<TARGET_OBJECTS:objnovatel>)
-add_library(edie::novatel ALIAS novatel)
-target_link_libraries(novatel PUBLIC obj::common)
+add_library(novatel $<TARGET_OBJECTS:objnovatel> $<TARGET_OBJECTS:objcommon>)
+add_library(EDIE::novatel ALIAS novatel)
+target_link_libraries(novatel PUBLIC EDIE::common_dependencies)
 set_property(TARGET novatel PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-set_property(TARGET novatel PROPERTY FOLDER "decoders")
-set_property(TARGET objnovatel PROPERTY FOLDER "decoders")
+foreach(target objnovatel novatel)
+    target_include_directories(${target}
+        PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+            "$<BUILD_INTERFACE:$<TARGET_PROPERTY:objcommon,INCLUDE_DIRECTORIES>>"
+            "$<BUILD_INTERFACE:$<TARGET_PROPERTY:objstreaminterface,INCLUDE_DIRECTORIES>>"
+        PRIVATE include/decoders/novatel
+    )
+    set_property(TARGET ${target} PROPERTY FOLDER "decoders")
+endforeach()
 
-target_include_directories(objnovatel
-    PUBLIC include
-    PRIVATE include/decoders/novatel
-)
-get_target_property(common_INCLUDE_DIRS obj::common INCLUDE_DIRECTORIES)
-target_include_directories(novatel PUBLIC include ${common_INCLUDE_DIRS})
-
-install(TARGETS novatel)
+install(TARGETS novatel EXPORT EDIE-targets)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
