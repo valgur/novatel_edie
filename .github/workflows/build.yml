@@ -42,12 +42,10 @@ jobs:
         id: conan
         uses: turtlebrowser/get-conan@main
 
-      - name: Create default profile
-        run: conan profile detect
-
-      - name: Set compiler.cppstd to 17
+      - name: Create default Conan profile
         shell: bash
         run: |
+          conan profile detect
           if [[ "$RUNNER_OS" == "macOS" ]]; then sed_i='sed -i ""'; else sed_i='sed -i'; fi
           $sed_i 's/compiler.cppstd=.*/compiler.cppstd=17/' "$(conan config home)/profiles/default"
 
@@ -109,3 +107,20 @@ jobs:
 
       - name: Inspect
         run: tree install/
+
+      - name: Test installed library
+        shell: bash
+        run: |
+          # Set up Conan profile
+          conan profile detect --force
+          if [[ "$RUNNER_OS" == "macOS" ]]; then sed_i='sed -i ""'; else sed_i='sed -i'; fi
+          $sed_i 's/compiler.cppstd=.*/compiler.cppstd=17/' "$(conan config home)/profiles/default"
+          $sed_i 's/compiler.runtime=.*/compiler.runtime=static/' "$(conan config home)/profiles/default"
+          # Install dependencies
+          rm CMakeUserPresets.json
+          conan install . -pr default --output-folder=build/test_install --build=missing -s build_type=Release
+          cp CMakeUserPresets.json test_package/
+          # Build
+          if [[ "$RUNNER_OS" == "Windows" ]]; then preset="conan-default"; else preset="conan-release"; fi
+          cmake -S test_package/ --preset $preset -DEDIE_ROOT=$(pwd)/install/lib/cmake/EDIE/
+          cmake --build --preset conan-release
