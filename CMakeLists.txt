@@ -1,7 +1,6 @@
 include(cmake/conan.cmake)
-
 cmake_minimum_required(VERSION 3.15)
-project(edie-public VERSION 3.1.0 LANGUAGES CXX)
+project(edie-public VERSION 3.3.7 LANGUAGES CXX)
 
 option(BUILD_TESTS "Build tests" ON)
 option(BUILD_EXAMPLES "Build examples" ON)
@@ -74,6 +73,8 @@ set(CMAKE_INSTALL_INCLUDEDIR include CACHE PATH "")
 set(CMAKE_INSTALL_BINDIR bin/novatel/edie CACHE PATH "")
 set(CMAKE_INSTALL_LIBDIR lib/novatel/edie CACHE PATH "")
 set(CMAKE_INSTALL_DATADIR share/novatel/edie CACHE PATH "")
+set(EDIE_CMAKE_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/EDIE)
+set(EDIE_INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR})
 
 # build EDIE components
 add_subdirectory(src)
@@ -105,3 +106,35 @@ install(FILES database/messages_public.json
     DESTINATION ${CMAKE_INSTALL_DATADIR}
     COMPONENT data
 )
+
+add_library(EDIE INTERFACE)
+target_link_libraries(EDIE INTERFACE EDIE::novatel EDIE::stream_interface)
+install(TARGETS EDIE EXPORT EDIE-targets)
+
+if(BUILD_DYNAMIC_LIBS)
+    add_library(EDIE-dynamic INTERFACE)
+    target_link_libraries(EDIE-dynamic INTERFACE EDIE::decoders_dynamic_library EDIE::hwinterface_dynamic_library)
+    install(TARGETS EDIE-dynamic EXPORT EDIE-targets)
+endif()
+
+install(EXPORT EDIE-targets
+    NAMESPACE EDIE::
+    DESTINATION "${EDIE_CMAKE_INSTALL_DIR}"
+    FILE edie-targets.cmake
+    COMPONENT EDIE)
+
+# Install exported targets and cmake files
+include(CMakePackageConfigHelpers)
+configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/edie-config.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/edie-config.cmake"
+    INSTALL_DESTINATION ${EDIE_CMAKE_INSTALL_DIR}
+    PATH_VARS EDIE_INCLUDE_INSTALL_DIR)
+
+write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/edie-config-version.cmake"
+    VERSION ${EDIE_VERSION}
+    COMPATIBILITY SameMajorVersion)
+
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/edie-config.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/edie-config-version.cmake"
+    DESTINATION "${EDIE_CMAKE_INSTALL_DIR}"
+    COMPONENT EDIE)
