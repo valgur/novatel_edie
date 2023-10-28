@@ -1,5 +1,6 @@
-include(cmake/conan.cmake)
 cmake_minimum_required(VERSION 3.15)
+include(cmake/third_party.cmake)
+
 project(edie-public VERSION 3.3.7 LANGUAGES CXX)
 
 option(BUILD_TESTS "Build tests" ON)
@@ -11,8 +12,12 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_compile_definitions(STRICT)
 
-if(NOT CMAKE_BUILD_TYPE)
+if(NOT DEFINED CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
+endif()
+
+if(NOT DEFINED BUILD_SHARED_LIBS)
+    set(BUILD_SHARED_LIBS ON)
 endif()
 
 if(NOT DEFINED CMAKE_POSITION_INDEPENDENT_CODE)
@@ -138,3 +143,13 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/edie-config.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/edie-config-version.cmake"
     DESTINATION "${EDIE_CMAKE_INSTALL_DIR}"
     COMPONENT EDIE)
+
+if(INSTALL_THIRD_PARTY)
+    install_conan_headers()
+endif()
+
+# Add uninstall target
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+    IMMEDIATE @ONLY)
+add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)

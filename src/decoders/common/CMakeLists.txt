@@ -23,9 +23,13 @@ add_library(common_dependencies INTERFACE)
 add_library(EDIE::common_dependencies ALIAS common_dependencies)
 target_link_libraries(common_dependencies INTERFACE
     nlohmann_json::nlohmann_json
-    spdlog::spdlog
     spdlog_setup::spdlog_setup
 )
+if(TARGET spdlog::spdlog)
+    target_link_libraries(common_dependencies INTERFACE spdlog::spdlog)
+else()
+    target_link_libraries(common_dependencies INTERFACE spdlog::spdlog_header_only)
+endif()
 
 target_link_libraries(objcommon PUBLIC EDIE::common_dependencies)
 
