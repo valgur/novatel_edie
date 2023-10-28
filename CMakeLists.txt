@@ -80,6 +80,7 @@ if(Git_FOUND)
         -D DST=${CMAKE_CURRENT_SOURCE_DIR}/src/common/include/version.h
         -D GIT_EXECUTABLE=${GIT_EXECUTABLE}
         -D GIT_BRANCH=${GIT_BRANCH}
+        -D EDIE_VERSION=${EDIE_VERSION}
         -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/GenerateVersionHeader.cmake)
 endif()
 
