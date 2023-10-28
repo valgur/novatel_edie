@@ -7,7 +7,7 @@ file(GLOB_RECURSE COMMON_SOURCES
 # Creating an object file which can be used for both static and shared build without recompilation.
 add_library(objcommon OBJECT ${COMMON_SOURCES})
 
-set_property(TARGET objcommon PROPERTY FOLDER "decoders")
+set_property(TARGET objcommon PROPERTY FOLDER "common")
 
 target_include_directories(objcommon
     PUBLIC
