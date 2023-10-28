@@ -131,3 +131,9 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/edie-config.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/edie-config-version.cmake"
     DESTINATION "${EDIE_CMAKE_INSTALL_DIR}"
     COMPONENT EDIE)
+
+# Add uninstall target
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+    IMMEDIATE @ONLY)
+add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
