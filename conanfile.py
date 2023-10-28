@@ -1,16 +1,16 @@
 import os
+import re
 
 from conan import ConanFile
 from conan.tools.build import check_min_cppstd
 from conan.tools.cmake import CMake, cmake_layout, CMakeToolchain, CMakeDeps
-from conan.tools.files import copy, rmdir, move_folder_contents, mkdir
+from conan.tools.files import copy, rmdir, move_folder_contents, mkdir, load
 
 required_conan_version = ">=2.0"
 
 
 class NovatelEdieConan(ConanFile):
     name = "novatel_edie"
-    version = "3.2.24"
     description = "The NovAtel EDIE SDK allows interfacing with and decoding data from NovAtel OEM7 receivers."
     url = "https://github.com/novatel/novatel_edie"
     license = "MIT"
@@ -33,6 +33,10 @@ class NovatelEdieConan(ConanFile):
     }
 
     exports_sources = ["cmake/*", "database/*", "src/*", "LICENSE", "!doc", "!test", "CMakelists.txt"]
+
+    def set_version(self):
+        cmakelists_content = load(self, os.path.join(self.recipe_folder, "CMakeLists.txt"))
+        self.version = re.search(r"EDIE VERSION ([\d.]+)", cmakelists_content).group(1)
 
     def config_options(self):
         if self.settings.os == "Windows":
