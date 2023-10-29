@@ -24,7 +24,7 @@ class NovatelEdieConan(ConanFile):
     default_options = {
         "shared": False,
         "fPIC": True,
-        "build_dynamic_libs": True,
+        "build_dynamic_libs": False,
     }
     options_description = {
         "shared": "Build shared libraries (.dll/.so) instead of static ones (.lib/.a)",
@@ -71,6 +71,9 @@ class NovatelEdieConan(ConanFile):
         tc.cache_variables["BUILD_DYNAMIC_LIBS"] = self.options.build_dynamic_libs
         tc.cache_variables["BUILD_TESTS"] = False
         tc.cache_variables["BUILD_EXAMPLES"] = False
+        tc.cache_variables["CMAKE_INSTALL_BINDIR"] = "bin"
+        tc.cache_variables["CMAKE_INSTALL_LIBDIR"] = "lib"
+        tc.cache_variables["CMAKE_INSTALL_DATADIR"] = "res"
         # Disable CMakeUserPresets.json creation for cmake/third_party.cmake
         tc.user_presets_path = False
         tc.generate()
@@ -88,10 +91,7 @@ class NovatelEdieConan(ConanFile):
         copy(self, "LICENSE",
              src=self.source_folder,
              dst=os.path.join(self.package_folder, "licenses"))
-        mkdir(self, os.path.join(self.package_folder, "res"))
-        move_folder_contents(self, os.path.join(self.package_folder, "share", "novatel", "edie"),
-                                   os.path.join(self.package_folder, "res"))
-        rmdir(self, os.path.join(self.package_folder, "share"))
+        rmdir(self, os.path.join(self.source_folder, "lib", "cmake"))
 
     def package_info(self):
         self.cpp_info.set_property("cmake_file_name", "EDIE")
