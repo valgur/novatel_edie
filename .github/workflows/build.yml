@@ -53,7 +53,7 @@ jobs:
         run: conan create . --build missing
 
       - name: Build Conan package - shared
-        run: conan create . --build missing -o "*/*:shared=True"
+        run: conan create . --build missing -o "*/*:shared=True" -o build_dynamic_libs=True
 
   standalone:
     name: CMake - ${{ matrix.platform[0] }} - ${{ matrix.platform[2] }}
@@ -105,4 +105,4 @@ jobs:
         shell: bash
         run: |
           cmake -S test_package/ -B build/test_install -DEDIE_ROOT=$(pwd)/install/lib/cmake/EDIE/ -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
-          cmake --build build/test_install
+          cmake --build build/test_install --config Release
