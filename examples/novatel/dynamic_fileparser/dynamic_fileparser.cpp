@@ -34,6 +34,7 @@
 #include <chrono>
 #include <cstdio>
 #include <cstdlib>
+#include <filesystem>
 
 #include "decoders/dynamic_library/common_jsonreader.hpp"
 #include "decoders/dynamic_library/novatel_fileparser.hpp"
@@ -45,12 +46,6 @@
 using namespace std;
 using namespace novatel::edie;
 using namespace novatel::edie::oem;
-
-inline bool file_exists(const std::string& name)
-{
-    struct stat buffer;
-    return (stat(name.c_str(), &buffer) == 0);
-}
 
 int main(int argc, char* argv[])
 {
@@ -76,14 +71,14 @@ int main(int argc, char* argv[])
 
     // Check command line arguments
     std::string sJsonDB = argv[1];
-    if (!file_exists(sJsonDB))
+    if (!std::filesystem::exists(sJsonDB))
     {
         pclLogger->error("File \"{}\" does not exist", sJsonDB);
         return 1;
     }
 
     std::string sInFilename = argv[2];
-    if (!file_exists(sInFilename))
+    if (!std::filesystem::exists(sInFilename))
     {
         pclLogger->error("File \"{}\" does not exist", sInFilename);
         return 1;

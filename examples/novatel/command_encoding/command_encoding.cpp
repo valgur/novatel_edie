@@ -34,6 +34,7 @@
 #include <chrono>
 #include <cstdio>
 #include <cstdlib>
+#include <filesystem>
 
 #include "decoders/novatel/commander.hpp"
 #include "hw_interface/stream_interface/outputfilestream.hpp"
@@ -41,12 +42,6 @@
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;
-
-inline bool file_exists(const std::string& name)
-{
-    struct stat buffer;
-    return (stat(name.c_str(), &buffer) == 0);
-}
 
 int main(int argc, char* argv[])
 {
@@ -64,7 +59,7 @@ int main(int argc, char* argv[])
 
     // Json DB
     std::string strJsonDB = argv[1];
-    if (!file_exists(strJsonDB))
+    if (!std::filesystem::exists(strJsonDB))
     {
         logger->error("File \"{}\" does not exist", argv[1]);
         return 1;
