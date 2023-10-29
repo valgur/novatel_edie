@@ -71,6 +71,8 @@ class NovatelEdieConan(ConanFile):
         tc.cache_variables["BUILD_DYNAMIC_LIBS"] = self.options.build_dynamic_libs
         tc.cache_variables["BUILD_TESTS"] = False
         tc.cache_variables["BUILD_EXAMPLES"] = False
+        # Disable CMakeUserPresets.json creation for cmake/third_party.cmake
+        tc.user_presets_path = False
         tc.generate()
         deps = CMakeDeps(self)
         deps.generate()
