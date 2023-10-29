@@ -31,6 +31,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <chrono>
+#include <filesystem>
 #include "hw_interface/stream_interface/inputfilestream.hpp"
 #include "hw_interface/stream_interface/outputfilestream.hpp"
 #include "decoders/novatel/filter.hpp"
@@ -43,12 +44,6 @@
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;
-
-inline bool file_exists(const std::string &name)
-{
-   struct stat buffer;
-   return (stat(name.c_str(), &buffer) == 0);
-}
 
 int main(int argc, char *argv[])
 {
@@ -76,12 +71,12 @@ int main(int argc, char *argv[])
       sEncodeFormat = argv[3];
    }
 
-   if (!file_exists(argv[1]))
+   if (!std::filesystem::exists(argv[1]))
    {
       pclLogger->error("File \"{}\" does not exist", argv[1]);
       return 1;
    }
-   if (!file_exists(argv[2]))
+   if (!std::filesystem::exists(argv[2]))
    {
       pclLogger->error("File \"{}\" does not exist", argv[2]);
       return 1;
