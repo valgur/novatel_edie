@@ -15,6 +15,14 @@ target_include_directories(objcommon
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/common>"
 )
 
+if(BUILD_SHARED_LIBS)
+    # Statically linking against spdlog causes its singleton registry to be
+    # re-instantiated in each shared library and executable that links against it.
+    list(APPEND CONAN_EXTRA_INSTALL_ARGS
+        -o spdlog/*:shared=True -o fmt/*:shared=True
+    )
+endif()
+
 find_package(nlohmann_json REQUIRED CONFIG)
 find_package(spdlog REQUIRED CONFIG)
 find_package(spdlog_setup REQUIRED CONFIG)

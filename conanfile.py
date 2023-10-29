@@ -66,6 +66,14 @@ class NovatelEdieConan(ConanFile):
     def validate(self):
         if self.settings.compiler.cppstd:
             check_min_cppstd(self, 17)
+        # Statically linking against spdlog causes its singleton registry to be
+        # re-instantiated in each shared library and executable that links against it.
+        if (self.options.shared or self.options.build_dynamic_libs) and not self.dependencies[
+            "spdlog"
+        ].options.shared:
+            raise Exception(
+                "spdlog must be dynamically linked when building novatel_edie as a shared library"
+            )
 
     def build_requirements(self):
         self.test_requires("gtest/1.14.0")
