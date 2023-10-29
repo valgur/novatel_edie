@@ -142,6 +142,9 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/edie-config.cmake"
     DESTINATION "${EDIE_CMAKE_INSTALL_DIR}"
     COMPONENT EDIE)
 
+if(MSVC)
+    copy_conan_dlls()
+endif()
 if(INSTALL_THIRD_PARTY)
     install_conan_headers()
 endif()
