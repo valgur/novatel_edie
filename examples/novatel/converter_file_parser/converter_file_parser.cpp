@@ -25,6 +25,9 @@
 // ===============================================================================
 
 #include <chrono>
+#include <cstdio>
+#include <cstdlib>
+#include <filesystem>
 
 #include <edie/decoders/novatel/file_parser.hpp>
 #include <edie/hw_interface/stream_interface/inputfilestream.hpp>
@@ -33,12 +36,6 @@
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;
-
-inline bool FileExists(const std::string& strName_)
-{
-    struct stat buffer;
-    return stat(strName_.c_str(), &buffer) == 0;
-}
 
 int main(int argc, char* argv[])
 {
@@ -63,12 +60,12 @@ int main(int argc, char* argv[])
     }
     if (argc == 4) { sEncodeFormat = argv[3]; }
 
-    if (!FileExists(argv[1]))
+    if (!std::filesystem::exists(argv[1]))
     {
         pclLogger->error("File \"{}\" does not exist", argv[1]);
         return 1;
     }
-    if (!FileExists(argv[2]))
+    if (!std::filesystem::exists(argv[2]))
     {
         pclLogger->error("File \"{}\" does not exist", argv[2]);
         return 1;
@@ -76,14 +73,14 @@ int main(int argc, char* argv[])
 
     // Check command line arguments
     std::string sJsonDb = argv[1];
-    if (!FileExists(sJsonDb))
+    if (!std::filesystem::exists(sJsonDb))
     {
         pclLogger->error("File \"{}\" does not exist", sJsonDb);
         return 1;
     }
 
     std::string sInFilename = argv[2];
-    if (!FileExists(sInFilename))
+    if (!std::filesystem::exists(sInFilename))
     {
         pclLogger->error("File \"{}\" does not exist", sInFilename);
         return 1;

@@ -39,12 +39,6 @@
 using namespace novatel::edie;
 using namespace novatel::edie::oem;
 
-inline bool FileExists(const std::string& strName_)
-{
-    struct stat buffer;
-    return stat(strName_.c_str(), &buffer) == 0;
-}
-
 int main(int argc, char* argv[])
 {
     // This example uses the default logger config, but you can also pass a config file to InitLogger()
@@ -70,14 +64,14 @@ int main(int argc, char* argv[])
 
     // Check command line arguments
     std::string sJsonDb = argv[1];
-    if (!FileExists(sJsonDb))
+    if (!std::filesystem::exists(sJsonDb))
     {
         pclLogger->error("File \"{}\" does not exist", sJsonDb);
         return 1;
     }
 
     std::string sInFilename = argv[2];
-    if (!FileExists(sInFilename))
+    if (!std::filesystem::exists(sInFilename))
     {
         pclLogger->error("File \"{}\" does not exist", sInFilename);
         return 1;

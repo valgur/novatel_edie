@@ -27,18 +27,13 @@
 #include <chrono>
 #include <cstdio>
 #include <cstdlib>
+#include <filesystem>
 
 #include <edie/decoders/novatel/commander.hpp>
 #include <edie/hw_interface/stream_interface/outputfilestream.hpp>
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;
-
-inline bool FileExists(const std::string& strName_)
-{
-    struct stat buffer;
-    return stat(strName_.c_str(), &buffer) == 0;
-}
 
 int main(int argc, char* argv[])
 {
@@ -58,8 +53,8 @@ int main(int argc, char* argv[])
     }
 
     // Json DB
-    std::string strJsonDb = argv[1];
-    if (!FileExists(strJsonDb))
+    std::string sJsonDb = argv[1];
+    if (!std::filesystem::exists(sJsonDb))
     {
         logger->error("File \"{}\" does not exist", argv[1]);
         return 1;
@@ -77,7 +72,7 @@ int main(int argc, char* argv[])
     JsonReader clJsonDb;
     auto tStart = std::chrono::high_resolution_clock::now();
     logger->info("Loading Database... ");
-    clJsonDb.LoadFile(strJsonDb);
+    clJsonDb.LoadFile(sJsonDb);
     logger->info("Done in {}ms", std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - tStart).count());
 
     Commander clCommander(&clJsonDb);
