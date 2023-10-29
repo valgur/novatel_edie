@@ -17,7 +17,7 @@ if(NOT DEFINED CMAKE_BUILD_TYPE)
 endif()
 
 if(NOT DEFINED BUILD_SHARED_LIBS)
-    set(BUILD_SHARED_LIBS ON)
+    set(BUILD_SHARED_LIBS OFF)
 endif()
 
 if(NOT DEFINED CMAKE_POSITION_INDEPENDENT_CODE)
@@ -81,11 +81,11 @@ set(CMAKE_INSTALL_INCLUDEDIR include CACHE PATH "")
 set(CMAKE_INSTALL_BINDIR bin/novatel/edie CACHE PATH "")
 set(CMAKE_INSTALL_LIBDIR lib/novatel/edie CACHE PATH "")
 set(CMAKE_INSTALL_DATADIR share/novatel/edie CACHE PATH "")
+
+# Output all binaries in the same directory for easier testing
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(EDIE_INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR})
-set(EDIE_CMAKE_INSTALL_DIR lib/cmake/EDIE)
 
 # build EDIE components
 add_subdirectory(src)
@@ -128,6 +128,7 @@ if(BUILD_DYNAMIC_LIBS)
     install(TARGETS EDIE-dynamic EXPORT EDIE-targets)
 endif()
 
+set(EDIE_CMAKE_INSTALL_DIR lib/cmake/EDIE)
 install(EXPORT EDIE-targets
     NAMESPACE EDIE::
     DESTINATION "${EDIE_CMAKE_INSTALL_DIR}"
@@ -139,7 +140,11 @@ include(CMakePackageConfigHelpers)
 configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/edie-config.cmake.in"
     "${CMAKE_CURRENT_BINARY_DIR}/edie-config.cmake"
     INSTALL_DESTINATION ${EDIE_CMAKE_INSTALL_DIR}
-    PATH_VARS EDIE_INCLUDE_INSTALL_DIR)
+    PATH_VARS
+        CMAKE_INSTALL_INCLUDEDIR
+        CMAKE_INSTALL_LIBDIR
+        CMAKE_INSTALL_BINDIR
+        CMAKE_INSTALL_DATADIR)
 
 write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/edie-config-version.cmake"
     VERSION ${EDIE_VERSION}
@@ -151,10 +156,10 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/edie-config.cmake"
     COMPONENT EDIE)
 
 if(MSVC)
-    copy_conan_dlls()
+    copy_third_party_dlls()
 endif()
 if(INSTALL_THIRD_PARTY)
-    install_conan_headers()
+    install_third_party_libs()
 endif()
 
 # Add uninstall target
