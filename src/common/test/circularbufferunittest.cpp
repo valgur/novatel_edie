@@ -34,7 +34,7 @@
 
 #include <gtest/gtest.h>
 
-#include "common/circularbuffer.hpp"
+#include "novatel/edie/common/circularbuffer.hpp"
 
 class CircularBufferTest : public ::testing::Test
 {

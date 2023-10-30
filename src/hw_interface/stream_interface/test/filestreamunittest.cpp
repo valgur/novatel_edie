@@ -33,8 +33,8 @@
 
 #include <gtest/gtest.h>
 
-#include "common/nexcept.h"
-#include "hw_interface/stream_interface/filestream.hpp"
+#include "novatel/edie/common/nexcept.h"
+#include "novatel/edie/stream_interface/filestream.hpp"
 #include "paths.hpp"
 
 #ifndef RESOURCE_DIR

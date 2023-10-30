@@ -31,7 +31,7 @@ target_include_directories(hwinterface_dynamic_library
         "$<BUILD_INTERFACE:$<TARGET_PROPERTY:objcommon,INCLUDE_DIRECTORIES>>"
         "$<BUILD_INTERFACE:$<TARGET_PROPERTY:objstreaminterface,INCLUDE_DIRECTORIES>>"
         "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
-    PRIVATE include/hw_interface/dynamic_library
+    PRIVATE include/novatel/edie/stream_interface/dynamic_library
 )
 
 install(TARGETS hwinterface_dynamic_library

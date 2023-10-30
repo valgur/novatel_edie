@@ -30,7 +30,7 @@
 //-----------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------
-#include "decoders/novatel/rxconfig/rxconfig_handler.hpp"
+#include "rxconfig/rxconfig_handler.hpp"
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;

@@ -17,10 +17,11 @@ set_property(TARGET novatel PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 foreach(target objnovatel novatel)
     target_include_directories(${target}
-        PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+        PUBLIC
+            "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
             "$<BUILD_INTERFACE:$<TARGET_PROPERTY:objcommon,INCLUDE_DIRECTORIES>>"
             "$<BUILD_INTERFACE:$<TARGET_PROPERTY:objstreaminterface,INCLUDE_DIRECTORIES>>"
-        PRIVATE include/decoders/novatel
+        PRIVATE include/novatel/edie/decoders
     )
     set_property(TARGET ${target} PROPERTY FOLDER "decoders")
 endforeach()

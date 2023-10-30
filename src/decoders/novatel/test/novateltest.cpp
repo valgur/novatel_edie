@@ -42,16 +42,16 @@
 #include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 
-#include "common/jsonreader.hpp"
-#include "decoders/novatel/commander.hpp"
-#include "decoders/novatel/encoder.hpp"
-#include "decoders/novatel/fileparser.hpp"
-#include "decoders/novatel/filter.hpp"
-#include "decoders/novatel/framer.hpp"
-#include "decoders/novatel/header_decoder.hpp"
-#include "decoders/novatel/message_decoder.hpp"
-#include "hw_interface/stream_interface/inputfilestream.hpp"
-#include "hw_interface/stream_interface/inputstreaminterface.hpp"
+#include "novatel/edie/common/jsonreader.hpp"
+#include "novatel/edie/decoders/commander.hpp"
+#include "novatel/edie/decoders/encoder.hpp"
+#include "novatel/edie/decoders/fileparser.hpp"
+#include "novatel/edie/decoders/filter.hpp"
+#include "novatel/edie/decoders/framer.hpp"
+#include "novatel/edie/decoders/header_decoder.hpp"
+#include "novatel/edie/decoders/message_decoder.hpp"
+#include "novatel/edie/stream_interface/inputfilestream.hpp"
+#include "novatel/edie/stream_interface/inputstreaminterface.hpp"
 #include "paths.hpp"
 #include "resources/novatel_message_definitions.hpp"
 

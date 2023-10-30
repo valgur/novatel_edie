@@ -32,9 +32,9 @@
 //-----------------------------------------------------------------------
 #include <gtest/gtest.h>
 
-#include "common/common.hpp"
-#include "common/crc32.hpp"
-#include "decoders/novatel/common.hpp"
+#include "novatel/edie/common/common.hpp"
+#include "novatel/edie/common/crc32.hpp"
+#include "novatel/edie/decoders/common.hpp"
 #include "string.h"
 
 class CRC32Test : public ::testing::Test

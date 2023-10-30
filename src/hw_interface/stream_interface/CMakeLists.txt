@@ -21,7 +21,7 @@ foreach(target objstreaminterface stream_interface)
             "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
             "$<BUILD_INTERFACE:$<TARGET_PROPERTY:objcommon,INCLUDE_DIRECTORIES>>"
             "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
-        PRIVATE include/hw_interface/stream_interface
+        PRIVATE include/novatel/edie/stream_interface
     )
     set_property(TARGET ${target} PROPERTY FOLDER "hw_interface")
 endforeach()

@@ -34,7 +34,7 @@
 
 #include <string>
 
-#include "common/logger/logger.hpp"
+#include "novatel/edie/common/logger/logger.hpp"
 
 void common_logger_setup() { auto pclLogger = Logger(); }
 

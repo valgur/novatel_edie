@@ -36,16 +36,16 @@
 #include <cstdlib>
 #include <filesystem>
 
-#include "common/jsonreader.hpp"
-#include "common/logger/logger.hpp"
-#include "decoders/novatel/encoder.hpp"
-#include "decoders/novatel/filter.hpp"
-#include "decoders/novatel/framer.hpp"
-#include "decoders/novatel/header_decoder.hpp"
-#include "decoders/novatel/message_decoder.hpp"
-#include "hw_interface/stream_interface/inputfilestream.hpp"
-#include "hw_interface/stream_interface/outputfilestream.hpp"
-#include "version.h"
+#include <novatel/edie/common/jsonreader.hpp>
+#include <novatel/edie/common/logger/logger.hpp>
+#include <novatel/edie/decoders/encoder.hpp>
+#include <novatel/edie/decoders/filter.hpp>
+#include <novatel/edie/decoders/framer.hpp>
+#include <novatel/edie/decoders/header_decoder.hpp>
+#include <novatel/edie/decoders/message_decoder.hpp>
+#include <novatel/edie/stream_interface/inputfilestream.hpp>
+#include <novatel/edie/stream_interface/outputfilestream.hpp>
+#include <novatel/edie/version.h>
 
 using namespace std;
 using namespace novatel::edie;

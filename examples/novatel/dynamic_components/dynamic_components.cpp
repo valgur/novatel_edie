@@ -35,15 +35,15 @@
 #include <cstdlib>
 #include <filesystem>
 
-#include "decoders/dynamic_library/common_jsonreader.hpp"
-#include "decoders/dynamic_library/novatel_encoder.hpp"
-#include "decoders/dynamic_library/novatel_filter.hpp"
-#include "decoders/dynamic_library/novatel_framer.hpp"
-#include "decoders/dynamic_library/novatel_header_decoder.hpp"
-#include "decoders/dynamic_library/novatel_message_decoder.hpp"
-#include "hw_interface/stream_interface/inputfilestream.hpp"
-#include "hw_interface/stream_interface/outputfilestream.hpp"
-#include "version.h"
+#include <novatel/edie/decoders/dynamic_library/common_jsonreader.hpp>
+#include <novatel/edie/decoders/dynamic_library/novatel_encoder.hpp>
+#include <novatel/edie/decoders/dynamic_library/novatel_filter.hpp>
+#include <novatel/edie/decoders/dynamic_library/novatel_framer.hpp>
+#include <novatel/edie/decoders/dynamic_library/novatel_header_decoder.hpp>
+#include <novatel/edie/decoders/dynamic_library/novatel_message_decoder.hpp>
+#include <novatel/edie/stream_interface/inputfilestream.hpp>
+#include <novatel/edie/stream_interface/outputfilestream.hpp>
+#include <novatel/edie/version.h>
 
 using namespace std;
 using namespace novatel::edie;

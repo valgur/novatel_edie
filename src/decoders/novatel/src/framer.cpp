@@ -32,7 +32,7 @@
 //-----------------------------------------------------------------------
 #include "framer.hpp"
 
-#include "crc32.hpp"
+#include "novatel/edie/common/crc32.hpp"
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;

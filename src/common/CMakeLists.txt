@@ -10,9 +10,8 @@ add_library(objcommon OBJECT ${COMMON_SOURCES})
 set_property(TARGET objcommon PROPERTY FOLDER "common")
 
 target_include_directories(objcommon
-    PUBLIC
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/common>"
+    PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    PRIVATE include/novatel/edie/common
 )
 
 if(BUILD_SHARED_LIBS)

@@ -32,7 +32,7 @@
 //-----------------------------------------------------------------------
 #include <gtest/gtest.h>
 
-#include "decoders/novatel/rangecmp/range_decompressor.hpp"
+#include "novatel/edie/decoders/rangecmp/range_decompressor.hpp"
 #include "paths.hpp"
 
 using namespace novatel::edie;

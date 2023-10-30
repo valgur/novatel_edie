@@ -34,7 +34,7 @@
 
 #include <sys/stat.h>
 
-#include "common/nexcept.h"
+#include "novatel/edie/common/nexcept.h"
 
 using namespace std;
 

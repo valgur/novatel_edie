@@ -30,9 +30,9 @@
 //-----------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------
-#include "version.hpp"
+#include "novatel/edie/decoders/dynamic_library/version.hpp"
 
-#include "version.h" // this refers to the EDIE version.h
+#include "novatel/edie/version.h"
 
 const char* version() { return get_version(); }
 

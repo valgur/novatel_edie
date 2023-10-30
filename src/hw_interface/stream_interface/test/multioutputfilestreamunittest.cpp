@@ -29,11 +29,11 @@
 
 // Includes
 #include <filesystem>
+#include <string>
 
 #include <gtest/gtest.h>
 
-#include "hw_interface/stream_interface/multioutputfilestream.hpp"
-#include "string"
+#include "novatel/edie/stream_interface/multioutputfilestream.hpp"
 
 class MultiOutputFileStreamTest : public ::testing::Test
 {
