@@ -4,7 +4,7 @@ import re
 from conan import ConanFile
 from conan.tools.build import check_min_cppstd
 from conan.tools.cmake import CMake, cmake_layout, CMakeToolchain, CMakeDeps
-from conan.tools.files import copy, rmdir, load, move_folder_contents, mkdir
+from conan.tools.files import copy, rmdir, load
 
 required_conan_version = ">=2.0"
 
@@ -72,12 +72,12 @@ class NovatelEdieConan(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self)
-        tc.cache_variables["BUILD_DYNAMIC_LIBS"] = self.options.build_dynamic_libs
-        tc.cache_variables["BUILD_TESTS"] = False
-        tc.cache_variables["BUILD_EXAMPLES"] = False
-        tc.cache_variables["CMAKE_INSTALL_BINDIR"] = "bin"
-        tc.cache_variables["CMAKE_INSTALL_LIBDIR"] = "lib"
-        tc.cache_variables["CMAKE_INSTALL_DATADIR"] = "res"
+        tc.variables["BUILD_DYNAMIC_LIBS"] = self.options.build_dynamic_libs
+        tc.variables["BUILD_TESTS"] = False
+        tc.variables["BUILD_EXAMPLES"] = False
+        tc.variables["CMAKE_INSTALL_BINDIR"] = "bin"
+        tc.variables["CMAKE_INSTALL_LIBDIR"] = "lib"
+        tc.variables["CMAKE_INSTALL_DATADIR"] = "res"
         # Disable CMakeUserPresets.json creation for cmake/third_party.cmake
         tc.user_presets_path = False
         tc.generate()
