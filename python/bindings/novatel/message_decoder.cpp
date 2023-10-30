@@ -106,7 +106,7 @@ nb::object PyIntermediateMessage::fields() const
 std::string PyIntermediateMessage::repr() const
 {
    std::stringstream repr;
-   repr << "Message(";
+   repr << "(";
    bool first = true;
    for (const auto& item: values)
    {
@@ -115,7 +115,7 @@ std::string PyIntermediateMessage::repr() const
          repr << ", ";
       }
       first = false;
-      repr << nb::str("{}={}").format(item.first, item.second).c_str();
+      repr << nb::str("{}={!r}").format(item.first, item.second).c_str();
    }
    repr << ")";
    return repr.str();
