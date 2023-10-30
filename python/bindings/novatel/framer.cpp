@@ -1,4 +1,4 @@
-#include "decoders/novatel/framer.hpp"
+#include "novatel/edie/decoders/framer.hpp"
 
 #include "bindings_core.hpp"
 

@@ -1,4 +1,4 @@
-#include "decoders/novatel/rxconfig/rxconfig_handler.hpp"
+#include "novatel/edie/decoders/rxconfig/rxconfig_handler.hpp"
 
 #include "bindings_core.hpp"
 #include "json_db_singleton.hpp"

@@ -1,4 +1,4 @@
-#include "decoders/novatel/filter.hpp"
+#include "novatel/edie/decoders/filter.hpp"
 
 #include "bindings_core.hpp"
 

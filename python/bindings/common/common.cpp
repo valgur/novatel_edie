@@ -1,8 +1,8 @@
-#include "common/common.hpp"
+#include "novatel/edie/common/common.hpp"
 
 #include "bindings_core.hpp"
 #include "decoder_exception.hpp"
-#include "version.h"
+#include "novatel/edie/version.h"
 
 namespace nb = nanobind;
 using namespace nb::literals;

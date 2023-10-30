@@ -1,4 +1,4 @@
-#include "decoders/novatel/message_decoder.hpp"
+#include "novatel/edie/decoders/message_decoder.hpp"
 
 #include <nanobind/stl/bind_vector.h>
 #include <nanobind/stl/variant.h>

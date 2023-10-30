@@ -2,8 +2,8 @@
 
 #include <exception>
 
-#include "common/common.hpp"
 #include "nanobind/nanobind.h"
+#include "novatel/edie/common/common.hpp"
 
 namespace nb = nanobind;
 

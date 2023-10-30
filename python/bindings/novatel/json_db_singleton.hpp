@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "common/jsonreader.hpp"
+#include "novatel/edie/common/jsonreader.hpp"
 
 class JsonDbSingleton
 {

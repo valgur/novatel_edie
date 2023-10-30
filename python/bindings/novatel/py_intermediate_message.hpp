@@ -1,5 +1,5 @@
 #include "bindings_core.hpp"
-#include "decoders/novatel/message_decoder.hpp"
+#include "novatel/edie/decoders/message_decoder.hpp"
 
 namespace nb = nanobind;
 using namespace novatel::edie;

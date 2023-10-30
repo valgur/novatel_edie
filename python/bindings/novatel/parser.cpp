@@ -1,4 +1,4 @@
-#include "decoders/novatel/parser.hpp"
+#include "novatel/edie/decoders/parser.hpp"
 
 #include "bindings_core.hpp"
 #include "json_db_singleton.hpp"
