@@ -23,6 +23,13 @@ Documentation on NovAtel's data (commands, logs, messages, and responses) can be
 
 ## Getting Started
 
+### Python library
+
+You can install the Python library from sources by cloning the repository and running:
+```
+pip install .
+```
+
 ### Building EDIE on Linux (Ubuntu 18.04 or newer)
 
 1. Open terminal
