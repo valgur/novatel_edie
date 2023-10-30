@@ -1,4 +1,4 @@
-#include "decoders/novatel/rangecmp/range_decompressor.hpp"
+#include "novatel/edie/decoders/rangecmp/range_decompressor.hpp"
 #include "bindings_core.hpp"
 #include "json_db_singleton.hpp"
 #include <cstring>

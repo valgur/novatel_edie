@@ -1,4 +1,4 @@
-#include "decoders/novatel/encoder.hpp"
+#include "novatel/edie/decoders/encoder.hpp"
 #include "bindings_core.hpp"
 #include "py_intermediate_message.hpp"
 #include "py_message_data.hpp"

@@ -1,4 +1,4 @@
-#include "decoders/novatel/fileparser.hpp"
+#include "novatel/edie/decoders/fileparser.hpp"
 #include "bindings_core.hpp"
 #include "py_message_data.hpp"
 #include "json_db_singleton.hpp"

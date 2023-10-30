@@ -1,4 +1,4 @@
-#include "decoders/novatel/message_decoder.hpp"
+#include "novatel/edie/decoders/message_decoder.hpp"
 #include "bindings_core.hpp"
 #include "py_intermediate_message.hpp"
 #include "json_db_singleton.hpp"

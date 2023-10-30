@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/jsonreader.hpp"
+#include "novatel/edie/common/jsonreader.hpp"
 #include <memory>
 
 class JsonDbSingleton

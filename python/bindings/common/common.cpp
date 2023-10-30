@@ -1,5 +1,5 @@
-#include "common/common.hpp"
-#include "version.h"
+#include "novatel/edie/common/common.hpp"
+#include "novatel/edie/version.h"
 #include "bindings_core.hpp"
 #include "decoder_exception.hpp"
 

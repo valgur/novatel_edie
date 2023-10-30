@@ -1,4 +1,4 @@
-#include "decoders/novatel/encoder.hpp"
+#include "novatel/edie/decoders/encoder.hpp"
 #include "bindings_core.hpp"
 
 namespace nb = nanobind;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <exception>
-#include "common/common.hpp"
+#include "novatel/edie/common/common.hpp"
 #include "nanobind/nanobind.h"
 
 namespace nb = nanobind;

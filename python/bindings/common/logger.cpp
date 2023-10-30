@@ -1,4 +1,4 @@
-#include "common/logger/logger.hpp"
+#include "novatel/edie/common/logger/logger.hpp"
 #include "bindings_core.hpp"
 
 namespace nb = nanobind;
