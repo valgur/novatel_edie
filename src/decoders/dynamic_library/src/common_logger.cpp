@@ -30,7 +30,7 @@
 //-----------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------
-#include "common/logger/logger.hpp"
+#include "novatel/edie/common/logger/logger.hpp"
 #include "common_logger.hpp"
 #include <string>
 

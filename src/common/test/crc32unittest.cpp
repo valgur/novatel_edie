@@ -31,9 +31,9 @@
 // Includes
 //-----------------------------------------------------------------------
 #include "string.h"
-#include "common/common.hpp"
-#include "common/crc32.hpp"
-#include "decoders/novatel/common.hpp"
+#include "novatel/edie/common/common.hpp"
+#include "novatel/edie/common/crc32.hpp"
+#include "novatel/edie/decoders/common.hpp"
 
 #include <gtest/gtest.h>
 

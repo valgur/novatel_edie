@@ -35,12 +35,13 @@
 #include <cstdlib>
 #include <chrono>
 #include <filesystem>
-#include "hw_interface/stream_interface/inputfilestream.hpp"
-#include "hw_interface/stream_interface/outputfilestream.hpp"
-#include "decoders/dynamic_library/novatel_filter.hpp"
-#include "decoders/dynamic_library/common_jsonreader.hpp"
-#include "decoders/dynamic_library/novatel_parser.hpp"
-#include "version.h"
+
+#include <novatel/edie/stream_interface/inputfilestream.hpp>
+#include <novatel/edie/stream_interface/outputfilestream.hpp>
+#include <novatel/edie/decoders/dynamic_library/novatel_filter.hpp>
+#include <novatel/edie/decoders/dynamic_library/common_jsonreader.hpp>
+#include <novatel/edie/decoders/dynamic_library/novatel_parser.hpp>
+#include <novatel/edie/version.h>
 
 using namespace std;
 using namespace novatel::edie;

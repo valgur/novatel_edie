@@ -31,7 +31,8 @@ target_include_directories(decoders_dynamic_library
         "$<BUILD_INTERFACE:$<TARGET_PROPERTY:objcommon,INCLUDE_DIRECTORIES>>"
         "$<BUILD_INTERFACE:$<TARGET_PROPERTY:objnovatel,INCLUDE_DIRECTORIES>>"
         "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
-    PRIVATE include/decoders/dynamic_library
+    PRIVATE
+        include/novatel/edie/decoders/dynamic_library
 )
 
 install(TARGETS decoders_dynamic_library

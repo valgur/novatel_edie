@@ -1,4 +1,4 @@
-#include "decoders/novatel/rangecmp/range_decompressor.hpp"
+#include "rangecmp/range_decompressor.hpp"
 #include <stdexcept>
 
 using namespace novatel::edie;

@@ -30,8 +30,8 @@
 //-----------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------
-#include "version.hpp"
-#include "version.h" // this refers to the EDIE version.h
+#include "novatel/edie/decoders/dynamic_library/version.hpp"
+#include "novatel/edie/version.h"
 
 const char* version()
 {

@@ -31,7 +31,7 @@
 //-----------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------
-#include "decoders/novatel/filter.hpp"
+#include "filter.hpp"
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;

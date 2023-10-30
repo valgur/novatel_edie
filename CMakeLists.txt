@@ -68,7 +68,7 @@ else()
 endif()
 
 # Configure installation directories
-set(CMAKE_INSTALL_INCLUDEDIR include/novatel/edie CACHE PATH "")
+set(CMAKE_INSTALL_INCLUDEDIR include CACHE PATH "")
 set(CMAKE_INSTALL_BINDIR bin/novatel/edie CACHE PATH "")
 set(CMAKE_INSTALL_LIBDIR lib/novatel/edie CACHE PATH "")
 set(CMAKE_INSTALL_DATADIR share/novatel/edie CACHE PATH "")
@@ -87,7 +87,7 @@ if(Git_FOUND)
     message("Git found: ${GIT_EXECUTABLE}")
     execute_process(COMMAND ${CMAKE_COMMAND}
         -D SRC=${CMAKE_CURRENT_SOURCE_DIR}/src/version.h.in
-        -D DST=${CMAKE_CURRENT_SOURCE_DIR}/src/common/include/version.h
+        -D DST=${CMAKE_CURRENT_SOURCE_DIR}/src/common/include/novatel/edie/version.h
         -D GIT_EXECUTABLE=${GIT_EXECUTABLE}
         -D GIT_BRANCH=${GIT_BRANCH}
         -D EDIE_VERSION=${EDIE_VERSION}

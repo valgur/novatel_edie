@@ -28,8 +28,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // Includes
-#include "hw_interface/stream_interface/multioutputfilestream.hpp"
-#include "string"
+#include "novatel/edie/stream_interface/multioutputfilestream.hpp"
+#include <string>
 #include <filesystem>
 
 #include <gtest/gtest.h>

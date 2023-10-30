@@ -23,7 +23,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // Includes
-#include "hw_interface/stream_interface/inputfilestream.hpp"
+#include "novatel/edie/stream_interface/inputfilestream.hpp"
 #include <string>
 #include <filesystem>
 #include <gtest/gtest.h>

@@ -30,7 +30,7 @@
 //-----------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------
-#include "common/circularbuffer.hpp"
+#include "novatel/edie/common/circularbuffer.hpp"
 #include <gtest/gtest.h>
 #include <climits>
 

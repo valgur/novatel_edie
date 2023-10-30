@@ -35,11 +35,12 @@
 #include <cstdlib>
 #include <chrono>
 #include <filesystem>
-#include "decoders/novatel/rxconfig/rxconfig_handler.hpp"
-#include "common/common.hpp"
-#include "hw_interface/stream_interface/inputfilestream.hpp"
-#include "hw_interface/stream_interface/outputfilestream.hpp"
-#include "version.h"
+
+#include <novatel/edie/decoders/rxconfig/rxconfig_handler.hpp>
+#include <novatel/edie/common/common.hpp>
+#include <novatel/edie/stream_interface/inputfilestream.hpp>
+#include <novatel/edie/stream_interface/outputfilestream.hpp>
+#include <novatel/edie/version.h>
 
 using namespace std;
 using namespace novatel::edie;

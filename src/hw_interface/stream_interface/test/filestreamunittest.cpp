@@ -28,8 +28,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // Includes
-#include "hw_interface/stream_interface/filestream.hpp"
-#include "common/nexcept.h"
+#include "novatel/edie/stream_interface/filestream.hpp"
+#include "novatel/edie/common/nexcept.h"
 #include "paths.hpp"
 
 #include <string>

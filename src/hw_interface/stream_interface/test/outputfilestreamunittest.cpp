@@ -23,7 +23,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // Includes
-#include "hw_interface/stream_interface/outputfilestream.hpp"
+#include "novatel/edie/stream_interface/outputfilestream.hpp"
 #include "paths.hpp"
 #include <string>
 #include <filesystem>

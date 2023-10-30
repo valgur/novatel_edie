@@ -96,7 +96,6 @@ class NovatelEdieConan(ConanFile):
     def package_info(self):
         self.cpp_info.set_property("cmake_file_name", "EDIE")
         self.cpp_info.set_property("cmake_target_name", "EDIE::EDIE")
-        self.cpp_info.includedirs.append(os.path.join("include", "novatel", "edie"))
         self.cpp_info.resdirs = ["res"]
         self.cpp_info.libs = ["novatel", "stream_interface"]
         if self.options.build_dynamic_libs:

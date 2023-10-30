@@ -31,7 +31,7 @@
 // Includes
 //-----------------------------------------------------------------------
 #include "paths.hpp"
-#include "decoders/novatel/rangecmp/range_decompressor.hpp"
+#include "novatel/edie/decoders/rangecmp/range_decompressor.hpp"
 
 #include <gtest/gtest.h>
 

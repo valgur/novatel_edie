@@ -29,7 +29,7 @@
 
 // Includes
 #include "filestream.hpp"
-#include "common/nexcept.h"
+#include "novatel/edie/common/nexcept.h"
 #include <sys/stat.h>
 #include <string>
 
