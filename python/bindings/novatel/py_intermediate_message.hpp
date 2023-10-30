@@ -13,6 +13,7 @@ struct PyIntermediateMessage
     nb::object getattr(nb::str field_name) const;
     nb::object getitem(nb::str field_name) const;
     bool contains(nb::str field_name) const;
+    size_t len() const;
     std::string repr() const;
 
     novatel::edie::IntermediateMessage message;
