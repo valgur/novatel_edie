@@ -24,21 +24,13 @@ Documentation on NovAtel's data (commands, logs, messages, and responses) can be
 ### Building EDIE on Linux (Ubuntu 18.04 or newer)
 
 1. Open terminal
-2. Update the system: `apt-get update`
-3. Install make, CMake tools, and the G++ compiler: `apt-get install --yes cmake make g++`
-4. Install multilib for gcc and G++: `apt-get install --yes gcc-multilib g++-multilib`
-5. Clone the EDIE repository and change the folder permission: `sudo chmod -R 777 nov-decoder/`
-6. Create a build folder in the root directory: `mkdir build`
-7. Go to build folder: `cd build`
-8. Configure CMake for static library: `cmake -DCMAKE_BUILD_TYPE=Release ..`
-   - The `-DCMAKE_BUILD_TYPE=` flag can be either `Release` or `Debug`
-9. Configure CMake for shared along with static library: `cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_LIB_SHARED=1 ..`
-10. Build using the make command: `make`
-
-After compiling the binaries you can also run `make install` to copy the binaries to the /usr/ directory.
-1. Archives are copied to `/usr/lib`
-2. Libraries are copied to `/usr/lib`
-3. Public headers are copied to `/usr/include/novatel/edie/decoder`
+2. Install the GCC compiler, make and pip for Python3: `apt-get install --yes build-essential python3-pip`
+3. Install CMake and Conan: `pip install --upgrade cmake conan`
+4. Configure CMake: `cmake -B build`
+   - You can specify the build configuration by setting `-DCMAKE_BUILD_TYPE=` to `Release`, `Debug` or `RelWithDebInfo`.
+   - To build shared instead of static libraries, add `-DBUILD_SHARED_LIBS=1`.
+5. Build: `cmake --build build`.
+6. Install system-wide with `cmake --install build` or to a specific location by adding `--prefix <dir>`.
 
 ### Building EDIE on Windows 10
 
@@ -46,11 +38,10 @@ After compiling the binaries you can also run `make install` to copy the binarie
 2. Install [VS Build Tools](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools&rel=16)
 3. Clone the EDIE repository
 4. Open a PowerShell session in the repository folder
-5. Create a build directory and navigate to it: `mkdir build && cd build`
-6. Generate the configuration for static library for Visual Studio: `cmake .. -G "Visual Studio 16 2019" -A Win32`
+5. Generate the configuration for static library for Visual Studio: `cmake -B build -G "Visual Studio 16 2019" -A Win32`
    - The argument for `-G` can be replaced with any Visual Studio version newer than "Visual Studio 16 2019"
-7. Generate the configuration for shared along with static library for VS 2017: `cmake .. -G "Visual Studio 16 2019" -A Win32 -DCMAKE_LIB_SHARED=1`
-8. Build & Install: `cmake --build . --config Release --target install`
+6. Generate the configuration for shared along with static library for VS 2017: `cmake -B build -G "Visual Studio 16 2019" -A Win32 -DCMAKE_LIB_SHARED=1`
+7. Build & Install: `cmake --build build --config Release --target install`
    - The `--config` flag can be either `Release` or `Debug`
 
 Build artifacts (such as public include files) will be copied to the bin directory in the root of the project.
@@ -139,7 +130,7 @@ The FileParser class provides an interface for parsing GPS files.
 
 ```cpp
 #include <iostream>
-#include "src/decoders/novatel/api/fileparser.hpp"
+#include <novatel/edie/decoders/fileparser.hpp>
 
 using namespace std;
 using namespace novatel::edie;
@@ -209,7 +200,7 @@ Note that all fields must be provided in the abbreviated ASCII string command in
 
 ```cpp
 #include <iostream>
-#include "src/decoders/novatel/api/commander.hpp"
+#include <novatel/edie/decoders/commander.hpp>
 
 using namespace std;
 using namespace novatel::edie;
