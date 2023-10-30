@@ -69,44 +69,32 @@ nb::object convert_field(const oem::FieldContainer& field)
    }
 }
 
-PyIntermediateMessage::PyIntermediateMessage(oem::IntermediateMessage message_) : message(std::move(message_))
-{
-   for (const auto& field: message)
-      values[nb::cast(field.field_def->name)] = convert_field(field);
-}
+PyIntermediateMessage::PyIntermediateMessage(oem::IntermediateMessage message_) : message(std::move(message_)) {}
 
-nb::object PyIntermediateMessage::getattr(nb::str field_name) const
+nb::dict& PyIntermediateMessage::values() const
 {
-   if (!contains(field_name))
-      throw nb::attribute_error(field_name.c_str());
-   return values[std::move(field_name)];
-}
-
-nb::object PyIntermediateMessage::getitem(nb::str field_name) const
-{
-   return values[std::move(field_name)];
-}
-
-bool PyIntermediateMessage::contains(nb::str field_name) const
-{
-   return values.contains(std::move(field_name));
-}
-
-nb::object PyIntermediateMessage::fields() const
-{
-   if (!cached_fields_.is_valid())
+   if (cached_values_.size() == 0)
    {
-      cached_fields_ = nb::dict();
+      for (const auto& field: message)
+         cached_values_[nb::cast(field.field_def->name)] = convert_field(field);
+   }
+   return cached_values_;
+}
+
+nb::dict& PyIntermediateMessage::fields() const
+{
+   if (cached_fields_.size() == 0)
+   {
       for (const auto& field: message)
          cached_fields_[nb::cast(field.field_def->name)] = field.field_def;
    }
    return cached_fields_;
 }
 
-nb::object PyIntermediateMessage::to_dict() const
+nb::dict PyIntermediateMessage::to_dict() const
 {
    nb::dict dict;
-   for (const auto& item: values) {
+   for (const auto& item: values()) {
       if (nb::isinstance<PyIntermediateMessage>(item.second))
       {
          dict[item.first] = nb::cast<PyIntermediateMessage>(item.second).to_dict();
@@ -131,12 +119,30 @@ nb::object PyIntermediateMessage::to_dict() const
    return dict;
 }
 
+nb::object PyIntermediateMessage::getattr(nb::str field_name) const
+{
+   if (!contains(field_name))
+      throw nb::attribute_error(field_name.c_str());
+   return values()[std::move(field_name)];
+}
+
+nb::object PyIntermediateMessage::getitem(nb::str field_name) const
+{
+   return values()[std::move(field_name)];
+}
+
+bool PyIntermediateMessage::contains(nb::str field_name) const
+{
+   return values().contains(std::move(field_name));
+}
+
+
 std::string PyIntermediateMessage::repr() const
 {
    std::stringstream repr;
    repr << "(";
    bool first = true;
-   for (const auto& item: values)
+   for (const auto& item: values())
    {
       if (!first)
       {
@@ -169,7 +175,7 @@ public:
 void init_novatel_message_decoder(nb::module_& m)
 {
    nb::class_<PyIntermediateMessage>(m, "Message")
-      .def_ro("_values", &PyIntermediateMessage::values)
+      .def_prop_ro("_values", &PyIntermediateMessage::values)
       .def_prop_ro("_fields", &PyIntermediateMessage::fields)
       .def("to_dict", &PyIntermediateMessage::to_dict, "Convert the message and its sub-messages into a dict")
       .def("__getattr__", &PyIntermediateMessage::getattr, "field_name"_a)
