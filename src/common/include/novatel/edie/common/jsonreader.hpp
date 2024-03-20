@@ -294,8 +294,9 @@ struct BaseField
             // Prevent these two cases from occurring at the same time.
             if ((0 == memcmp(sConvertString, "0x", 2)) && (0 != strcmp(sConvertString, "0x"))) { sConvertString += 2; }
 
-            // If the value "10" or greater is found from the conversion string, two bytes would need to be
-            // consumed from the string to move past that value.  Otherwise only one byte is necessary to consume.
+            // If the value "10" or greater is found from the conversion string, two bytes would
+            // need to be consumed from the string to move past that value.  Otherwise only one byte
+            // is necessary to consume.
             if ((*sConvertString >= '0') && (*sConvertString <= '9'))
             {
                 if (bIsBeforePoint) // before point

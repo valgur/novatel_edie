@@ -52,12 +52,14 @@ enum class STATUS
     SUCCESS,                //!< Successfully found a frame in the framer buffer.
     FAILURE,                //!< An unexpected failure occurred.
     UNKNOWN,                //!< Could not identify bytes as a protocol.
-    INCOMPLETE,             //!< It is possible that a valid frame exists in the frame buffer, but more information is needed.
+    INCOMPLETE,             //!< It is possible that a valid frame exists in the frame buffer, but more
+                            //!< information is needed.
     INCOMPLETE_MORE_DATA,   //!< The current frame buffer is incomplete but more data is expected.
     NULL_PROVIDED,          //!< A null pointer was provided.
     NO_DATABASE,            //!< No database has been provided to the component.
     NO_DEFINITION,          //!< No definition could be found in the database for the provided message.
-    NO_DEFINITION_EMBEDDED, //!< No definition could be found in the database for the embedded message in the RXCONFIG log.
+    NO_DEFINITION_EMBEDDED, //!< No definition could be found in the database for the embedded
+                            //!< message in the RXCONFIG log.
     BUFFER_FULL,            //!< The provided destination buffer is not big enough to contain the frame.
     BUFFER_EMPTY,           //!< The internal circular buffer does not contain any unread bytes
     STREAM_EMPTY,           //!< The input stream is empty.
@@ -73,12 +75,15 @@ enum class STATUS
 //-----------------------------------------------------------------------
 enum class ENCODEFORMAT
 {
-    FLATTENED_BINARY, //!< NovAtel EDIE "Flattened" binary format.  All strings/arrays are padded to maximum length to allow programmatic access.
-    ASCII, //!< NovAtel ASCII.  If the log was decoded from a SHORT/compressed format, it will be encoded to the respective SHORT/compressed format.
-    ABBREV_ASCII, //!< NovAtel Abbreviated ASCII.
-    BINARY, //!< NovAtel Binary.  If the log was decoded from a SHORT/compressed format, it will be encoded to the respective SHORT/compressed format.
-    JSON,   //!< A JSON object.  See HTML documentation for information on fields.
-    UNSPECIFIED //!< No encode format was specified.
+    FLATTENED_BINARY, //!< NovAtel EDIE "Flattened" binary format.  All strings/arrays are padded to
+                      //!< maximum length to allow programmatic access.
+    ASCII,            //!< NovAtel ASCII.  If the log was decoded from a SHORT/compressed format, it will be
+                      //!< encoded to the respective SHORT/compressed format.
+    ABBREV_ASCII,     //!< NovAtel Abbreviated ASCII.
+    BINARY,           //!< NovAtel Binary.  If the log was decoded from a SHORT/compressed format, it will be
+                      //!< encoded to the respective SHORT/compressed format.
+    JSON,             //!< A JSON object.  See HTML documentation for information on fields.
+    UNSPECIFIED       //!< No encode format was specified.
 };
 
 inline ENCODEFORMAT StringToEncodeFormat(std::string sEnumName_)
@@ -292,21 +297,23 @@ struct SATELLITEID
 //-----------------------------------------------------------------------
 #define MESSAGE_SIZE_MAX (0x8000) //!< FW-defined maximum transmittable message length. (32kB)
 #define MAX_ASCII_MESSAGE_LENGTH                                                                                                                     \
-    (MESSAGE_SIZE_MAX) //!< Undefined message length assumes that the max log size for this format is the maximum message length allowed to be
-                       //!< transmitted by the FW.
+    (MESSAGE_SIZE_MAX) //!< Undefined message length assumes that the max log size for this format
+                       //!< is the maximum message length allowed to be transmitted by the FW.
 #define MAX_BINARY_MESSAGE_LENGTH                                                                                                                    \
-    (MESSAGE_SIZE_MAX) //!< Undefined message length assumes that the max log size for this format is the maximum message length allowed to be
-                       //!< transmitted by the FW.
+    (MESSAGE_SIZE_MAX) //!< Undefined message length assumes that the max log size for this format
+                       //!< is the maximum message length allowed to be transmitted by the FW.
 #define MAX_SHORT_ASCII_MESSAGE_LENGTH                                                                                                               \
-    (MESSAGE_SIZE_MAX) //!< Undefined message length assumes that the max log size for this format is the maximum message length allowed to be
-                       //!< transmitted by the FW.
+    (MESSAGE_SIZE_MAX) //!< Undefined message length assumes that the max log size for this format
+                       //!< is the maximum message length allowed to be transmitted by the FW.
 #define MAX_SHORT_BINARY_MESSAGE_LENGTH                                                                                                              \
-    (12 + 255 + 4) //!< Short Binary message length cannot exceed the log length max value representation defined by the header.
+    (12 + 255 + 4) //!< Short Binary message length cannot exceed the log length max value
+                   //!< representation defined by the header.
 #define MAX_ABB_ASCII_RESPONSE_LENGTH                                                                                                                \
-    (MESSAGE_SIZE_MAX) //!< Undefined message length assumes that the max log size for this format is the maximum message length allowed to be
-                       //!< transmitted by the FW.
+    (MESSAGE_SIZE_MAX) //!< Undefined message length assumes that the max log size for this format
+                       //!< is the maximum message length allowed to be transmitted by the FW.
 #define MAX_NMEA_MESSAGE_LENGTH                                                                                                                      \
-    (256) //(82)         //!< NovAtel Docs - NMEA Standard Logs: Explicitly states that the maximum allowable is 82 chars.  Numerous internal logs
-          //break that standard, so we will use 256 here as a safety measure.
+    (256) //(82)         //!< NovAtel Docs - NMEA Standard Logs: Explicitly states that the maximum
+          // allowable is 82 chars.  Numerous internal logs break that standard, so we will use 256
+          // here as a safety measure.
 
 #endif

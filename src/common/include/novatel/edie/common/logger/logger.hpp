@@ -48,28 +48,16 @@
 #include <spdlog/spdlog.h>
 #include <spdlog_setup/spdlog_setup.hpp>
 
-// Typically, we would create a static instance of the Logger,
-// to synchronize registration of Loggers, in a thread-safe application,
-// but the code calls the Ctor() and Ctor(std::string).
-// eg) Logger().Register(std::string)
-// a static mutex will provide a way of synchronization of the registration, across objects
-static std::mutex mLoggerMutex = std::mutex();
-
+// TODO: this class is mostly to obsolete now, would be best to find a way to make the functions standalone
 class Logger
 {
   private:
-    std::shared_ptr<spdlog::logger> pclMyRootLogger;
-
+    inline static std::mutex mLoggerMutex;
+    inline static std::shared_ptr<spdlog::logger> pclMyRootLogger;
     inline static std::map<std::string, std::shared_ptr<spdlog::sinks::rotating_file_sink_mt>> mRotatingFiles;
 
   public:
-    /*! \brief Construct a new default Logger object.
-     *
-     *  The Logger ctor either grabs or sets up the root logger, so that any
-     *  component of edie can be the origin of the root logger. The root
-     *  logger has two sinks by default: stdout, and file.
-     */
-    Logger()
+    static void InitLogger()
     {
         std::lock_guard<std::mutex> lock(mLoggerMutex);
         try
@@ -88,11 +76,11 @@ class Logger
         }
         catch (const spdlog::spdlog_ex& ex)
         {
-            std::cout << "Logger() spdlog init failed: " << ex.what() << std::endl;
+            std::cout << "Logger spdlog init failed: " << ex.what() << std::endl;
         }
         catch (const spdlog_setup::setup_error& ex)
         {
-            std::cout << "Logger() spdlog_setup failed: " << ex.what() << std::endl;
+            std::cout << "Logger spdlog_setup failed: " << ex.what() << std::endl;
         }
         catch (const std::exception& ex)
         {
@@ -100,16 +88,7 @@ class Logger
         }
     }
 
-    /*! \brief Construct a new Logger object via config file.
-     *
-     *  The Logger ctor either grabs or sets up the root logger, so that any
-     *  component of edie can be the origin of the root logger. In order to
-     *  set up the logger by config file rather than default, this ctor call
-     *  must be the first Logger ctor called at runtime.
-     *
-     *  \param [in] sLoggerConfigPath_ Path to a logger_configuration.toml file
-     */
-    Logger(std::string sLoggerConfigPath_)
+    static void InitLogger(std::string sLoggerConfigPath_)
     {
         std::lock_guard<std::mutex> lock(mLoggerMutex);
         try
@@ -128,11 +107,11 @@ class Logger
         }
         catch (const spdlog::spdlog_ex& ex)
         {
-            std::cout << "Logger() spdlog init failed: " << ex.what() << std::endl;
+            std::cout << "Logger spdlog init failed: " << ex.what() << std::endl;
         }
         catch (const spdlog_setup::setup_error& ex)
         {
-            std::cout << "Logger() spdlog_setup failed: " << ex.what() << std::endl;
+            std::cout << "Logger spdlog_setup failed: " << ex.what() << std::endl;
         }
         catch (const std::exception& ex)
         {
@@ -142,9 +121,8 @@ class Logger
 
     /*! \brief Stop any running threads started by spdlog and clean registry loggers
      */
-    static void Shutdown(void)
+    static void Shutdown()
     {
-        auto pclMyRootLogger = spdlog::get("root");
         if (pclMyRootLogger) pclMyRootLogger->flush();
         spdlog::shutdown();
     }
@@ -158,7 +136,7 @@ class Logger
      *  \param sLoggerName_ a unique name for the logger
      *  \return std::shared_ptr<spdlog::logger>
      */
-    std::shared_ptr<spdlog::logger> RegisterLogger(std::string sLoggerName_)
+    static std::shared_ptr<spdlog::logger> RegisterLogger(std::string sLoggerName_)
     {
         std::lock_guard<std::mutex> lock(mLoggerMutex);
         pclMyRootLogger->debug("Logger::RegisterLogger(\"{}\")", sLoggerName_);
