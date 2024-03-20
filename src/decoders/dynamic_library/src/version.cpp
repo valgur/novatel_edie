@@ -33,12 +33,6 @@
 #include "novatel/edie/decoders/dynamic_library/version.hpp"
 #include "novatel/edie/version.h"
 
-const char* version()
-{
-   return get_version();
-}
+const char* version() { return get_version(); }
 
-const char* pretty_version()
-{
-   return caPrettyPrint;
-}
+const char* pretty_version() { return caPrettyPrint; }

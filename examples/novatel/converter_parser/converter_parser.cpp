@@ -34,141 +34,133 @@
 #include <chrono>
 #include <filesystem>
 
+#include <novatel/edie/decoders/parser.hpp>
 #include <novatel/edie/stream_interface/inputfilestream.hpp>
 #include <novatel/edie/stream_interface/outputfilestream.hpp>
-#include <novatel/edie/decoders/parser.hpp>
 #include <novatel/edie/version.h>
 
 using namespace std;
 using namespace novatel::edie;
 using namespace novatel::edie::oem;
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
-   // This example uses the default logger config, but you can also pass a config file to the Logger() ctor
-   // An example config file: doc\example_logger_config.toml
-   auto pclLogger = Logger().RegisterLogger("converter");
-   pclLogger->set_level(spdlog::level::debug);
-   Logger::AddConsoleLogging(pclLogger);
-   Logger::AddRotatingFileLogger(pclLogger);
+    // This example uses the default logger config, but you can also pass a config file to the Logger() ctor
+    // An example config file: doc\example_logger_config.toml
+    auto pclLogger = Logger().RegisterLogger("converter");
+    pclLogger->set_level(spdlog::level::debug);
+    Logger::AddConsoleLogging(pclLogger);
+    Logger::AddRotatingFileLogger(pclLogger);
 
-   // Get command line arguments
-   pclLogger->info("Decoder library information:\n{}", caPrettyPrint);
+    // Get command line arguments
+    pclLogger->info("Decoder library information:\n{}", caPrettyPrint);
 
-   std::string sEncodeFormat = "ASCII";
-   if (argc == 2 && strcmp(argv[1], "-V") == 0)
-   {
-      return 0;
-   }
-   if (argc < 3)
-   {
-      pclLogger->error("ERROR: Need to specify a JSON message definitions DB, an input file and an output format.");
-      pclLogger->error("Example: converter <path to Json DB> <path to input file> <output format>");
-      return 1;
-   }
-   if (argc == 4)
-   {
-      sEncodeFormat = argv[3];
-   }
+    std::string sEncodeFormat = "ASCII";
+    if (argc == 2 && strcmp(argv[1], "-V") == 0) { return 0; }
+    if (argc < 3)
+    {
+        pclLogger->error("ERROR: Need to specify a JSON message definitions DB, an input file and an output format.");
+        pclLogger->error("Example: converter <path to Json DB> <path to input file> <output format>");
+        return 1;
+    }
+    if (argc == 4) { sEncodeFormat = argv[3]; }
 
-   // Check command line arguments
-   std::string sJsonDB = argv[1];
-   if (!std::filesystem::exists(sJsonDB))
-   {
-      pclLogger->error("File \"{}\" does not exist", sJsonDB);
-      return 1;
-   }
+    // Check command line arguments
+    std::string sJsonDB = argv[1];
+    if (!std::filesystem::exists(sJsonDB))
+    {
+        pclLogger->error("File \"{}\" does not exist", sJsonDB);
+        return 1;
+    }
 
-   std::string sInFilename = argv[2];
-   if (!std::filesystem::exists(sInFilename))
-   {
-      pclLogger->error("File \"{}\" does not exist", sInFilename);
-      return 1;
-   }
+    std::string sInFilename = argv[2];
+    if (!std::filesystem::exists(sInFilename))
+    {
+        pclLogger->error("File \"{}\" does not exist", sInFilename);
+        return 1;
+    }
 
-   ENCODEFORMAT eEncodeFormat = StringToEncodeFormat(sEncodeFormat);
-   if (eEncodeFormat == ENCODEFORMAT::UNSPECIFIED)
-   {
-      pclLogger->error("Unspecified output format.\n\tASCII\n\tBINARY\n\tFLATTENED_BINARY");
-      return 1;
-   }
+    ENCODEFORMAT eEncodeFormat = StringToEncodeFormat(sEncodeFormat);
+    if (eEncodeFormat == ENCODEFORMAT::UNSPECIFIED)
+    {
+        pclLogger->error("Unspecified output format.\n\tASCII\n\tBINARY\n\tFLATTENED_BINARY");
+        return 1;
+    }
 
-   // Load the database
-   auto clJsonDb = std::make_shared<JsonReader>();
-   pclLogger->info("Loading Database...");
-   auto tStart = chrono::high_resolution_clock::now();
-   clJsonDb->LoadFile(sJsonDB);
-   pclLogger->info("Done in {}ms", chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - tStart).count());
+    // Load the database
+    auto clJsonDb = std::make_shared<JsonReader>();
+    pclLogger->info("Loading Database...");
+    auto tStart = chrono::high_resolution_clock::now();
+    clJsonDb->LoadFile(sJsonDB);
+    pclLogger->info("Done in {}ms", chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - tStart).count());
 
-   // Setup timers
-   auto tLoop = chrono::high_resolution_clock::now();
+    // Setup timers
+    auto tLoop = chrono::high_resolution_clock::now();
 
-   Parser clParser(clJsonDb);
-   clParser.SetEncodeFormat(eEncodeFormat);
-   clParser.SetLoggerLevel(spdlog::level::debug);
-   Logger::AddConsoleLogging(clParser.GetLogger());
-   Logger::AddRotatingFileLogger(clParser.GetLogger());
+    Parser clParser(clJsonDb);
+    clParser.SetEncodeFormat(eEncodeFormat);
+    clParser.SetLoggerLevel(spdlog::level::debug);
+    Logger::AddConsoleLogging(clParser.GetLogger());
+    Logger::AddRotatingFileLogger(clParser.GetLogger());
 
-   auto clFilter = std::make_shared<Filter>();
-   clFilter->SetLoggerLevel(spdlog::level::debug);
-   Logger::AddConsoleLogging(clFilter->GetLogger());
-   Logger::AddRotatingFileLogger(clFilter->GetLogger());
+    auto clFilter = std::make_shared<Filter>();
+    clFilter->SetLoggerLevel(spdlog::level::debug);
+    Logger::AddConsoleLogging(clFilter->GetLogger());
+    Logger::AddRotatingFileLogger(clFilter->GetLogger());
 
-   // Initialize structures and error codes
-   STATUS eStatus = STATUS::UNKNOWN;
+    // Initialize structures and error codes
+    STATUS eStatus = STATUS::UNKNOWN;
 
-   MetaDataStruct stMetaData;
-   MessageDataStruct stMessageData;
+    MetaDataStruct stMetaData;
+    MessageDataStruct stMessageData;
 
-   clParser.SetFilter(clFilter);
+    clParser.SetFilter(clFilter);
 
-   // Initialize FS structures and buffers
-   StreamReadStatus stReadStatus;
-   ReadDataStructure stReadData;
-   unsigned char acIFSReadBuffer[MAX_ASCII_MESSAGE_LENGTH];
-   stReadData.cData = reinterpret_cast<char*>(acIFSReadBuffer);
-   stReadData.uiDataSize = sizeof(acIFSReadBuffer);
+    // Initialize FS structures and buffers
+    StreamReadStatus stReadStatus;
+    ReadDataStructure stReadData;
+    unsigned char acIFSReadBuffer[MAX_ASCII_MESSAGE_LENGTH];
+    stReadData.cData = reinterpret_cast<char*>(acIFSReadBuffer);
+    stReadData.uiDataSize = sizeof(acIFSReadBuffer);
 
-   // Setup filestreams
-   InputFileStream clIFS(sInFilename.c_str());
-   OutputFileStream clConvertedLogsOFS(sInFilename.append(".").append(sEncodeFormat).c_str());
-   OutputFileStream clUnknownBytesOFS(sInFilename.append(".UNKNOWN").c_str());
+    // Setup filestreams
+    InputFileStream clIFS(sInFilename.c_str());
+    OutputFileStream clConvertedLogsOFS(sInFilename.append(".").append(sEncodeFormat).c_str());
+    OutputFileStream clUnknownBytesOFS(sInFilename.append(".UNKNOWN").c_str());
 
-   uint32_t uiCompleteMessages = 0;
-   uint32_t uiCounter = 0;
-   tStart = chrono::high_resolution_clock::now();
-   tLoop = chrono::high_resolution_clock::now();
-   while (!stReadStatus.bEOS)
-   {
-      stReadData.cData = reinterpret_cast<char*>(acIFSReadBuffer);
-      stReadStatus = clIFS.ReadData(stReadData);
-      clParser.Write(reinterpret_cast<unsigned char*>(stReadData.cData), stReadStatus.uiCurrentStreamRead);
+    uint32_t uiCompleteMessages = 0;
+    uint32_t uiCounter = 0;
+    tStart = chrono::high_resolution_clock::now();
+    tLoop = chrono::high_resolution_clock::now();
+    while (!stReadStatus.bEOS)
+    {
+        stReadData.cData = reinterpret_cast<char*>(acIFSReadBuffer);
+        stReadStatus = clIFS.ReadData(stReadData);
+        clParser.Write(reinterpret_cast<unsigned char*>(stReadData.cData), stReadStatus.uiCurrentStreamRead);
 
-      do
-      {
-         eStatus = clParser.Read(stMessageData, stMetaData);
+        do {
+            eStatus = clParser.Read(stMessageData, stMetaData);
 
-         if (eStatus == STATUS::SUCCESS)
-         {
-            clConvertedLogsOFS.WriteData(reinterpret_cast<char*>(stMessageData.pucMessage), stMessageData.uiMessageLength);
-            stMessageData.pucMessage[stMessageData.uiMessageLength] = '\0';
-            pclLogger->info("Encoded: ({}) {}", stMessageData.uiMessageLength, reinterpret_cast<char*>(stMessageData.pucMessage));
-            uiCompleteMessages++;
-         }
+            if (eStatus == STATUS::SUCCESS)
+            {
+                clConvertedLogsOFS.WriteData(reinterpret_cast<char*>(stMessageData.pucMessage), stMessageData.uiMessageLength);
+                stMessageData.pucMessage[stMessageData.uiMessageLength] = '\0';
+                pclLogger->info("Encoded: ({}) {}", stMessageData.uiMessageLength, reinterpret_cast<char*>(stMessageData.pucMessage));
+                uiCompleteMessages++;
+            }
 
-         if (chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - tLoop).count() > 1000)
-         {
-            uiCounter++;
-            pclLogger->info("{} logs/s", uiCompleteMessages/uiCounter);
-            tLoop = chrono::high_resolution_clock::now();
-         }
-      } while (eStatus != STATUS::BUFFER_EMPTY);
-   }
-   pclLogger->info("Converted {} logs in {}s from {}",
-      uiCompleteMessages,
-      (chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - tStart).count() / 1000.0),
-      sInFilename.c_str());
+            if (chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - tLoop).count() > 1000)
+            {
+                uiCounter++;
+                pclLogger->info("{} logs/s", uiCompleteMessages / uiCounter);
+                tLoop = chrono::high_resolution_clock::now();
+            }
+        } while (eStatus != STATUS::BUFFER_EMPTY);
+    }
+    pclLogger->info("Converted {} logs in {}s from {}", uiCompleteMessages,
+                    (chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - tStart).count() / 1000.0),
+                    sInFilename.c_str());
 
-   Logger::Shutdown();
-   return 0;
+    Logger::Shutdown();
+    return 0;
 }

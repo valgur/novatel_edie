@@ -43,15 +43,15 @@
 #include "novatel/edie/decoders/common.hpp"
 #include "novatel/edie/decoders/header_decoder.hpp"
 
+#include <cassert>
+#include <cstdarg>
+#include <fstream>
+#include <iostream>
 #include <nlohmann/json.hpp>
+#include <sstream>
+#include <string>
 #include <utility>
 #include <variant>
-#include <string>
-#include <sstream>
-#include <cassert>
-#include <iostream>
-#include <fstream>
-#include <cstdarg>
 
 namespace novatel::edie::oem {
 
@@ -60,7 +60,7 @@ using nlohmann::json;
 struct FieldContainer;
 
 #define novatel_types bool, int8_t, int16_t, int32_t, int64_t, uint8_t, uint16_t, uint32_t, uint64_t, float, double, std::string
-#define container_types novatel_types, std::vector<std::variant<novatel_types> >, std::vector<FieldContainer>, novatel::edie::oem::IntermediateHeader
+#define container_types novatel_types, std::vector<std::variant<novatel_types>>, std::vector<FieldContainer>, novatel::edie::oem::IntermediateHeader
 using FieldValueVariant = std::variant<container_types>;
 
 //-----------------------------------------------------------------------
@@ -69,18 +69,18 @@ using FieldValueVariant = std::variant<container_types>;
 //-----------------------------------------------------------------------
 struct FieldContainer
 {
-   FieldValueVariant field_value;
-   novatel::edie::BaseField::ConstPtr field_def;
+    FieldValueVariant field_value;
+    novatel::edie::BaseField::ConstPtr field_def;
 
-   template <class T>
-   FieldContainer(T field_value_, novatel::edie::BaseField::ConstPtr field_def_)
-      : field_value(field_value_), field_def(std::move(field_def_))
-   {}
+    template <class T>
+    FieldContainer(T field_value_, novatel::edie::BaseField::ConstPtr field_def_) : field_value(field_value_), field_def(std::move(field_def_))
+    {
+    }
 
-//   FieldContainer([[maybe_unused]] const FieldContainer& obj)
-//   {
-//      throw std::runtime_error("FieldContainer: I'm being copied. Implement a proper copy constructor.");
-//   }
+    //   FieldContainer([[maybe_unused]] const FieldContainer& obj)
+    //   {
+    //      throw std::runtime_error("FieldContainer: I'm being copied. Implement a proper copy constructor.");
+    //   }
 };
 
 typedef std::vector<FieldContainer> IntermediateMessage;
@@ -92,146 +92,136 @@ typedef const std::vector<novatel::edie::BaseField::Ptr> MsgFieldsVector;
 //============================================================================
 class MessageDecoder
 {
-private:
-   std::shared_ptr<spdlog::logger> pclMyLogger;
-   JsonReader::Ptr pclMyMsgDb{ nullptr };
-   EnumDefinition::Ptr vMyRespDefns{ nullptr };
-   EnumDefinition::Ptr vMyCommandDefns{ nullptr };
-   EnumDefinition::Ptr vMyPortAddrDefns{ nullptr };
-   EnumDefinition::Ptr vMyGPSTimeStatusDefns{ nullptr };
+  private:
+    std::shared_ptr<spdlog::logger> pclMyLogger;
+    JsonReader::Ptr pclMyMsgDb{nullptr};
+    EnumDefinition::Ptr vMyRespDefns{nullptr};
+    EnumDefinition::Ptr vMyCommandDefns{nullptr};
+    EnumDefinition::Ptr vMyPortAddrDefns{nullptr};
+    EnumDefinition::Ptr vMyGPSTimeStatusDefns{nullptr};
 
-   unsigned char* pucTempBufConvert{ nullptr };
-   unsigned char* pucBeginningConvert{ nullptr };
-   uint32_t uiMyBufferBytesRemaining;
-   uint32_t uiMyAbbrevAsciiIndentationLevel;
-   MessageDefinition::Ptr stMyRespDef;
+    unsigned char* pucTempBufConvert{nullptr};
+    unsigned char* pucBeginningConvert{nullptr};
+    uint32_t uiMyBufferBytesRemaining;
+    uint32_t uiMyAbbrevAsciiIndentationLevel;
+    MessageDefinition::Ptr stMyRespDef;
 
-   // Inline buffer functions
-   [[nodiscard]] bool PrintToBuffer(char** ppcBuffer_, char* szFormat_, ...)
-   {
-      va_list args;
-      va_start(args, szFormat_);
-      uint32_t uiBytesBuffered = vsnprintf(*ppcBuffer_, uiMyBufferBytesRemaining, szFormat_, args);
-      va_end(args);
-      if (uiMyBufferBytesRemaining < uiBytesBuffered)
-      {
-         return false;
-      }
-      *ppcBuffer_ += uiBytesBuffered;
-      uiMyBufferBytesRemaining -= uiBytesBuffered;
-      return true;
-   }
+    // Inline buffer functions
+    [[nodiscard]] bool PrintToBuffer(char** ppcBuffer_, char* szFormat_, ...)
+    {
+        va_list args;
+        va_start(args, szFormat_);
+        uint32_t uiBytesBuffered = vsnprintf(*ppcBuffer_, uiMyBufferBytesRemaining, szFormat_, args);
+        va_end(args);
+        if (uiMyBufferBytesRemaining < uiBytesBuffered) { return false; }
+        *ppcBuffer_ += uiBytesBuffered;
+        uiMyBufferBytesRemaining -= uiBytesBuffered;
+        return true;
+    }
 
-   template <typename T>
-   [[nodiscard]] inline bool CopyToBuffer(unsigned char** ppcBuffer_, T* ptItem_, uint32_t uiItemSize_)
-   {
-      if (uiMyBufferBytesRemaining < uiItemSize_)
-      {
-         return false;
-      }
-      memcpy(*ppcBuffer_, ptItem_, uiItemSize_);
-      *ppcBuffer_ += uiItemSize_;
-      uiMyBufferBytesRemaining -= uiItemSize_;
-      return true;
-   }
+    template <typename T> [[nodiscard]] inline bool CopyToBuffer(unsigned char** ppcBuffer_, T* ptItem_, uint32_t uiItemSize_)
+    {
+        if (uiMyBufferBytesRemaining < uiItemSize_) { return false; }
+        memcpy(*ppcBuffer_, ptItem_, uiItemSize_);
+        *ppcBuffer_ += uiItemSize_;
+        uiMyBufferBytesRemaining -= uiItemSize_;
+        return true;
+    }
 
-   [[nodiscard]] inline bool SetInBuffer(unsigned char** ppcBuffer_, int32_t iItem_, uint32_t uiItemSize_)
-   {
-      if (uiMyBufferBytesRemaining < uiItemSize_)
-      {
-         return false;
-      }
-      memset(*ppcBuffer_, iItem_, uiItemSize_);
-      *ppcBuffer_ += uiItemSize_;
-      uiMyBufferBytesRemaining -= uiItemSize_;
-      return true;
-   }
+    [[nodiscard]] inline bool SetInBuffer(unsigned char** ppcBuffer_, int32_t iItem_, uint32_t uiItemSize_)
+    {
+        if (uiMyBufferBytesRemaining < uiItemSize_) { return false; }
+        memset(*ppcBuffer_, iItem_, uiItemSize_);
+        *ppcBuffer_ += uiItemSize_;
+        uiMyBufferBytesRemaining -= uiItemSize_;
+        return true;
+    }
 
-   // Enum util functions
-   void InitEnumDefns();
-   void CreateResponseMsgDefns();
-   uint32_t MsgNameToMsgId(std::string sMsgName_);
-   std::string MsgIdToMsgName(const uint32_t uiMessageID_);
+    // Enum util functions
+    void InitEnumDefns();
+    void CreateResponseMsgDefns();
+    uint32_t MsgNameToMsgId(std::string sMsgName_);
+    std::string MsgIdToMsgName(const uint32_t uiMessageID_);
 
-   MsgFieldsVector* GetMsgDefFromCRC(const MessageDefinition& pclMessageDef_, uint32_t& uiMsgDefCRC_);
+    MsgFieldsVector* GetMsgDefFromCRC(const MessageDefinition& pclMessageDef_, uint32_t& uiMsgDefCRC_);
 
-   // Decode binary body
-   void DecodeBinaryField(BaseField::ConstPtr MessageDataType_, unsigned char** ppcLogBuf_, std::vector<FieldContainer>& vIntermediateFormat);
+    // Decode binary body
+    void DecodeBinaryField(BaseField::ConstPtr MessageDataType_, unsigned char** ppcLogBuf_, std::vector<FieldContainer>& vIntermediateFormat);
 
-   // Decode ascii body
-   [[nodiscard]] STATUS DecodeAbbrevAscii(const std::vector<BaseField::Ptr>& MsgDefFields_, char** ppcLogBuf_, std::vector<FieldContainer>& vIntermediateFormat_);
-   void DecodeAsciiField(BaseField::ConstPtr MessageDataType_, char** ppcToken_, const size_t tokenLength_, std::vector<FieldContainer>& vIntermediateFormat);
+    // Decode ascii body
+    [[nodiscard]] STATUS DecodeAbbrevAscii(const std::vector<BaseField::Ptr>& MsgDefFields_, char** ppcLogBuf_,
+                                           std::vector<FieldContainer>& vIntermediateFormat_);
+    void DecodeAsciiField(BaseField::ConstPtr MessageDataType_, char** ppcToken_, const size_t tokenLength_,
+                          std::vector<FieldContainer>& vIntermediateFormat);
 
-   // Decode json body
-   [[nodiscard]] STATUS DecodeJson(const std::vector<BaseField::Ptr>& MsgDefFields_, json clJsonFields_, std::vector<FieldContainer>& vIntermediateFormat_);
-   void DecodeJsonField(BaseField::ConstPtr MessageDataType_, json clJsonField_, std::vector<FieldContainer>& vIntermediateFormat);
+    // Decode json body
+    [[nodiscard]] STATUS DecodeJson(const std::vector<BaseField::Ptr>& MsgDefFields_, json clJsonFields_,
+                                    std::vector<FieldContainer>& vIntermediateFormat_);
+    void DecodeJsonField(BaseField::ConstPtr MessageDataType_, json clJsonField_, std::vector<FieldContainer>& vIntermediateFormat);
 
-protected:
-   [[nodiscard]] STATUS DecodeBinary(const std::vector<BaseField::Ptr>& MsgDefFields_, unsigned char** ppucLogBuf_, std::vector<FieldContainer>& vIntermediateFormat_, uint32_t uiMessageLength_);
-   [[nodiscard]] STATUS DecodeAscii(const std::vector<BaseField::Ptr>& MsgDefFields_, char** ppcLogBuf_, std::vector<FieldContainer>& vIntermediateFormat_);
+  protected:
+    [[nodiscard]] STATUS DecodeBinary(const std::vector<BaseField::Ptr>& MsgDefFields_, unsigned char** ppucLogBuf_,
+                                      std::vector<FieldContainer>& vIntermediateFormat_, uint32_t uiMessageLength_);
+    [[nodiscard]] STATUS DecodeAscii(const std::vector<BaseField::Ptr>& MsgDefFields_, char** ppcLogBuf_,
+                                     std::vector<FieldContainer>& vIntermediateFormat_);
 
-public:
-   //----------------------------------------------------------------------------
-   //! \brief A constructor for the MessageDecoder class.
-   //
-   //! \param[in] pclJsonDb_ A pointer to a JsonReader object.  Defaults to nullptr.
-   //----------------------------------------------------------------------------
-   MessageDecoder(JsonReader::Ptr pclJsonDb_ = nullptr);
+  public:
+    //----------------------------------------------------------------------------
+    //! \brief A constructor for the MessageDecoder class.
+    //
+    //! \param[in] pclJsonDb_ A pointer to a JsonReader object.  Defaults to nullptr.
+    //----------------------------------------------------------------------------
+    MessageDecoder(JsonReader::Ptr pclJsonDb_ = nullptr);
 
-   //----------------------------------------------------------------------------
-   //! \brief Load a JsonReader object.
-   //
-   //! \param[in] pclJsonDb_ A pointer to a JsonReader object.
-   //----------------------------------------------------------------------------
-   void
-   LoadJsonDb(JsonReader::Ptr pclJsonDb_);
+    //----------------------------------------------------------------------------
+    //! \brief Load a JsonReader object.
+    //
+    //! \param[in] pclJsonDb_ A pointer to a JsonReader object.
+    //----------------------------------------------------------------------------
+    void LoadJsonDb(JsonReader::Ptr pclJsonDb_);
 
-   //----------------------------------------------------------------------------
-   //! \brief Get the internal logger.
-   //
-   //! \return A shared_ptr to the spdlog::logger.
-   //----------------------------------------------------------------------------
-   std::shared_ptr<spdlog::logger>
-   GetLogger();
+    //----------------------------------------------------------------------------
+    //! \brief Get the internal logger.
+    //
+    //! \return A shared_ptr to the spdlog::logger.
+    //----------------------------------------------------------------------------
+    std::shared_ptr<spdlog::logger> GetLogger();
 
-   //----------------------------------------------------------------------------
-   //! \brief Set the level of detail produced by the internal logger.
-   //
-   //! \param[in] eLevel_ The logging level to enable.
-   //----------------------------------------------------------------------------
-   void
-   SetLoggerLevel(spdlog::level::level_enum eLevel_);
+    //----------------------------------------------------------------------------
+    //! \brief Set the level of detail produced by the internal logger.
+    //
+    //! \param[in] eLevel_ The logging level to enable.
+    //----------------------------------------------------------------------------
+    void SetLoggerLevel(spdlog::level::level_enum eLevel_);
 
-   //----------------------------------------------------------------------------
-   //! \brief Shutdown the internal logger.
-   //----------------------------------------------------------------------------
-   void
-   ShutdownLogger();
+    //----------------------------------------------------------------------------
+    //! \brief Shutdown the internal logger.
+    //----------------------------------------------------------------------------
+    void ShutdownLogger();
 
-   //----------------------------------------------------------------------------
-   //! \brief Decode an OEM message body from the provided frame.
-   //
-   //! \param[in] pucMessage_ A pointer to an OEM message body.
-   //! \param[out] stIntermediateLog_ The IntermediateLog to be populated.
-   //! \param[in, out] stMetaData_ MetaDataStruct to provide information about
-   //! the frame and be fully populated to help describe the decoded log.
-   //
-   //! \remark Note, that pucMessage_ must not point to the OEM message header,
-   //! rather the OEM message body.  This can be done by advancing the pointer
-   //! of an OEM message frame by stMetaData.uiHeaderLength.
-   //! \return An error code describing the result of decoding.
-   //!   SUCCESS: The operation was successful.
-   //!   NULL_PROVIDED: pucMessage_ is a null pointer.
-   //!   NO_DATABASE: No database was ever loaded into this component.
-   //!   NO_DEFINITION: No definition for the current log was found in the
-   //! provided database.
-   //!   FAILURE: Failed to decode a header field.
-   //!   UNSUPPORTED: Attempted to decode an unsupported format.
-   //!   UNKNOWN: The header format provided is not known.
-   //----------------------------------------------------------------------------
-   [[nodiscard]] STATUS
-   Decode(unsigned char* pucMessage_, IntermediateMessage& stIntermediateMessage_, MetaDataStruct& stMetaData_);
+    //----------------------------------------------------------------------------
+    //! \brief Decode an OEM message body from the provided frame.
+    //
+    //! \param[in] pucMessage_ A pointer to an OEM message body.
+    //! \param[out] stIntermediateLog_ The IntermediateLog to be populated.
+    //! \param[in, out] stMetaData_ MetaDataStruct to provide information about
+    //! the frame and be fully populated to help describe the decoded log.
+    //
+    //! \remark Note, that pucMessage_ must not point to the OEM message header,
+    //! rather the OEM message body.  This can be done by advancing the pointer
+    //! of an OEM message frame by stMetaData.uiHeaderLength.
+    //! \return An error code describing the result of decoding.
+    //!   SUCCESS: The operation was successful.
+    //!   NULL_PROVIDED: pucMessage_ is a null pointer.
+    //!   NO_DATABASE: No database was ever loaded into this component.
+    //!   NO_DEFINITION: No definition for the current log was found in the
+    //! provided database.
+    //!   FAILURE: Failed to decode a header field.
+    //!   UNSUPPORTED: Attempted to decode an unsupported format.
+    //!   UNKNOWN: The header format provided is not known.
+    //----------------------------------------------------------------------------
+    [[nodiscard]] STATUS Decode(unsigned char* pucMessage_, IntermediateMessage& stIntermediateMessage_, MetaDataStruct& stMetaData_);
 };
-}
+} // namespace novatel::edie::oem
 
 #endif // NOVATEL_MESSAGE_DECODER_HPP

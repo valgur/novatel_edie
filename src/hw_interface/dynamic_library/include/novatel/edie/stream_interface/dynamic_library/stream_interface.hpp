@@ -33,10 +33,11 @@
 
 #include "novatel/edie/stream_interface/inputfilestream.hpp"
 
-extern "C" {
-   HWINTERFACE_EXPORT InputFileStream* ifs_init(char* pcInputFilePath_);
-   HWINTERFACE_EXPORT void ifs_del(InputStreamInterface* pclIFS_);
-   HWINTERFACE_EXPORT void ifs_read(InputFileStream* pclIFS_, StreamReadStatus* srs_, char* pcReadBuf_, int iBufSize_);
+extern "C"
+{
+    HWINTERFACE_EXPORT InputFileStream* ifs_init(char* pcInputFilePath_);
+    HWINTERFACE_EXPORT void ifs_del(InputStreamInterface* pclIFS_);
+    HWINTERFACE_EXPORT void ifs_read(InputFileStream* pclIFS_, StreamReadStatus* srs_, char* pcReadBuf_, int iBufSize_);
 }
 
-#endif //DYNAMIC_LIBRARY_STREAM_INTERFACE_HPP
+#endif // DYNAMIC_LIBRARY_STREAM_INTERFACE_HPP

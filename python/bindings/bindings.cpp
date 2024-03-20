@@ -21,20 +21,20 @@ void init_novatel_rxconfig_handler(nb::module_&);
 
 NB_MODULE(bindings, m)
 {
-   init_common_common(m);
-   init_common_logger(m);
-   init_common_jsonreader(m);
-   init_common_nexcept(m);
-   init_hw_interface(m);
-   init_novatel_commander(m);
-   init_novatel_common(m);
-   init_novatel_encoder(m);
-   init_novatel_fileparser(m);
-   init_novatel_filter(m);
-   init_novatel_framer(m);
-   init_novatel_header_decoder(m);
-   init_novatel_message_decoder(m);
-   init_novatel_parser(m);
-   init_novatel_range_decompressor(m);
-   init_novatel_rxconfig_handler(m);
+    init_common_common(m);
+    init_common_logger(m);
+    init_common_jsonreader(m);
+    init_common_nexcept(m);
+    init_hw_interface(m);
+    init_novatel_commander(m);
+    init_novatel_common(m);
+    init_novatel_encoder(m);
+    init_novatel_fileparser(m);
+    init_novatel_filter(m);
+    init_novatel_framer(m);
+    init_novatel_header_decoder(m);
+    init_novatel_message_decoder(m);
+    init_novatel_parser(m);
+    init_novatel_range_decompressor(m);
+    init_novatel_rxconfig_handler(m);
 }

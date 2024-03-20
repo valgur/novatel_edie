@@ -38,60 +38,53 @@ using namespace novatel::edie::oem;
 
 bool novatel_message_decoder_set_logger_level(MessageDecoder* pclMessageDecoder_, uint32_t uiLogLevel_)
 {
-   return pclMessageDecoder_
-      && uiLogLevel_ >= spdlog::level::level_enum::trace
-      && uiLogLevel_ <  spdlog::level::level_enum::n_levels
-      ? pclMessageDecoder_->SetLoggerLevel(static_cast<spdlog::level::level_enum>(uiLogLevel_)), true
-      : false;
+    return pclMessageDecoder_ && uiLogLevel_ >= spdlog::level::level_enum::trace && uiLogLevel_ < spdlog::level::level_enum::n_levels
+           ? pclMessageDecoder_->SetLoggerLevel(static_cast<spdlog::level::level_enum>(uiLogLevel_)),
+           true : false;
 }
 
 void novatel_message_decoder_shutdown_logger(MessageDecoder* pclMessageDecoder_)
 {
-   if (pclMessageDecoder_)
-   {
-      pclMessageDecoder_->ShutdownLogger();
-   }
+    if (pclMessageDecoder_) { pclMessageDecoder_->ShutdownLogger(); }
 }
 
 MessageDecoder* novatel_message_decoder_init(JsonReader* pclJsonDb_)
 {
-   return pclJsonDb_ ? new MessageDecoder(JsonReader::Ptr(pclJsonDb_, [](auto){})) : nullptr;
+    return pclJsonDb_ ? new MessageDecoder(JsonReader::Ptr(pclJsonDb_, [](auto) {})) : nullptr;
 }
 
 void novatel_message_decoder_delete(MessageDecoder* pclMessageDecoder_)
 {
-   if (pclMessageDecoder_)
-   {
-      delete pclMessageDecoder_;
-      pclMessageDecoder_ = nullptr;
-   }
+    if (pclMessageDecoder_)
+    {
+        delete pclMessageDecoder_;
+        pclMessageDecoder_ = nullptr;
+    }
 }
 
 void novatel_message_decoder_load_json(MessageDecoder* pclMessageDecoder_, JsonReader* pclJsonDb_)
 {
-   if (pclMessageDecoder_ && pclJsonDb_)
-   {
-      pclMessageDecoder_->LoadJsonDb(JsonReader::Ptr(pclJsonDb_, [](auto){}));
-   }
+    if (pclMessageDecoder_ && pclJsonDb_)
+    {
+        pclMessageDecoder_->LoadJsonDb(JsonReader::Ptr(pclJsonDb_, [](auto) {}));
+    }
 }
 
-STATUS novatel_message_decoder_decode(MessageDecoder* pclMessageDecoder_, unsigned char* pucLogBuf_, IntermediateMessage* pstIntermediateMessage_, MetaDataStruct* pstMetaData_)
+STATUS novatel_message_decoder_decode(MessageDecoder* pclMessageDecoder_, unsigned char* pucLogBuf_, IntermediateMessage* pstIntermediateMessage_,
+                                      MetaDataStruct* pstMetaData_)
 {
-   return pclMessageDecoder_ && pstIntermediateMessage_ && pstMetaData_
-      ? pclMessageDecoder_->Decode(pucLogBuf_, *pstIntermediateMessage_, *pstMetaData_)
-      : STATUS::NULL_PROVIDED;
+    return pclMessageDecoder_ && pstIntermediateMessage_ && pstMetaData_
+               ? pclMessageDecoder_->Decode(pucLogBuf_, *pstIntermediateMessage_, *pstMetaData_)
+               : STATUS::NULL_PROVIDED;
 }
 
-IntermediateMessage* novatel_intermediate_message_init()
-{
-   return new IntermediateMessage();
-}
+IntermediateMessage* novatel_intermediate_message_init() { return new IntermediateMessage(); }
 
 void novatel_intermediate_message_delete(IntermediateMessage* pstIntermediateMessage_)
 {
-   if (pstIntermediateMessage_)
-   {
-      delete pstIntermediateMessage_;
-      pstIntermediateMessage_ = nullptr;
-   }
+    if (pstIntermediateMessage_)
+    {
+        delete pstIntermediateMessage_;
+        pstIntermediateMessage_ = nullptr;
+    }
 }

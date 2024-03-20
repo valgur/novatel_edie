@@ -43,27 +43,25 @@
 
 extern "C"
 {
-   // Logger
-   DECODERS_EXPORT bool novatel_encoder_set_logger_level(novatel::edie::oem::Encoder* pclEncoder_, uint32_t iLogLevel_);
-   DECODERS_EXPORT void novatel_encoder_shutdown_logger(novatel::edie::oem::Encoder* pclEncoder_);
+    // Logger
+    DECODERS_EXPORT bool novatel_encoder_set_logger_level(novatel::edie::oem::Encoder* pclEncoder_, uint32_t iLogLevel_);
+    DECODERS_EXPORT void novatel_encoder_shutdown_logger(novatel::edie::oem::Encoder* pclEncoder_);
 
-   // Construct/Destruct
-   DECODERS_EXPORT novatel::edie::oem::Encoder* novatel_encoder_init(JsonReader* pclJsonDb_);
-   DECODERS_EXPORT void novatel_encoder_delete(novatel::edie::oem::Encoder* pclEncoder_);
+    // Construct/Destruct
+    DECODERS_EXPORT novatel::edie::oem::Encoder* novatel_encoder_init(JsonReader* pclJsonDb_);
+    DECODERS_EXPORT void novatel_encoder_delete(novatel::edie::oem::Encoder* pclEncoder_);
 
-   // Config
-   DECODERS_EXPORT void novatel_encoder_load_json(novatel::edie::oem::Encoder* pclEncoder_, JsonReader* pclJsonDb_);
+    // Config
+    DECODERS_EXPORT void novatel_encoder_load_json(novatel::edie::oem::Encoder* pclEncoder_, JsonReader* pclJsonDb_);
 
-   // R/W
-   DECODERS_EXPORT [[nodiscard]] novatel::edie::STATUS novatel_encoder_encode(
-      novatel::edie::oem::Encoder* pclEncoder_,
-      unsigned char* pucEncodeBuffer_,
-      uint32_t uiEncodeBufferSize_,
-      novatel::edie::oem::IntermediateHeader* pstIntermediateHeader_,
-      novatel::edie::oem::IntermediateMessage* pstIntermediateMessage_,
-      novatel::edie::oem::MessageDataStruct* pstMessageData_,
-      novatel::edie::oem::MetaDataStruct* pstMetaData_,
-      novatel::edie::ENCODEFORMAT uiEncodeFormat_);
+    // R/W
+    DECODERS_EXPORT [[nodiscard]] novatel::edie::STATUS novatel_encoder_encode(novatel::edie::oem::Encoder* pclEncoder_,
+                                                                               unsigned char* pucEncodeBuffer_, uint32_t uiEncodeBufferSize_,
+                                                                               novatel::edie::oem::IntermediateHeader* pstIntermediateHeader_,
+                                                                               novatel::edie::oem::IntermediateMessage* pstIntermediateMessage_,
+                                                                               novatel::edie::oem::MessageDataStruct* pstMessageData_,
+                                                                               novatel::edie::oem::MetaDataStruct* pstMetaData_,
+                                                                               novatel::edie::ENCODEFORMAT uiEncodeFormat_);
 }
 
 #endif // DYNAMIC_LIBRARY_NOVATEL_ENCODER_HPP

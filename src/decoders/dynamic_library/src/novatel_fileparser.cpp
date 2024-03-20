@@ -40,117 +40,93 @@ using namespace novatel::edie::oem;
 
 FileParser* novatel_fileparser_init(JsonReader* pclJsonDb_)
 {
-   return pclJsonDb_ ? new FileParser(JsonReader::Ptr(pclJsonDb_, [](auto){})) : nullptr;
+    return pclJsonDb_ ? new FileParser(JsonReader::Ptr(pclJsonDb_, [](auto) {})) : nullptr;
 }
 
 void novatel_fileparser_delete(FileParser* pclFileParser_)
 {
-   if (pclFileParser_)
-   {
-      delete pclFileParser_;
-      pclFileParser_ = nullptr;
-   }
+    if (pclFileParser_)
+    {
+        delete pclFileParser_;
+        pclFileParser_ = nullptr;
+    }
 }
 
 void novatel_fileparser_load_json_db(FileParser* pclFileParser_, JsonReader* pclJsonDb_)
 {
-   if (pclFileParser_ && pclJsonDb_)
-   {
-      pclFileParser_->LoadJsonDb(JsonReader::Ptr(pclJsonDb_, [](auto){}));
-   }
+    if (pclFileParser_ && pclJsonDb_)
+    {
+        pclFileParser_->LoadJsonDb(JsonReader::Ptr(pclJsonDb_, [](auto) {}));
+    }
 }
 
 void novatel_fileparser_set_ignore_abbrev_ascii_responses(FileParser* pclFileParser_, bool bIgnoreAbbrevASCIIResponsesCmp_)
 {
-   if (pclFileParser_)
-   {
-      pclFileParser_->SetIgnoreAbbreviatedAsciiResponses(bIgnoreAbbrevASCIIResponsesCmp_);
-   }
+    if (pclFileParser_) { pclFileParser_->SetIgnoreAbbreviatedAsciiResponses(bIgnoreAbbrevASCIIResponsesCmp_); }
 }
 
 bool novatel_fileparser_get_ignore_abbrev_ascii_responses(FileParser* pclFileParser_)
 {
-   return pclFileParser_ ? pclFileParser_->GetIgnoreAbbreviatedAsciiResponses() : false;
+    return pclFileParser_ ? pclFileParser_->GetIgnoreAbbreviatedAsciiResponses() : false;
 }
 
 void novatel_fileparser_set_decompress_rangecmp(FileParser* pclFileParser_, bool bDecompressRangeCmp_)
 {
-   if (pclFileParser_)
-   {
-      pclFileParser_->SetDecompressRangeCmp(bDecompressRangeCmp_);
-   }
+    if (pclFileParser_) { pclFileParser_->SetDecompressRangeCmp(bDecompressRangeCmp_); }
 }
 
 bool novatel_fileparser_get_decompress_rangecmp(FileParser* pclFileParser_)
 {
-   return pclFileParser_ ? pclFileParser_->GetDecompressRangeCmp() : false;
+    return pclFileParser_ ? pclFileParser_->GetDecompressRangeCmp() : false;
 }
 
 void novatel_fileparser_set_return_unknownbytes(FileParser* pclFileParser_, bool bReturnUnknownBytes_)
 {
-   if (pclFileParser_)
-   {
-      pclFileParser_->SetReturnUnknownBytes(bReturnUnknownBytes_);
-   }
+    if (pclFileParser_) { pclFileParser_->SetReturnUnknownBytes(bReturnUnknownBytes_); }
 }
 
 bool novatel_fileparser_get_return_unknownbytes(FileParser* pclFileParser_)
 {
-   return pclFileParser_ ? pclFileParser_->GetReturnUnknownBytes() : false;
+    return pclFileParser_ ? pclFileParser_->GetReturnUnknownBytes() : false;
 }
 
 void novatel_fileparser_set_encodeformat(FileParser* pclFileParser_, ENCODEFORMAT eEncodeFormat_)
 {
-   if (pclFileParser_)
-   {
-      return pclFileParser_->SetEncodeFormat(eEncodeFormat_);
-   }
+    if (pclFileParser_) { return pclFileParser_->SetEncodeFormat(eEncodeFormat_); }
 }
 
 ENCODEFORMAT novatel_fileparser_get_encodeformat(FileParser* pclFileParser_)
 {
-   return pclFileParser_ ? pclFileParser_->GetEncodeFormat() : ENCODEFORMAT::UNSPECIFIED;
+    return pclFileParser_ ? pclFileParser_->GetEncodeFormat() : ENCODEFORMAT::UNSPECIFIED;
 }
 
-unsigned char* novatel_fileparser_get_buffer(FileParser* pclFileParser_)
-{
-   return pclFileParser_ ? pclFileParser_->GetInternalBuffer() : nullptr;
-}
+unsigned char* novatel_fileparser_get_buffer(FileParser* pclFileParser_) { return pclFileParser_ ? pclFileParser_->GetInternalBuffer() : nullptr; }
 
-Filter* novatel_fileparser_get_filter(FileParser* pclFileParser_)
-{
-   return pclFileParser_ ? pclFileParser_->GetFilter().get() : nullptr;
-}
+Filter* novatel_fileparser_get_filter(FileParser* pclFileParser_) { return pclFileParser_ ? pclFileParser_->GetFilter().get() : nullptr; }
 
 void novatel_fileparser_set_filter(FileParser* pclFileParser_, Filter* pclFilter_)
 {
-   if (pclFileParser_ && pclFilter_)
-   {
-      pclFileParser_->SetFilter(Filter::Ptr(pclFilter_, [](auto){}));
-   }
+    if (pclFileParser_ && pclFilter_)
+    {
+        pclFileParser_->SetFilter(Filter::Ptr(pclFilter_, [](auto) {}));
+    }
 }
 
 bool novatel_fileparser_set_stream(FileParser* pclFileParser_, InputFileStream* pclIFS_)
 {
-   return pclFileParser_ && pclIFS_ ? pclFileParser_->SetStream(pclIFS_) : false;
+    return pclFileParser_ && pclIFS_ ? pclFileParser_->SetStream(pclIFS_) : false;
 }
 
-uint32_t novatel_fileparser_get_percent_read(FileParser* pclFileParser_)
-{
-   return pclFileParser_ ? pclFileParser_->GetPercentRead() : UINT_MAX;
-}
+uint32_t novatel_fileparser_get_percent_read(FileParser* pclFileParser_) { return pclFileParser_ ? pclFileParser_->GetPercentRead() : UINT_MAX; }
 
 STATUS novatel_fileparser_read(FileParser* pclFileParser_, MessageDataStruct* pstMessageData_, MetaDataStruct* pstMetaData_)
 {
-   return pclFileParser_ && pstMessageData_ && pstMetaData_ ? pclFileParser_->Read(*pstMessageData_, *pstMetaData_) : STATUS::NULL_PROVIDED;
+    return pclFileParser_ && pstMessageData_ && pstMetaData_ ? pclFileParser_->Read(*pstMessageData_, *pstMetaData_) : STATUS::NULL_PROVIDED;
 }
 
-bool novatel_fileparser_reset(FileParser* pclFileParser_)
-{
-   return pclFileParser_ ? pclFileParser_->Reset() : false;
-}
+bool novatel_fileparser_reset(FileParser* pclFileParser_) { return pclFileParser_ ? pclFileParser_->Reset() : false; }
 
 uint32_t novatel_fileparser_flush(FileParser* pclFileParser_, unsigned char* pucBuffer_, uint32_t uiBufferSize_)
 {
-   return pclFileParser_ && pucBuffer_ ? pclFileParser_->Flush(pucBuffer_, uiBufferSize_) : UINT_MAX;
+    return pclFileParser_ && pucBuffer_ ? pclFileParser_->Flush(pucBuffer_, uiBufferSize_) : UINT_MAX;
 }

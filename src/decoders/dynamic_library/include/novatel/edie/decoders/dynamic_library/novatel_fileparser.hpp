@@ -38,41 +38,47 @@
 //-----------------------------------------------------------------------
 #include "decoders_export.h"
 #include "novatel/edie/decoders/common.hpp"
-#include "novatel/edie/decoders/filter.hpp"
 #include "novatel/edie/decoders/fileparser.hpp"
+#include "novatel/edie/decoders/filter.hpp"
 #include "novatel/edie/stream_interface/inputfilestream.hpp"
 
-extern "C" {
-   // Construct/Destruct
-   DECODERS_EXPORT novatel::edie::oem::FileParser* novatel_fileparser_init(JsonReader* pclJsonDb_);
-   DECODERS_EXPORT void novatel_fileparser_delete(novatel::edie::oem::FileParser* pclFileParser_);
+extern "C"
+{
+    // Construct/Destruct
+    DECODERS_EXPORT novatel::edie::oem::FileParser* novatel_fileparser_init(JsonReader* pclJsonDb_);
+    DECODERS_EXPORT void novatel_fileparser_delete(novatel::edie::oem::FileParser* pclFileParser_);
 
-   // Config
-   DECODERS_EXPORT void novatel_fileparser_load_json_db(novatel::edie::oem::FileParser* pclFileParser_, JsonReader* pclJsonDb_);
+    // Config
+    DECODERS_EXPORT void novatel_fileparser_load_json_db(novatel::edie::oem::FileParser* pclFileParser_, JsonReader* pclJsonDb_);
 
-   DECODERS_EXPORT void novatel_fileparser_set_ignore_abbrev_ascii_responses(novatel::edie::oem::FileParser* pclFileParser_, bool bIgnoreAbbrevASCIIResponsesCmp_);
-   DECODERS_EXPORT bool novatel_fileparser_get_ignore_abbrev_ascii_responses(novatel::edie::oem::FileParser* pclFileParser_);
-   DECODERS_EXPORT void novatel_fileparser_set_decompress_rangecmp(novatel::edie::oem::FileParser* pclFileParser_, bool bDecompressRangeCmp_);
-   DECODERS_EXPORT bool novatel_fileparser_get_decompress_rangecmp(novatel::edie::oem::FileParser* pclFileParser_);
-   DECODERS_EXPORT void novatel_fileparser_set_return_unknownbytes(novatel::edie::oem::FileParser* pclFileParser_, bool bReturnUnknownBytes_);
-   DECODERS_EXPORT bool novatel_fileparser_get_return_unknownbytes(novatel::edie::oem::FileParser* pclFileParser_);
-   DECODERS_EXPORT void novatel_fileparser_set_encodeformat(novatel::edie::oem::FileParser* pclFileParser_, novatel::edie::ENCODEFORMAT eEncodeFormat_);
-   DECODERS_EXPORT novatel::edie::ENCODEFORMAT novatel_fileparser_get_encodeformat(novatel::edie::oem::FileParser* pclFileParser_);
+    DECODERS_EXPORT void novatel_fileparser_set_ignore_abbrev_ascii_responses(novatel::edie::oem::FileParser* pclFileParser_,
+                                                                              bool bIgnoreAbbrevASCIIResponsesCmp_);
+    DECODERS_EXPORT bool novatel_fileparser_get_ignore_abbrev_ascii_responses(novatel::edie::oem::FileParser* pclFileParser_);
+    DECODERS_EXPORT void novatel_fileparser_set_decompress_rangecmp(novatel::edie::oem::FileParser* pclFileParser_, bool bDecompressRangeCmp_);
+    DECODERS_EXPORT bool novatel_fileparser_get_decompress_rangecmp(novatel::edie::oem::FileParser* pclFileParser_);
+    DECODERS_EXPORT void novatel_fileparser_set_return_unknownbytes(novatel::edie::oem::FileParser* pclFileParser_, bool bReturnUnknownBytes_);
+    DECODERS_EXPORT bool novatel_fileparser_get_return_unknownbytes(novatel::edie::oem::FileParser* pclFileParser_);
+    DECODERS_EXPORT void novatel_fileparser_set_encodeformat(novatel::edie::oem::FileParser* pclFileParser_,
+                                                             novatel::edie::ENCODEFORMAT eEncodeFormat_);
+    DECODERS_EXPORT novatel::edie::ENCODEFORMAT novatel_fileparser_get_encodeformat(novatel::edie::oem::FileParser* pclFileParser_);
 
-   DECODERS_EXPORT novatel::edie::oem::Filter* novatel_fileparser_get_filter(novatel::edie::oem::FileParser* pclFileParser_);
-   DECODERS_EXPORT void novatel_fileparser_set_filter(novatel::edie::oem::FileParser* pclFileParser_, novatel::edie::oem::Filter* pclFilter_);
+    DECODERS_EXPORT novatel::edie::oem::Filter* novatel_fileparser_get_filter(novatel::edie::oem::FileParser* pclFileParser_);
+    DECODERS_EXPORT void novatel_fileparser_set_filter(novatel::edie::oem::FileParser* pclFileParser_, novatel::edie::oem::Filter* pclFilter_);
 
-   DECODERS_EXPORT unsigned char* novatel_fileparser_get_buffer(novatel::edie::oem::FileParser* pclFileParser_);
+    DECODERS_EXPORT unsigned char* novatel_fileparser_get_buffer(novatel::edie::oem::FileParser* pclFileParser_);
 
-   // Stream, R/W
-   DECODERS_EXPORT bool novatel_fileparser_set_stream(novatel::edie::oem::FileParser* pclFileParser_, InputFileStream* pclIFS_);
-   DECODERS_EXPORT uint32_t novatel_fileparser_get_percent_read(novatel::edie::oem::FileParser* pclFileParser_);
+    // Stream, R/W
+    DECODERS_EXPORT bool novatel_fileparser_set_stream(novatel::edie::oem::FileParser* pclFileParser_, InputFileStream* pclIFS_);
+    DECODERS_EXPORT uint32_t novatel_fileparser_get_percent_read(novatel::edie::oem::FileParser* pclFileParser_);
 
-   // R/W
-   DECODERS_EXPORT [[nodiscard]] novatel::edie::STATUS novatel_fileparser_read(novatel::edie::oem::FileParser* pclFileParser_, novatel::edie::oem::MessageDataStruct* pstMessageData_, novatel::edie::oem::MetaDataStruct* pstMetaData_);
-   DECODERS_EXPORT bool novatel_fileparser_reset(novatel::edie::oem::FileParser* pclFileParser_);
+    // R/W
+    DECODERS_EXPORT [[nodiscard]] novatel::edie::STATUS novatel_fileparser_read(novatel::edie::oem::FileParser* pclFileParser_,
+                                                                                novatel::edie::oem::MessageDataStruct* pstMessageData_,
+                                                                                novatel::edie::oem::MetaDataStruct* pstMetaData_);
+    DECODERS_EXPORT bool novatel_fileparser_reset(novatel::edie::oem::FileParser* pclFileParser_);
 
-   DECODERS_EXPORT uint32_t novatel_fileparser_flush(novatel::edie::oem::FileParser* pclFileParser_, unsigned char* pucBuffer_, uint32_t uiBufferSize_);
+    DECODERS_EXPORT uint32_t novatel_fileparser_flush(novatel::edie::oem::FileParser* pclFileParser_, unsigned char* pucBuffer_,
+                                                      uint32_t uiBufferSize_);
 }
 
-#endif //DYNAMIC_LIBRARY_NOVATEL_FILEPARSER_HPP
+#endif // DYNAMIC_LIBRARY_NOVATEL_FILEPARSER_HPP

@@ -42,14 +42,14 @@
 #include "novatel/edie/common/logger/logger.hpp"
 #include "novatel/edie/decoders/common.hpp"
 
-#include <nlohmann/json.hpp>
-#include <variant>
-#include <string>
-#include <sstream>
 #include <cassert>
-#include <iostream>
-#include <fstream>
 #include <cstdarg>
+#include <fstream>
+#include <iostream>
+#include <nlohmann/json.hpp>
+#include <sstream>
+#include <string>
+#include <variant>
 
 namespace novatel::edie::oem {
 
@@ -59,84 +59,79 @@ namespace novatel::edie::oem {
 //============================================================================
 class HeaderDecoder
 {
-private:
-   std::shared_ptr<spdlog::logger> pclMyLogger;
-   JsonReader::Ptr pclMyMsgDb{ nullptr };
-   EnumDefinition::Ptr vMyRespDefns{ nullptr };
-   EnumDefinition::Ptr vMyCommandDefns{ nullptr };
-   EnumDefinition::Ptr vMyPortAddrDefns{ nullptr };
-   EnumDefinition::Ptr vMyGPSTimeStatusDefns{ nullptr };
+  private:
+    std::shared_ptr<spdlog::logger> pclMyLogger;
+    JsonReader::Ptr pclMyMsgDb{nullptr};
+    EnumDefinition::Ptr vMyRespDefns{nullptr};
+    EnumDefinition::Ptr vMyCommandDefns{nullptr};
+    EnumDefinition::Ptr vMyPortAddrDefns{nullptr};
+    EnumDefinition::Ptr vMyGPSTimeStatusDefns{nullptr};
 
-   char* pucTempBufConvert{ nullptr };
-   char* pucBeginningConvert{ nullptr };
-   uint32_t uiMyBufferBytesRemaining;
-   uint32_t uiMyAbbrevAsciiIndentationLevel;
-   MessageDefinition stMyRespDef;
+    char* pucTempBufConvert{nullptr};
+    char* pucBeginningConvert{nullptr};
+    uint32_t uiMyBufferBytesRemaining;
+    uint32_t uiMyAbbrevAsciiIndentationLevel;
+    MessageDefinition stMyRespDef;
 
-   uint32_t MsgNameToMsgId(std::string sMsgName_);
-   std::string MsgIdToMsgName(const uint32_t uiMessageID_);
+    uint32_t MsgNameToMsgId(std::string sMsgName_);
+    std::string MsgIdToMsgName(const uint32_t uiMessageID_);
 
-   // Decode novatel headers
-   template <ASCIIHEADER     eField> [[nodiscard]] bool DecodeAsciiHeaderField (IntermediateHeader& stIntermediateHeader_, char** ppcLogBuf_);
-   template <ASCIIHEADER... eFields> [[nodiscard]] bool DecodeAsciiHeaderFields(IntermediateHeader& stIntermediateHeader_, char** ppcLogBuf_);
-   void DecodeJsonHeader(json clJsonHeader_, IntermediateHeader& stIntermediateHeader_);
+    // Decode novatel headers
+    template <ASCIIHEADER eField> [[nodiscard]] bool DecodeAsciiHeaderField(IntermediateHeader& stIntermediateHeader_, char** ppcLogBuf_);
+    template <ASCIIHEADER... eFields> [[nodiscard]] bool DecodeAsciiHeaderFields(IntermediateHeader& stIntermediateHeader_, char** ppcLogBuf_);
+    void DecodeJsonHeader(json clJsonHeader_, IntermediateHeader& stIntermediateHeader_);
 
-public:
-   //----------------------------------------------------------------------------
-   //! \brief A constructor for the HeaderDecoder class.
-   //
-   //! \param[in] pclJsonDb_ A pointer to a JsonReader object. Defaults to nullptr.
-   //----------------------------------------------------------------------------
-   HeaderDecoder(JsonReader::Ptr pclJsonDb_ = nullptr);
+  public:
+    //----------------------------------------------------------------------------
+    //! \brief A constructor for the HeaderDecoder class.
+    //
+    //! \param[in] pclJsonDb_ A pointer to a JsonReader object. Defaults to nullptr.
+    //----------------------------------------------------------------------------
+    HeaderDecoder(JsonReader::Ptr pclJsonDb_ = nullptr);
 
-   //----------------------------------------------------------------------------
-   //! \brief Load a JsonReader object.
-   //
-   //! \param[in] pclJsonDb_ A pointer to a JsonReader object.
-   //----------------------------------------------------------------------------
-   void
-   LoadJsonDb(JsonReader::Ptr pclJsonDb_);
+    //----------------------------------------------------------------------------
+    //! \brief Load a JsonReader object.
+    //
+    //! \param[in] pclJsonDb_ A pointer to a JsonReader object.
+    //----------------------------------------------------------------------------
+    void LoadJsonDb(JsonReader::Ptr pclJsonDb_);
 
-   //----------------------------------------------------------------------------
-   //! \brief Get the internal logger.
-   //
-   //! \return A shared_ptr to the spdlog::logger.
-   //----------------------------------------------------------------------------
-   std::shared_ptr<spdlog::logger>
-   GetLogger();
+    //----------------------------------------------------------------------------
+    //! \brief Get the internal logger.
+    //
+    //! \return A shared_ptr to the spdlog::logger.
+    //----------------------------------------------------------------------------
+    std::shared_ptr<spdlog::logger> GetLogger();
 
-   //----------------------------------------------------------------------------
-   //! \brief Set the level of detail produced by the internal logger.
-   //
-   //! \param[in] eLevel_ The logging level to enable.
-   //----------------------------------------------------------------------------
-   void
-   SetLoggerLevel(spdlog::level::level_enum eLevel_);
+    //----------------------------------------------------------------------------
+    //! \brief Set the level of detail produced by the internal logger.
+    //
+    //! \param[in] eLevel_ The logging level to enable.
+    //----------------------------------------------------------------------------
+    void SetLoggerLevel(spdlog::level::level_enum eLevel_);
 
-   //----------------------------------------------------------------------------
-   //! \brief Shutdown the internal logger.
-   //----------------------------------------------------------------------------
-   void
-   ShutdownLogger();
+    //----------------------------------------------------------------------------
+    //! \brief Shutdown the internal logger.
+    //----------------------------------------------------------------------------
+    void ShutdownLogger();
 
-   //----------------------------------------------------------------------------
-   //! \brief Decode an OEM message header from the provided frame.
-   //
-   //! \param[in] pucHeader_ A pointer to an OEM message header.
-   //! \param[out] stIntermediateHeader_ The IntermediateHeader to be populated.
-   //! \param[in, out] stMetaData_ MetaDataStruct to provide information about
-   //! the frame and be fully populated to help describe the decoded log.
-   //
-   //! \return An error code describing the result of decoding.
-   //!   SUCCESS: The operation was successful.
-   //!   NULL_PROVIDED: pucHeader_ is a null pointer.
-   //!   NO_DATABASE: No database was ever loaded into this component.
-   //!   FAILURE: Failed to decode a header field.
-   //!   UNSUPPORTED: Attempted to decode an unsupported format.
-   //!   UNKNOWN: The header format provided is not known.
-   //----------------------------------------------------------------------------
-   [[nodiscard]] STATUS
-   Decode(unsigned char* pucHeader_, IntermediateHeader& stIntermediateHeader_, MetaDataStruct& stMetaData_);
+    //----------------------------------------------------------------------------
+    //! \brief Decode an OEM message header from the provided frame.
+    //
+    //! \param[in] pucHeader_ A pointer to an OEM message header.
+    //! \param[out] stIntermediateHeader_ The IntermediateHeader to be populated.
+    //! \param[in, out] stMetaData_ MetaDataStruct to provide information about
+    //! the frame and be fully populated to help describe the decoded log.
+    //
+    //! \return An error code describing the result of decoding.
+    //!   SUCCESS: The operation was successful.
+    //!   NULL_PROVIDED: pucHeader_ is a null pointer.
+    //!   NO_DATABASE: No database was ever loaded into this component.
+    //!   FAILURE: Failed to decode a header field.
+    //!   UNSUPPORTED: Attempted to decode an unsupported format.
+    //!   UNKNOWN: The header format provided is not known.
+    //----------------------------------------------------------------------------
+    [[nodiscard]] STATUS Decode(unsigned char* pucHeader_, IntermediateHeader& stIntermediateHeader_, MetaDataStruct& stMetaData_);
 };
-}
+} // namespace novatel::edie::oem
 #endif

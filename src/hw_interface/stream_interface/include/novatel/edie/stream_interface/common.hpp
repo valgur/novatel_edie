@@ -46,10 +46,10 @@
  */
 typedef enum
 {
-   SPLIT_SIZE,   /*!< Split based on Size of log */
-   SPLIT_LOG,    /*!< Split based on Log name */
-   SPLIT_TIME,   /*!< Split based on time of log */
-   SPLIT_NONE    /*!< Do not split */
+    SPLIT_SIZE, /*!< Split based on Size of log */
+    SPLIT_LOG,  /*!< Split based on Log name */
+    SPLIT_TIME, /*!< Split based on time of log */
+    SPLIT_NONE  /*!< Do not split */
 } FileSplitMethodEnum;
 
 /*! A Structure
@@ -58,17 +58,17 @@ typedef enum
  */
 struct ReadDataStructure
 {
-   uint32_t uiDataSize; /*!< Size of decoded log */
-   char* cData;     /*!< Memory pointer*/
+    uint32_t uiDataSize; /*!< Size of decoded log */
+    char* cData;         /*!< Memory pointer*/
 
-   /*! Default Initializer */
-   ReadDataStructure()
-   {
-      uiDataSize = 0;
-      cData = NULL;
-   }
+    /*! Default Initializer */
+    ReadDataStructure()
+    {
+        uiDataSize = 0;
+        cData = NULL;
+    }
 
-   ReadDataStructure(uint32_t uiDataSize, char * cData) : uiDataSize(uiDataSize), cData(cData) {}
+    ReadDataStructure(uint32_t uiDataSize, char* cData) : uiDataSize(uiDataSize), cData(cData) {}
 };
 
 /*! A Structure
@@ -77,13 +77,13 @@ struct ReadDataStructure
  */
 struct StreamReadStatus
 {
-   uint32_t uiPercentStreamRead{ 0 };  /*!< % of amount of data read from file */
-   uint32_t uiCurrentStreamRead{ 0 };  /*!< Number of bytes read for one Read */
-   uint64_t  ullStreamLength{ 0 }; /*!< Length of the bytes of decoded log */
-   bool bEOS{ false };             /*!< IS EOF of file reached or not? */
+    uint32_t uiPercentStreamRead{0}; /*!< % of amount of data read from file */
+    uint32_t uiCurrentStreamRead{0}; /*!< Number of bytes read for one Read */
+    uint64_t ullStreamLength{0};     /*!< Length of the bytes of decoded log */
+    bool bEOS{false};                /*!< IS EOF of file reached or not? */
 
-   /*! Default Initializer */
-   constexpr StreamReadStatus() = default;
+    /*! Default Initializer */
+    constexpr StreamReadStatus() = default;
 };
 
 #endif

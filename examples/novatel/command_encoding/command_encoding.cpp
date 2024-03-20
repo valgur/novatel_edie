@@ -31,9 +31,9 @@
 //-----------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------
+#include <chrono>
 #include <cstdio>
 #include <cstdlib>
-#include <chrono>
 #include <filesystem>
 
 #include <novatel/edie/decoders/commander.hpp>
@@ -43,7 +43,7 @@
 using namespace novatel::edie;
 using namespace novatel::edie::oem;
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     auto logger = Logger().RegisterLogger("CommandEncoder");
     logger->set_level(spdlog::level::debug);
@@ -87,8 +87,9 @@ int main(int argc, char *argv[])
     uint32_t uiEncodeBufferLength = MAX_ASCII_MESSAGE_LENGTH;
 
     logger->info("Coverting \"{}\" to {}", argv[3], strEncodeFormat);
-    STATUS eCommanderStatus = clCommander.Encode(argv[3], static_cast<uint32_t>(strlen(argv[3])), pcEncodedMessageBuffer, uiEncodeBufferLength, eEncodeFormat);
-    if(eCommanderStatus != STATUS::SUCCESS)
+    STATUS eCommanderStatus =
+        clCommander.Encode(argv[3], static_cast<uint32_t>(strlen(argv[3])), pcEncodedMessageBuffer, uiEncodeBufferLength, eEncodeFormat);
+    if (eCommanderStatus != STATUS::SUCCESS)
     {
         logger->info("Failed to formulate a command ({})", static_cast<uint32_t>(eCommanderStatus));
         return -1;

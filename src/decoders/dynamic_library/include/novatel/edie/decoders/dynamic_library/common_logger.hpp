@@ -40,12 +40,13 @@
 
 #include <string>
 
-extern "C" {
-   DECODERS_EXPORT void common_logger_setup();
-   DECODERS_EXPORT void common_logger_setup_from_file(char* pcLoggerConfigPath_);
-   DECODERS_EXPORT bool common_logger_set_logger_level(int32_t iLogLevel_);
-   DECODERS_EXPORT void common_logger_shutdown_logger();
-   DECODERS_EXPORT bool common_logger_log(int32_t iLogLevel_, char* pucMessage_);
+extern "C"
+{
+    DECODERS_EXPORT void common_logger_setup();
+    DECODERS_EXPORT void common_logger_setup_from_file(char* pcLoggerConfigPath_);
+    DECODERS_EXPORT bool common_logger_set_logger_level(int32_t iLogLevel_);
+    DECODERS_EXPORT void common_logger_shutdown_logger();
+    DECODERS_EXPORT bool common_logger_log(int32_t iLogLevel_, char* pucMessage_);
 }
 
-#endif //DYNAMIC_LIBRARY_LOGGER_HPP
+#endif // DYNAMIC_LIBRARY_LOGGER_HPP
