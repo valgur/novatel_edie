@@ -50,10 +50,10 @@ class NovatelEdieConan(ConanFile):
         cmake_layout(self)
 
     def requirements(self):
-        self.requires("nlohmann_json/3.11.2", transitive_headers=True, transitive_libs=True)
-        self.requires("spdlog/1.12.0", transitive_headers=True, transitive_libs=True)
+        self.requires("nlohmann_json/3.11.3", transitive_headers=True, transitive_libs=True)
+        self.requires("spdlog/1.13.0", transitive_headers=True, transitive_libs=True)
         self.requires("gegles-spdlog_setup/1.1.0", transitive_headers=True, transitive_libs=True)
-        self.requires("fmt/10.1.1", override=True)
+        self.requires("fmt/10.2.1", override=True)
 
     def validate(self):
         if self.settings.compiler.cppstd:
@@ -96,6 +96,7 @@ class NovatelEdieConan(ConanFile):
     def package_info(self):
         self.cpp_info.set_property("cmake_file_name", "EDIE")
         self.cpp_info.set_property("cmake_target_name", "EDIE::EDIE")
+        self.cpp_info.set_property("nosoname", True)
         self.cpp_info.resdirs = ["res"]
         self.cpp_info.libs = ["novatel", "stream_interface"]
         if self.options.build_dynamic_libs:
