@@ -22,29 +22,25 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <vector>
 #include <filesystem>
-#include <string>
 #include <iostream>
+#include <string>
+#include <vector>
 
 #include "gtest/gtest.h"
 #include "paths.hpp"
 
 const std::string* TEST_RESOURCE_PATH;
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv)
+{
     ::testing::InitGoogleTest(&argc, argv);
 
-    if (argc != 2)
-    {
-       throw::std::runtime_error("1 arguments required.\nUsage: <resource path>");
-    }
+    if (argc != 2) { throw ::std::runtime_error("1 arguments required.\nUsage: <resource path>"); }
 
     const std::vector<std::string> args(argv + 1, argv + argc);
 
-    if (!std::filesystem::is_directory(args[0])) {
-       throw::std::runtime_error("\"" + args[0] + "\" does not exist");
-    }
+    if (!std::filesystem::is_directory(args[0])) { throw ::std::runtime_error("\"" + args[0] + "\" does not exist"); }
 
     TEST_RESOURCE_PATH = &args[0];
 

@@ -35,21 +35,21 @@
 
 JsonReader* common_jsonreader_init(char* pcJsonDBFilepath_)
 {
-   if (pcJsonDBFilepath_)
-   {
-      JsonReader* pclJsonDb = new JsonReader();
-      pclJsonDb->LoadFile(pcJsonDBFilepath_);
-      return pclJsonDb;
-   }
+    if (pcJsonDBFilepath_)
+    {
+        JsonReader* pclJsonDb = new JsonReader();
+        pclJsonDb->LoadFile(pcJsonDBFilepath_);
+        return pclJsonDb;
+    }
 
-   return nullptr;
+    return nullptr;
 }
 
 void common_jsonreader_delete(JsonReader* pclJsonDb_)
 {
-   if (pclJsonDb_)
-   {
-      delete pclJsonDb_;
-      pclJsonDb_ = nullptr;
-   }
+    if (pclJsonDb_)
+    {
+        delete pclJsonDb_;
+        pclJsonDb_ = nullptr;
+    }
 }

@@ -36,13 +36,13 @@
 //-----------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------
-#include "decoders_export.h"
 #include "decoders/common/api/jsonreader.hpp"
+#include "decoders_export.h"
 
 extern "C"
 {
-   DECODERS_EXPORT JsonReader* common_jsonreader_init(char* pcJsonDBFilepath_);
-   DECODERS_EXPORT void common_jsonreader_delete(JsonReader* pclJsonDb_);
+    DECODERS_EXPORT JsonReader* common_jsonreader_init(char* pcJsonDBFilepath_);
+    DECODERS_EXPORT void common_jsonreader_delete(JsonReader* pclJsonDb_);
 }
 
 #endif // DYNAMIC_LIBRARY_COMMON_JSONREADER_HPP

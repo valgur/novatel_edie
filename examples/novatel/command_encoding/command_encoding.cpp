@@ -31,9 +31,11 @@
 //-----------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------
+#include <chrono>
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <chrono>
+
 #include "src/decoders/novatel/api/commander.hpp"
 #include "src/hw_interface/stream_interface/api/outputfilestream.hpp"
 #include "src/version.h"
@@ -41,13 +43,13 @@
 using namespace novatel::edie;
 using namespace novatel::edie::oem;
 
-inline bool file_exists(const std::string &name)
+inline bool file_exists(const std::string& name)
 {
-   struct stat buffer;
-   return (stat(name.c_str(), &buffer) == 0);
+    struct stat buffer;
+    return (stat(name.c_str(), &buffer) == 0);
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     auto logger = Logger().RegisterLogger("CommandEncoder");
     logger->set_level(spdlog::level::debug);
@@ -91,8 +93,9 @@ int main(int argc, char *argv[])
     uint32_t uiEncodeBufferLength = MAX_ASCII_MESSAGE_LENGTH;
 
     logger->info("Coverting \"{}\" to {}", argv[3], strEncodeFormat);
-    STATUS eCommanderStatus = clCommander.Encode(argv[3], static_cast<uint32_t>(strlen(argv[3])), pcEncodedMessageBuffer, uiEncodeBufferLength, eEncodeFormat);
-    if(eCommanderStatus != STATUS::SUCCESS)
+    STATUS eCommanderStatus =
+        clCommander.Encode(argv[3], static_cast<uint32_t>(strlen(argv[3])), pcEncodedMessageBuffer, uiEncodeBufferLength, eEncodeFormat);
+    if (eCommanderStatus != STATUS::SUCCESS)
     {
         logger->info("Failed to formulate a command ({})", static_cast<uint32_t>(eCommanderStatus));
         return -1;
