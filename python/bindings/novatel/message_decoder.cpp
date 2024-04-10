@@ -18,7 +18,8 @@ struct PyIntermediateMessage
     {
         nb::dict values;
         const auto& message = nb::cast<novatel::edie::IntermediateMessage&>(self);
-        for (const auto& field : message) { values[nb::cast(field.fieldDef->name)] = &field.fieldValue; }
+        // FIXME: should store a pointer instead?
+        for (const auto& field : message) { values[nb::cast(field.fieldDef->name)] = field.fieldValue; }
         return values;
     }
 
