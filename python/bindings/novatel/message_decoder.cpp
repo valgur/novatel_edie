@@ -61,7 +61,7 @@ std::string PyIntermediateMessage::repr()
     return repr.str();
 }
 
-class MessageDecoderWrapper : public novatel::edie::oem::MessageDecoder
+class MessageDecoderWrapper : public oem::MessageDecoder
 {
   public:
     [[nodiscard]] STATUS DecodeBinary_(const std::vector<BaseField*> MsgDefFields_, unsigned char** ppucLogBuf_,
@@ -88,7 +88,6 @@ void init_novatel_message_decoder(nb::module_& m)
         .def("__str__", &PyIntermediateMessage::repr);
 
     nb::class_<novatel::edie::FieldContainer>(m, "FieldContainer")
-        .def(nb::init<novatel::edie::FieldValueVariant, BaseField*>())
         .def_rw("value", &novatel::edie::FieldContainer::fieldValue)
         .def_rw("field_def", &novatel::edie::FieldContainer::fieldDef)
         .def("__repr__", [](const novatel::edie::FieldContainer& container) {
