@@ -26,11 +26,11 @@
 
 #include <chrono>
 
-#include "src/decoders/common/api/common.hpp"
-#include "src/decoders/novatel/api/rxconfig/rxconfig_handler.hpp"
-#include "src/hw_interface/stream_interface/api/inputfilestream.hpp"
-#include "src/hw_interface/stream_interface/api/outputfilestream.hpp"
-#include "src/version.h"
+#include <edie/decoders/common/common.hpp>
+#include <edie/decoders/novatel/rxconfig/rxconfig_handler.hpp>
+#include <edie/hw_interface/stream_interface/inputfilestream.hpp>
+#include <edie/hw_interface/stream_interface/outputfilestream.hpp>
+#include <edie/version.h>
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;

@@ -26,12 +26,13 @@
 
 #include <chrono>
 #include <filesystem>
+
 #include <gtest/gtest.h>
 
-#include "decoders/common/api/common.hpp"
-#include "decoders/common/api/json_reader.hpp"
-#include "decoders/common/api/message_decoder.hpp"
-#include "decoders/novatel/api/rxconfig/rxconfig_handler.hpp"
+#include "edie/decoders/common/common.hpp"
+#include "edie/decoders/common/json_reader.hpp"
+#include "edie/decoders/common/message_decoder.hpp"
+#include "edie/decoders/novatel/rxconfig/rxconfig_handler.hpp"
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;

@@ -26,12 +26,12 @@
 
 #include <chrono>
 
-#include "src/decoders/dynamic_library/api/common_json_reader.hpp"
-#include "src/decoders/dynamic_library/api/novatel_filter.hpp"
-#include "src/decoders/dynamic_library/api/novatel_parser.hpp"
-#include "src/hw_interface/stream_interface/api/inputfilestream.hpp"
-#include "src/hw_interface/stream_interface/api/outputfilestream.hpp"
-#include "src/version.h"
+#include <edie/decoders/dynamic_library/common_json_reader.hpp>
+#include <edie/decoders/dynamic_library/novatel_filter.hpp>
+#include <edie/decoders/dynamic_library/novatel_parser.hpp>
+#include <edie/hw_interface/stream_interface/inputfilestream.hpp>
+#include <edie/hw_interface/stream_interface/outputfilestream.hpp>
+#include <edie/version.h>
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;

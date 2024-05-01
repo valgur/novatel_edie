@@ -25,10 +25,11 @@
 // ===============================================================================
 
 #include <filesystem>
-#include <gtest/gtest.h>
 #include <string>
 
-#include "hw_interface/stream_interface/api/inputfilestream.hpp"
+#include <gtest/gtest.h>
+
+#include "edie/hw_interface/stream_interface/inputfilestream.hpp"
 
 #ifndef RESOURCE_DIR
 #define RESOURCE_DIR

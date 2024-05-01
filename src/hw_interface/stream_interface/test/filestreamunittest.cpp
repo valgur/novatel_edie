@@ -25,11 +25,12 @@
 // ===============================================================================
 
 #include <filesystem>
-#include <gtest/gtest.h>
 #include <string>
 
-#include "decoders/common/api/nexcept.h"
-#include "hw_interface/stream_interface/api/filestream.hpp"
+#include <gtest/gtest.h>
+
+#include "edie/decoders/common/nexcept.h"
+#include "edie/hw_interface/stream_interface/filestream.hpp"
 
 #ifndef RESOURCE_DIR
 #define RESOURCE_DIR

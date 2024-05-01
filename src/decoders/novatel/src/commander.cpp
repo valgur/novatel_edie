@@ -24,7 +24,7 @@
 // ! \file commander.cpp
 // ===============================================================================
 
-#include "decoders/novatel/api/commander.hpp"
+#include "edie/decoders/novatel/commander.hpp"
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;

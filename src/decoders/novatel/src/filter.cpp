@@ -24,7 +24,7 @@
 // ! \file filter.cpp
 // ===============================================================================
 
-#include "decoders/novatel/api/filter.hpp"
+#include "edie/decoders/novatel/filter.hpp"
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;

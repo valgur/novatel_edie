@@ -25,10 +25,11 @@
 // ===============================================================================
 
 #include <filesystem>
+
 #include <gtest/gtest.h>
 
-#include "decoders/common/api/common.hpp"
-#include "decoders/common/api/json_reader.hpp"
+#include "edie/decoders/common/common.hpp"
+#include "edie/decoders/common/json_reader.hpp"
 
 class JsonReaderTest : public testing::Test
 {

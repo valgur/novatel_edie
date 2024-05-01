@@ -24,11 +24,12 @@
 // ! \file circular_buffer.cpp
 // ===============================================================================
 
+#include "circular_buffer.hpp"
+
 #include <algorithm>
 #include <cassert>
 #include <cstring>
 
-#include "circular_buffer.hpp"
 #include "nexcept.h"
 
 //---------------------------------------------------------------------------

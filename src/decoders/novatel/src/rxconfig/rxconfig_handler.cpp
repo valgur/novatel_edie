@@ -24,7 +24,7 @@
 // ! \file rxconfig_handler.cpp
 // ===============================================================================
 
-#include "decoders/novatel/api/rxconfig/rxconfig_handler.hpp"
+#include "edie/decoders/novatel/rxconfig/rxconfig_handler.hpp"
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;

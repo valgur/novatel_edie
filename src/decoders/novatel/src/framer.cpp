@@ -24,8 +24,9 @@
 // ! \file framer.cpp
 // ===============================================================================
 
-#include "framer.hpp"
-#include "src/decoders/common/api/crc32.hpp"
+#include "edie/decoders/novatel/framer.hpp"
+
+#include "edie/decoders/common/crc32.hpp"
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;
@@ -256,6 +257,7 @@ Framer::GetFrame(unsigned char* pucFrameBuffer_, const uint32_t uiFrameBufferSiz
                     (!bMyPayloadOnly && uiFrameBufferSize_ < uiMyExpectedMessageLength))
                 {
                     stMetaData_.uiLength = bMyPayloadOnly ? uiMyExpectedPayloadLength : uiMyExpectedMessageLength;
+
                     uiMyByteCount = 0;
                     uiMyExpectedPayloadLength = 0;
                     uiMyExpectedMessageLength = 0;
@@ -297,6 +299,7 @@ Framer::GetFrame(unsigned char* pucFrameBuffer_, const uint32_t uiFrameBufferSiz
                     (!bMyPayloadOnly && uiFrameBufferSize_ < uiMyExpectedMessageLength))
                 {
                     stMetaData_.uiLength = bMyPayloadOnly ? uiMyExpectedPayloadLength : uiMyExpectedMessageLength;
+
                     uiMyByteCount = 0;
                     uiMyExpectedPayloadLength = 0;
                     uiMyExpectedMessageLength = 0;
@@ -327,7 +330,6 @@ Framer::GetFrame(unsigned char* pucFrameBuffer_, const uint32_t uiFrameBufferSiz
                         clMyCircularDataBuffer.Copy(pucFrameBuffer_, stMetaData_.uiLength);
                         clMyCircularDataBuffer.Discard(stMetaData_.uiLength);
                     }
-
                     uiMyByteCount = 0;
                     eMyFrameState = NovAtelFrameState::COMPLETE_MESSAGE;
                 }
@@ -507,6 +509,7 @@ Framer::GetFrame(unsigned char* pucFrameBuffer_, const uint32_t uiFrameBufferSiz
                 for (int32_t i = 0; i < OEM4_ASCII_CRC_LENGTH; i++) { acCrc[i] = clMyCircularDataBuffer[uiMyByteCount++]; }
                 uiMyByteCount += 2; // Add 2 for CRLF
                 stMetaData_.uiLength = uiMyByteCount;
+
                 acCrc[OEM4_ASCII_CRC_LENGTH] = '\0';
                 uiMyExpectedPayloadLength = 0;
 
@@ -575,6 +578,7 @@ Framer::GetFrame(unsigned char* pucFrameBuffer_, const uint32_t uiFrameBufferSiz
 
                     clMyCircularDataBuffer.Copy(pucFrameBuffer_, stMetaData_.uiLength);
                     clMyCircularDataBuffer.Discard(stMetaData_.uiLength);
+
                     uiMyByteCount = 0;
                     eMyFrameState = NovAtelFrameState::COMPLETE_MESSAGE;
                 }
@@ -607,8 +611,10 @@ Framer::GetFrame(unsigned char* pucFrameBuffer_, const uint32_t uiFrameBufferSiz
             if (uiMyJsonObjectOpenBraces == 0)
             {
                 stMetaData_.uiLength = uiMyByteCount;
+
                 clMyCircularDataBuffer.Copy(pucFrameBuffer_, stMetaData_.uiLength);
                 clMyCircularDataBuffer.Discard(stMetaData_.uiLength);
+
                 uiMyByteCount = 0;
                 uiMyExpectedPayloadLength = 0;
                 eMyFrameState = NovAtelFrameState::COMPLETE_MESSAGE;

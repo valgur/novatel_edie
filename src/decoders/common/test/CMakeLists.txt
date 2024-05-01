@@ -1,19 +1,17 @@
-cmake_minimum_required(VERSION 3.12.4)
-
-project(CommonTest VERSION 1.0.0)
-
-file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+file (GLOB SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/*.c*
+    ${CMAKE_CURRENT_SOURCE_DIR}/*.h*
+)
 set(COMMONTEST_SOURCES)
-LIST(APPEND COMMONTEST_SOURCES ${SOURCES})
+list(APPEND COMMONTEST_SOURCES ${SOURCES})
 
-add_executable(${PROJECT_NAME} ${COMMONTEST_SOURCES})
+find_package(GTest REQUIRED)
 
-add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME} ${CMAKE_SOURCE_DIR})
-set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER "decoders/tests")
+add_executable(CommonTest ${COMMONTEST_SOURCES})
+set_property(TARGET CommonTest PROPERTY FOLDER "edie/decoders/tests")
+target_link_libraries(CommonTest PUBLIC
+    edie::novatel
+    GTest::GTest GTest::Main
+)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../api)
-
-get_directory_property(DirDefs COMPILE_DEFINITIONS)
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../../)
-
-target_link_libraries(${PROJECT_NAME} PUBLIC common gtest)
+add_test(CommonTest COMMAND CommonTest)

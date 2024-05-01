@@ -24,15 +24,17 @@
 // ! \file dynamic_components.cpp
 // ===============================================================================
 
-#include "src/decoders/dynamic_library/api/common_json_reader.hpp"
-#include "src/decoders/dynamic_library/api/novatel_encoder.hpp"
-#include "src/decoders/dynamic_library/api/novatel_filter.hpp"
-#include "src/decoders/dynamic_library/api/novatel_framer.hpp"
-#include "src/decoders/dynamic_library/api/novatel_header_decoder.hpp"
-#include "src/decoders/dynamic_library/api/novatel_message_decoder.hpp"
-#include "src/hw_interface/stream_interface/api/inputfilestream.hpp"
-#include "src/hw_interface/stream_interface/api/outputfilestream.hpp"
-#include "src/version.h"
+#include <filesystem>
+
+#include <edie/decoders/dynamic_library/common_json_reader.hpp>
+#include <edie/decoders/dynamic_library/novatel_encoder.hpp>
+#include <edie/decoders/dynamic_library/novatel_filter.hpp>
+#include <edie/decoders/dynamic_library/novatel_framer.hpp>
+#include <edie/decoders/dynamic_library/novatel_header_decoder.hpp>
+#include <edie/decoders/dynamic_library/novatel_message_decoder.hpp>
+#include <edie/hw_interface/stream_interface/inputfilestream.hpp>
+#include <edie/hw_interface/stream_interface/outputfilestream.hpp>
+#include <edie/version.h>
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;

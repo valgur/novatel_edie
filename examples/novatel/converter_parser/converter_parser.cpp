@@ -26,10 +26,10 @@
 
 #include <chrono>
 
-#include "src/decoders/novatel/api/parser.hpp"
-#include "src/hw_interface/stream_interface/api/inputfilestream.hpp"
-#include "src/hw_interface/stream_interface/api/outputfilestream.hpp"
-#include "src/version.h"
+#include <edie/decoders/novatel/parser.hpp>
+#include <edie/hw_interface/stream_interface/inputfilestream.hpp>
+#include <edie/hw_interface/stream_interface/outputfilestream.hpp>
+#include <edie/version.h>
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;

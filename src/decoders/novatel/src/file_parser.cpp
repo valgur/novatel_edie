@@ -24,7 +24,7 @@
 // ! \file file_parser.cpp
 // ===============================================================================
 
-#include "decoders/novatel/api/file_parser.hpp"
+#include "edie/decoders/novatel/file_parser.hpp"
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;
@@ -176,7 +176,7 @@ bool FileParser::ReadStream()
         default: pclMyLogger->info("Encountered an error: {}\n", static_cast<int32_t>(eStatus)); return eStatus;
         }
     }
-}
+        }
 
 // -------------------------------------------------------------------------------------------------------
 bool FileParser::Reset()

@@ -27,7 +27,7 @@
 #include <string>
 
 #include "common_logger.hpp"
-#include "logger/logger.hpp"
+#include "edie/decoders/common/logger/logger.hpp"
 
 void CommonLoggerSetup() { Logger::InitLogger(); }
 

@@ -24,9 +24,9 @@
 // ! \file message_decoder.cpp
 // ===============================================================================
 
-#include <bitset>
+#include "edie/decoders/novatel/message_decoder.hpp"
 
-#include "decoders/novatel/api/message_decoder.hpp"
+#include <bitset>
 
 using namespace novatel::edie::oem;
 
@@ -140,3 +140,5 @@ void MessageDecoder::InitOemFieldMaps()
         vIntermediateFormat_.emplace_back(pclMessageDef ? CreateMsgId(pclMessageDef->logID, 0, 1, 0) : 0, pstMessageDataType_);
     };
 }
+
+

@@ -1,18 +1,17 @@
-cmake_minimum_required(VERSION 3.12.4)
-
-project(NovatelTest VERSION 1.0.0)
-
-file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.c* ${CMAKE_CURRENT_SOURCE_DIR}/*.h*)
+file (GLOB SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/*.c*
+    ${CMAKE_CURRENT_SOURCE_DIR}/*.h*
+)
 set(NOVATELTEST_SOURCES)
-LIST(APPEND NOVATELTEST_SOURCES ${SOURCES})
+list(APPEND NOVATELTEST_SOURCES ${SOURCES})
 
-add_executable(${PROJECT_NAME} ${NOVATELTEST_SOURCES})
+find_package(GTest REQUIRED)
 
-add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME} ${CMAKE_SOURCE_DIR})
-set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER "decoders/tests")
+add_executable(NovatelTest ${NOVATELTEST_SOURCES})
+set_property(TARGET NovatelTest PROPERTY FOLDER "edie/decoders/tests")
+target_link_libraries(NovatelTest PUBLIC
+    edie::novatel edie::stream_interface
+    GTest::GTest GTest::Main
+)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../api)
-
-get_directory_property(DirDefs COMPILE_DEFINITIONS)
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../../)
-target_link_libraries(${PROJECT_NAME} PUBLIC novatel common stream_interface gtest)
+add_test(NovatelTest COMMAND NovatelTest)

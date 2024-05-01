@@ -26,12 +26,12 @@
 
 #include <chrono>
 
-#include "src/decoders/dynamic_library/api/common_json_reader.hpp"
-#include "src/decoders/dynamic_library/api/novatel_file_parser.hpp"
-#include "src/decoders/dynamic_library/api/novatel_filter.hpp"
-#include "src/hw_interface/stream_interface/api/inputfilestream.hpp"
-#include "src/hw_interface/stream_interface/api/outputfilestream.hpp"
-#include "src/version.h"
+#include <edie/decoders/dynamic_library/common_json_reader.hpp>
+#include <edie/decoders/dynamic_library/novatel_file_parser.hpp>
+#include <edie/decoders/dynamic_library/novatel_filter.hpp>
+#include <edie/hw_interface/stream_interface/inputfilestream.hpp>
+#include <edie/hw_interface/stream_interface/outputfilestream.hpp>
+#include <edie/version.h>
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;
@@ -98,7 +98,7 @@ int main(int argc, char* argv[])
     auto tLoop = std::chrono::high_resolution_clock::now();
     uint32_t uiCounter = 0;
 
-    // Set up the EDIE components
+    // Setup the EDIE components
     FileParser* pclFileParser = NovatelFileParserInit(pclJsonDb);
     pclFileParser->SetEncodeFormat(eEncodeFormat);
 
@@ -119,7 +119,7 @@ int main(int argc, char* argv[])
     stReadData.cData = reinterpret_cast<char*>(acIfsReadBuffer);
     stReadData.uiDataSize = sizeof(acIfsReadBuffer);
 
-    // Set up file streams
+    // Setup filestreams
     InputFileStream clIfs(sInFilename.c_str());
     OutputFileStream clConvertedLogsOfs(sInFilename.append(".").append(sEncodeFormat).c_str());
     OutputFileStream clUnknownBytesOfs(sInFilename.append(".UNKNOWN").c_str());
@@ -164,6 +164,7 @@ int main(int argc, char* argv[])
     pclLogger->info("Converted {} logs in {}ms from {}", uiCompleteMessages,
                     std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - tStart).count(),
                     sInFilename.c_str());
+
     Logger::Shutdown();
     NovatelFileParserDelete(pclFileParser);
     return 0;

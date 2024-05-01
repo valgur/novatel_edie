@@ -24,8 +24,9 @@
 // ! \file version.cpp
 // ===============================================================================
 
-#include "version.hpp"
-#include "src/version.h" // this refers to the EDIE version.h
+#include "edie/decoders/dynamic_library/version.hpp"
+
+#include "edie/version.h"
 
 const char* Version() { return get_version(); }
 

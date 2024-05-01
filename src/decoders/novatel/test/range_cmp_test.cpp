@@ -26,7 +26,7 @@
 
 #include <gtest/gtest.h>
 
-#include "decoders/novatel/api/rangecmp/range_decompressor.hpp"
+#include "edie/decoders/novatel/rangecmp/range_decompressor.hpp"
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;

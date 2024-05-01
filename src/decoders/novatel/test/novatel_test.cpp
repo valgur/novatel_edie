@@ -29,20 +29,21 @@
 #include <filesystem>
 #include <iostream>
 #include <locale>
+
+#include <gtest/gtest.h>
 #include <nlohmann/json.hpp>
 
-#include "decoders/common/api/json_reader.hpp"
-#include "decoders/common/api/message_decoder.hpp"
-#include "decoders/novatel/api/commander.hpp"
-#include "decoders/novatel/api/encoder.hpp"
-#include "decoders/novatel/api/file_parser.hpp"
-#include "decoders/novatel/api/filter.hpp"
-#include "decoders/novatel/api/framer.hpp"
-#include "decoders/novatel/api/header_decoder.hpp"
-#include "hw_interface/stream_interface/api/inputfilestream.hpp"
-#include "hw_interface/stream_interface/api/inputstreaminterface.hpp"
+#include "edie/decoders/common/json_reader.hpp"
+#include "edie/decoders/common/message_decoder.hpp"
+#include "edie/decoders/novatel/commander.hpp"
+#include "edie/decoders/novatel/encoder.hpp"
+#include "edie/decoders/novatel/file_parser.hpp"
+#include "edie/decoders/novatel/filter.hpp"
+#include "edie/decoders/novatel/framer.hpp"
+#include "edie/decoders/novatel/header_decoder.hpp"
+#include "edie/hw_interface/stream_interface/inputfilestream.hpp"
+#include "edie/hw_interface/stream_interface/inputstreaminterface.hpp"
 #include "resources/novatel_message_definitions.hpp"
-#include <gtest/gtest.h>
 
 using json = nlohmann::json;
 

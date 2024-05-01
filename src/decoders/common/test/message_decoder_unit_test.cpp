@@ -26,7 +26,7 @@
 
 #include <gtest/gtest.h>
 
-#include "decoders/common/api/message_decoder.hpp"
+#include "edie/decoders/common/message_decoder.hpp"
 
 using namespace novatel::edie;
 

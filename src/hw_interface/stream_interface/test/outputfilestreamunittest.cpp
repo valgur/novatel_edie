@@ -25,10 +25,11 @@
 // ===============================================================================
 
 #include <filesystem>
-#include <gtest/gtest.h>
 #include <string>
 
-#include "hw_interface/stream_interface/api/outputfilestream.hpp"
+#include <gtest/gtest.h>
+
+#include "edie/hw_interface/stream_interface/outputfilestream.hpp"
 
 class OutputFileStreamTest : public ::testing::Test
 {

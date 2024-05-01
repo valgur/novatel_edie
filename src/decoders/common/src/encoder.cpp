@@ -26,7 +26,7 @@
 
 #include <bitset>
 
-#include "decoders/common/api/encoder.hpp"
+#include "edie/decoders/common/encoder.hpp"
 
 using namespace novatel::edie;
 

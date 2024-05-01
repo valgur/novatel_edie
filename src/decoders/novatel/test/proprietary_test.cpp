@@ -26,8 +26,8 @@
 
 #include <gtest/gtest.h>
 
-#include "decoders/novatel/api/framer.hpp"
-#include "hw_interface/stream_interface/api/inputfilestream.hpp"
+#include "edie/decoders/novatel/framer.hpp"
+#include "edie/hw_interface/stream_interface/inputfilestream.hpp"
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;

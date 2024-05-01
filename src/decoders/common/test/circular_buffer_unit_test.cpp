@@ -26,7 +26,7 @@
 
 #include <gtest/gtest.h>
 
-#include "decoders/common/api/circular_buffer.hpp"
+#include "edie/decoders/common/circular_buffer.hpp"
 
 class CircularBufferTest : public ::testing::Test
 {

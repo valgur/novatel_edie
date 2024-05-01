@@ -26,16 +26,16 @@
 
 #include <chrono>
 
-#include "logger/logger.hpp"
-#include "src/decoders/common/api/json_reader.hpp"
-#include "src/decoders/novatel/api/encoder.hpp"
-#include "src/decoders/novatel/api/filter.hpp"
-#include "src/decoders/novatel/api/framer.hpp"
-#include "src/decoders/novatel/api/header_decoder.hpp"
-#include "src/decoders/novatel/api/message_decoder.hpp"
-#include "src/hw_interface/stream_interface/api/inputfilestream.hpp"
-#include "src/hw_interface/stream_interface/api/outputfilestream.hpp"
-#include "src/version.h"
+#include <edie/decoders/common/json_reader.hpp>
+#include <edie/decoders/common/logger/logger.hpp>
+#include <edie/decoders/novatel/encoder.hpp>
+#include <edie/decoders/novatel/filter.hpp>
+#include <edie/decoders/novatel/framer.hpp>
+#include <edie/decoders/novatel/header_decoder.hpp>
+#include <edie/decoders/novatel/message_decoder.hpp>
+#include <edie/hw_interface/stream_interface/inputfilestream.hpp>
+#include <edie/hw_interface/stream_interface/outputfilestream.hpp>
+#include <edie/version.h>
 
 using namespace novatel::edie;
 using namespace novatel::edie::oem;

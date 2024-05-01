@@ -26,9 +26,9 @@
 
 #include <gtest/gtest.h>
 
-#include "decoders/common/api/common.hpp"
-#include "decoders/common/api/crc32.hpp"
-#include "decoders/novatel/api/common.hpp"
+#include "edie/decoders/common/common.hpp"
+#include "edie/decoders/common/crc32.hpp"
+#include "edie/decoders/novatel/common.hpp"
 
 class CRC32Test : public testing::Test
 {

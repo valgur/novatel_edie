@@ -24,7 +24,7 @@
 // ! \file range_decompressor.cpp
 // ===============================================================================
 
-#include "decoders/novatel/api/rangecmp/range_decompressor.hpp"
+#include "edie/decoders/novatel/rangecmp/range_decompressor.hpp"
 
 #include <stdexcept>
 
