@@ -188,6 +188,10 @@ struct EnumDataType
     std::string description{};
 
     constexpr EnumDataType() = default;
+    constexpr EnumDataType(std::string name_, uint32_t value_, std::string description_)
+        : value(value_), name(std::move(name_)), description(std::move(description_))
+    {
+    }
 };
 
 //-----------------------------------------------------------------------
