@@ -1,46 +1,34 @@
 cmake_minimum_required(VERSION 3.15)
 include(cmake/third_party.cmake)
 
-project(edie-public VERSION 3.3.7 LANGUAGES CXX)
+project(novatel-edie VERSION 3.3.7 LANGUAGES CXX)
 
 option(BUILD_TESTS "Build tests" ON)
 option(BUILD_EXAMPLES "Build examples" ON)
+option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 option(BUILD_DYNAMIC_LIBS "Build additional C-style *_dynamic_library versions of the libraries" ON)
+option(CMAKE_POSITION_INDEPENDENT_CODE "Set -fPIC" ON)
 option(COVERAGE "Coverage" OFF)
 
 set(CMAKE_CXX_STANDARD 20)
-
-add_compile_definitions(STRICT)
 
 if(NOT DEFINED CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-if(NOT DEFINED BUILD_SHARED_LIBS)
-    set(BUILD_SHARED_LIBS OFF)
-endif()
-
-if(NOT DEFINED CMAKE_POSITION_INDEPENDENT_CODE)
-    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-endif()
-
-if(NOT DEFINED CMAKE_VERBOSE_MAKEFILE)
-    set(CMAKE_VERBOSE_MAKEFILE OFF)
-endif()
-
 # Check platforms
 if(CMAKE_HOST_WIN32)
     set(WINDOWS 1)
-    message("CMAKE Host: Windows")
+    cmake_host_system_information(RESULT OS_NAME QUERY OS_NAME)
+    set(DISTRIB_NAME ${OS_NAME})
 elseif(CMAKE_HOST_UNIX)
     set(LINUX 1)
-    message("CMAKE Host: Linux")
+    cmake_host_system_information(RESULT DISTRIB_NAME QUERY DISTRIB_NAME)
+    cmake_host_system_information(RESULT DISTRIB_VERSION_ID QUERY DISTRIB_VERSION_ID)
+    set(DISTRIB_NAME "${DISTRIB_NAME}-${DISTRIB_VERSION_ID}")
+else()
+    message(FATAL_ERROR "Unable to identify OS. Update script to support distribution or OS")
 endif()
-
-message("CMAKE_SYSTEM_PROCESSOR: " ${CMAKE_SYSTEM_PROCESSOR})
-message("BUILD_SHARED_LIBS: " ${BUILD_SHARED_LIBS})
-message("CMAKE_GENERATOR_PLATFORM: " ${CMAKE_GENERATOR_PLATFORM})
-message("CMAKE_GENERATOR_TOOLSET: " ${CMAKE_GENERATOR_TOOLSET})
 
 if(MSVC)
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -52,22 +40,23 @@ if(MSVC)
             set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
         endif()
     endif()
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-    add_compile_options(/utf-8 /W4 $<$<CONFIG:Debug>:/Zi>)
-elseif(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
-    add_compile_options(-Wall -fPIC -Wfatal-errors -Wold-style-cast -Wextra -pedantic)
+    add_definitions(-DWIN32 -D_WINDOWS)
+    add_compile_options(/WX /W4 /GR /EHsc /utf-8 /wd4244 /wd4996 /wd4127)
+    add_compile_options("$<$<CONFIG:Debug>:/Zi /Ob0 /Od /RTC1 /Zi>")
+    add_compile_options("$<$<CONFIG:Release:/Ox /Ob2>")
+else()
+    add_compile_options(-Wall -Werror -fPIC -Wfatal-errors -Wold-style-cast -Wextra -pedantic)
     add_compile_options("$<$<CONFIG:Release>:-O3>")
-    if(CMAKE_SYSTEM_PROCESSOR STREQUAL "i686")
-        add_compile_options(-m32)
-    endif()
+
     if(WINDOWS)
+        # TODO: we shouldn't have to do this, something is bloating an object file
         add_compile_options($<$<CONFIG:Debug>:-O1>)
     endif()
-    if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
-        add_compile_options(-Werror -Wno-format-truncation -Wno-error=format -Wno-format -Wno-format-extra-args)
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        add_compile_options(-Wno-format-truncation -Wno-error=format -Wno-format -Wno-format-extra-args -Wno-error=restrict -Wno-restrict)
     endif()
-    if(CMAKE_C_COMPILER_ID STREQUAL "Clang")
-        add_compile_options(-pthread -Wno-unqualified-std-cast-call)
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+        add_compile_options(-Wno-unqualified-std-cast-call -Wno-unknown-pragmas)
     endif()
 
     if(COVERAGE)
@@ -76,6 +65,10 @@ elseif(CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang
     endif()
 endif()
 
+# Output all binaries in the same directory for easier testing
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
 # Configure installation directories
 set(CMAKE_INSTALL_INCLUDEDIR include CACHE PATH "")
 set(CMAKE_INSTALL_BINDIR bin/novatel/edie CACHE PATH "")
@@ -87,13 +80,16 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-# build EDIE components
-add_subdirectory(src)
 
 # Find Git package, if not need to install manually or through .yml file
 find_package(Git)
-if(Git_FOUND)
-    message("Git found: ${GIT_EXECUTABLE}")
+
+if(NOT DEFINED GIT_BRANCH)
+    set(GIT_BRANCH "main")
+endif()
+
+# Build version of EDIE through cmake
+if(GIT_EXECUTABLE)
     execute_process(COMMAND ${CMAKE_COMMAND}
         -D SRC=${CMAKE_CURRENT_SOURCE_DIR}/src/version.h.in
         -D DST=${CMAKE_CURRENT_SOURCE_DIR}/src/decoders/common/include/edie/version.h
@@ -101,6 +97,9 @@ if(Git_FOUND)
         -D GIT_BRANCH=${GIT_BRANCH}
         -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/GenerateVersionHeader.cmake)
 endif()
+
+# Build EDIE components
+add_subdirectory(src)
 
 if(BUILD_TESTS)
     enable_testing()
@@ -113,6 +112,7 @@ if(BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
+# Install
 install(FILES database/messages_public.json
     DESTINATION ${CMAKE_INSTALL_DATADIR}
     COMPONENT data

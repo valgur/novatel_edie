@@ -1,31 +1,17 @@
-file(GLOB_RECURSE NOVATEL_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c*
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h*
+set(TARGET_NAME "novatel")
+file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+add_library(${TARGET_NAME} STATIC ${SOURCES})
+set_property(TARGET ${TARGET_NAME} PROPERTY FOLDER "decoders")
+target_link_libraries(${TARGET_NAME} PUBLIC stream_interface common)
+set_property(TARGET ${TARGET_NAME} PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+target_include_directories(${TARGET_NAME}
+    PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    PRIVATE include/edie/decoders/novatel
 )
+set_property(TARGET ${TARGET_NAME} PROPERTY FOLDER "decoders")
 
-source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${NOVATEL_SOURCES})
-
-# Creating an object file which can be used for both static and shared build without recompilation.
-add_library(objnovatel OBJECT ${NOVATEL_SOURCES} $<TARGET_OBJECTS:objcommon>)
-target_link_libraries(objnovatel PUBLIC EDIE::stream_interface EDIE::common_dependencies)
-
-# Creating a static lib, with the project name, using available object file, without recompilation.
-add_library(novatel $<TARGET_OBJECTS:objnovatel> $<TARGET_OBJECTS:objcommon>)
-add_library(EDIE::novatel ALIAS novatel)
-target_link_libraries(novatel PUBLIC EDIE::common_dependencies)
-set_property(TARGET novatel PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
-
-foreach(target objnovatel novatel)
-    target_include_directories(${target}
-        PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-            "$<BUILD_INTERFACE:$<TARGET_PROPERTY:objcommon,INCLUDE_DIRECTORIES>>"
-            "$<BUILD_INTERFACE:$<TARGET_PROPERTY:objstreaminterface,INCLUDE_DIRECTORIES>>"
-        PRIVATE include/edie/decoders/novatel
-    )
-    set_property(TARGET ${target} PROPERTY FOLDER "decoders")
-endforeach()
-
-install(TARGETS novatel EXPORT EDIE-targets)
+install(TARGETS ${TARGET_NAME} EXPORT EDIE-targets)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )

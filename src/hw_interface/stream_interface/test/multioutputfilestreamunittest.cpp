@@ -31,7 +31,6 @@
 
 #include "edie/decoders/common/nexcept.h"
 #include "edie/hw_interface/stream_interface/multioutputfilestream.hpp"
-#include "nexcept.h"
 
 class MultiOutputFileStreamTest : public ::testing::Test
 {

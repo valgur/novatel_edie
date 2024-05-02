@@ -1,3 +1,4 @@
-add_executable(Converter_CommandEncoding command_encoding.cpp)
-target_link_libraries(Converter_CommandEncoding EDIE::novatel EDIE::stream_interface)
-set_property(TARGET Converter_CommandEncoding PROPERTY FOLDER "examples")
+set(TARGET_NAME "command_encoding")
+add_executable(${TARGET_NAME} ${TARGET_NAME}.cpp)
+target_link_libraries(${TARGET_NAME} common novatel stream_interface)
+set_property(TARGET ${TARGET_NAME} PROPERTY FOLDER "examples")

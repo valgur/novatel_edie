@@ -1,18 +1,10 @@
-file(GLOB NOVATELTEST_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.c*
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.h*
-)
-
+set(TARGET_NAME "novatel_test")
+file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+add_executable(${TARGET_NAME} ${SOURCES})
+set_property(TARGET ${TARGET_NAME} PROPERTY FOLDER "decoders/tests")
 find_package(GTest REQUIRED CONFIG)
-
-add_executable(NovatelTest ${NOVATELTEST_SOURCES})
-set_property(TARGET NovatelTest PROPERTY FOLDER "edie/decoders/tests")
-target_link_libraries(NovatelTest PUBLIC
-    EDIE::novatel EDIE::stream_interface
+target_link_libraries(${TARGET_NAME} PUBLIC
+    novatel stream_interface
     GTest::gtest GTest::gtest_main
 )
-
-add_test(
-    NAME NovatelTest
-    COMMAND NovatelTest ${CMAKE_SOURCE_DIR}/database/messages_public.json ${CMAKE_CURRENT_LIST_DIR}/resources
-)
+add_test(NAME ${TARGET_NAME} COMMAND ${TARGET_NAME} ${CMAKE_SOURCE_DIR})

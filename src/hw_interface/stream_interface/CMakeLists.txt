@@ -1,32 +1,18 @@
-file(GLOB_RECURSE STREAM_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c*
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h*
+set(TARGET_NAME "stream_interface")
+file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+add_library(${TARGET_NAME} STATIC ${SOURCES})
+target_link_libraries(${TARGET_NAME} PRIVATE common)
+set_property(TARGET ${TARGET_NAME} PROPERTY FOLDER "hw_interface")
+set_property(TARGET ${TARGET_NAME} PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+target_include_directories(${TARGET_NAME}
+    PUBLIC
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
+    PRIVATE include/edie/hw_interface/stream_interface
 )
 
-#source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${STREAM_SOURCES})
-
-#Creating an object file which can be used for both static and shared build without recompilation.
-add_library(objstreaminterface OBJECT ${STREAM_SOURCES} $<TARGET_OBJECTS:objcommon>)
-target_link_libraries(objstreaminterface PUBLIC EDIE::common_dependencies)
-
-#Creating a static lib, with the project name, using available object file, without recompilation.
-add_library(stream_interface $<TARGET_OBJECTS:objstreaminterface> $<TARGET_OBJECTS:objcommon>)
-add_library(EDIE::stream_interface ALIAS stream_interface)
-target_link_libraries(stream_interface PUBLIC EDIE::common_dependencies)
-set_property(TARGET stream_interface PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
-
-foreach(target objstreaminterface stream_interface)
-    target_include_directories(${target}
-        PUBLIC
-            "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-            "$<BUILD_INTERFACE:$<TARGET_PROPERTY:objcommon,INCLUDE_DIRECTORIES>>"
-            "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
-        PRIVATE include/edie/hw_interface/stream_interface
-    )
-    set_property(TARGET ${target} PROPERTY FOLDER "hw_interface")
-endforeach()
-
-install(TARGETS stream_interface EXPORT EDIE-targets)
+install(TARGETS ${TARGET_NAME} EXPORT EDIE-targets)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )

@@ -24,14 +24,14 @@
 // ! \file circular_buffer.cpp
 // ===============================================================================
 
-#include "circular_buffer.hpp"
+#include "decoders/common/api/circular_buffer.hpp"
 
 #include <algorithm>
 #include <cassert>
 #include <cstring>
 #include <new>
 
-#include "nexcept.h"
+#include "decoders/common/api/nexcept.hpp"
 
 //---------------------------------------------------------------------------
 void CircularBuffer::SetCapacity(const uint32_t uiCapacity_)

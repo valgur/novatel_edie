@@ -1,18 +1,14 @@
-file(GLOB_RECURSE COMMON_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c*
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h*
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.h*
-)
+set(TARGET_NAME "common")
+file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+add_library(${TARGET_NAME} STATIC ${SOURCES})
+add_custom_command(TARGET ${TARGET_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/api/ ${CMAKE_SOURCE_DIR}/bin/api/decoders/${TARGET_NAME}/api/)
+set_property(TARGET ${TARGET_NAME} PROPERTY FOLDER "decoders")
+target_include_directories(${TARGET_NAME} PUBLIC api)
 
-# Creating an object file which can be used for both static and shared build without recompilation.
-add_library(objcommon OBJECT ${COMMON_SOURCES})
-
-set_property(TARGET objcommon PROPERTY FOLDER "decoders")
-
-target_include_directories(objcommon
+target_include_directories(${TARGET_NAME}
     PUBLIC
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/edie/decoders/common>"
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/edie/decoders/common>"
 )
 
 if(BUILD_SHARED_LIBS)
@@ -27,21 +23,18 @@ find_package(nlohmann_json REQUIRED CONFIG)
 find_package(spdlog REQUIRED CONFIG)
 find_package(spdlog_setup REQUIRED CONFIG)
 
-add_library(common_dependencies INTERFACE)
-add_library(EDIE::common_dependencies ALIAS common_dependencies)
-target_link_libraries(common_dependencies INTERFACE
+add_library(${TARGET_NAME} INTERFACE)
+target_link_libraries(${TARGET_NAME} PUBLIC
     nlohmann_json::nlohmann_json
     spdlog_setup::spdlog_setup
 )
 if(TARGET spdlog::spdlog)
-    target_link_libraries(common_dependencies INTERFACE spdlog::spdlog)
+    target_link_libraries(${TARGET_NAME} INTERFACE spdlog::spdlog)
 else()
-    target_link_libraries(common_dependencies INTERFACE spdlog::spdlog_header_only)
+    target_link_libraries(${TARGET_NAME} INTERFACE spdlog::spdlog_header_only)
 endif()
 
-target_link_libraries(objcommon PUBLIC EDIE::common_dependencies)
-
-install(TARGETS common_dependencies EXPORT EDIE-targets)
+install(TARGETS ${TARGET_NAME} EXPORT EDIE-targets)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )

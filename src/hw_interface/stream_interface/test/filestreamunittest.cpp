@@ -29,7 +29,7 @@
 
 #include <gtest/gtest.h>
 
-#include "edie/decoders/common/nexcept.h"
+#include "edie/decoders/common/nexcept.hpp"
 #include "edie/hw_interface/stream_interface/filestream.hpp"
 
 #ifndef RESOURCE_DIR

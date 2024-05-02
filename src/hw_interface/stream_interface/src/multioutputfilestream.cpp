@@ -29,7 +29,7 @@
 #include <iterator>
 #include <map>
 
-#include "edie/decoders/common/nexcept.h"
+#include "edie/decoders/common/nexcept.hpp"
 
 // ---------------------------------------------------------
 MultiOutputFileStream::~MultiOutputFileStream()
