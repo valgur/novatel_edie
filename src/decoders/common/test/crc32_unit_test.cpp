@@ -28,7 +28,6 @@
 
 #include "edie/decoders/common/common.hpp"
 #include "edie/decoders/common/crc32.hpp"
-#include "edie/decoders/novatel/common.hpp"
 
 class CRC32Test : public testing::Test
 {
@@ -46,8 +45,10 @@ TEST_F(CRC32Test, CalculateBlockCRC32)
                          "SINGLE,17.44306884140,78.37411522222,649.8119,-76.8000,WGS84,0.9206,1.0236,1.9887,\"\",0."
                          "000,0.000,34,34,34,34,00,06,39,33*42d4f5cc\r\n");
 
+    constexpr uint16_t _OEM4_ASCII_CRC_LENGTH = 8;
+
     uint32_t uiCalculatedCRC = 0;
-    uint64_t uiTerminatorIndex = sMessage.length() - (novatel::edie::oem::OEM4_ASCII_CRC_LENGTH + 3);
+    uint64_t uiTerminatorIndex = sMessage.length() - (_OEM4_ASCII_CRC_LENGTH + 3);
 
     if (uiTerminatorIndex == 0) { return; }
 

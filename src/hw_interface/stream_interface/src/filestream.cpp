@@ -28,7 +28,7 @@
 
 #include <string>
 
-#include "edie/decoders/common/nexcept.h"
+#include "edie/decoders/common/nexcept.hpp"
 
 // ---------------------------------------------------------
 FileStream::FileStream(const std::u32string& s32FileName_)
