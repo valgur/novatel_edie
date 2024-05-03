@@ -29,7 +29,7 @@
 
 #include <gtest/gtest.h>
 
-#include "logger/logger.hpp"
+#include "edie/decoders/common/logger.hpp"
 
 int main(int argc, char** argv)
 {

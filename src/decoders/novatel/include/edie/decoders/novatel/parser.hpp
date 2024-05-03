@@ -28,6 +28,7 @@
 #define NOVATEL_PARSER_HPP
 
 #include "edie/decoders/common/common.hpp"
+#include "edie/decoders/common/logger.hpp"
 #include "edie/decoders/novatel/common.hpp"
 #include "edie/decoders/novatel/encoder.hpp"
 #include "edie/decoders/novatel/filter.hpp"
@@ -35,7 +36,6 @@
 #include "edie/decoders/novatel/header_decoder.hpp"
 #include "edie/decoders/novatel/rangecmp/range_decompressor.hpp"
 #include "edie/decoders/novatel/rxconfig/rxconfig_handler.hpp"
-#include "edie/decoders/common/logger/logger.hpp"
 
 namespace novatel::edie::oem {
 

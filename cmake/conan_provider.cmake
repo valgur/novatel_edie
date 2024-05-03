@@ -1,11 +1,8 @@
-# Source: https://github.com/conan-io/cmake-conan/blob/0a466e861ec54178330576c43d01ad9923f4924f/conan_provider.cmake
-# Modifications:
-# 1. Added CONAN_EXTRA_INSTALL_ARGS variable.
-# 2. Removed '-g CMakeDeps' from the conan install commands.
+# Source: https://github.com/conan-io/cmake-conan/blob/82284c0204e87f36c7d5706bf2963bae735904a4/conan_provider.cmake
 
 # The MIT License (MIT)
 #
-# Copyright (c) 2019 JFrog
+# Copyright (c) 2024 JFrog
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -97,7 +94,7 @@ function(detect_arch ARCH)
             message(WARNING "CMake-Conan: Multiple architectures detected, this will only work if Conan recipe(s) produce fat binaries.")
         endif()
     endif()
-    if(CMAKE_SYSTEM_NAME MATCHES "Darwin|iOS|tvOS|watchOS")
+    if(CMAKE_SYSTEM_NAME MATCHES "Darwin|iOS|tvOS|watchOS" AND NOT CMAKE_OSX_ARCHITECTURES STREQUAL "")
         set(host_arch ${CMAKE_OSX_ARCHITECTURES})
     elseif(MSVC)
         set(host_arch ${CMAKE_CXX_COMPILER_ARCHITECTURE_ID})
@@ -222,37 +219,42 @@ function(detect_compiler COMPILER COMPILER_VERSION COMPILER_RUNTIME COMPILER_RUN
         string(SUBSTRING ${MSVC_VERSION} 0 3 _COMPILER_VERSION)
         # Configure compiler.runtime and compiler.runtime_type settings for MSVC
         if(CMAKE_MSVC_RUNTIME_LIBRARY)
-            set(_KNOWN_MSVC_RUNTIME_VALUES "")
-            list(APPEND _KNOWN_MSVC_RUNTIME_VALUES MultiThreaded MultiThreadedDLL)
-            list(APPEND _KNOWN_MSVC_RUNTIME_VALUES MultiThreadedDebug MultiThreadedDebugDLL)
-            list(APPEND _KNOWN_MSVC_RUNTIME_VALUES MultiThreaded$<$<CONFIG:Debug>:Debug> MultiThreaded$<$<CONFIG:Debug>:Debug>DLL)
-
-            # only accept the 6 possible values, otherwise we don't don't know to map this
-            if(NOT CMAKE_MSVC_RUNTIME_LIBRARY IN_LIST _KNOWN_MSVC_RUNTIME_VALUES)
-                message(FATAL_ERROR "CMake-Conan: unable to map MSVC runtime: ${CMAKE_MSVC_RUNTIME_LIBRARY} to Conan settings")
-            endif()
-
-            # Runtime is "dynamic" in all cases if it ends in DLL
-            if(CMAKE_MSVC_RUNTIME_LIBRARY MATCHES ".*DLL$")
-                set(_COMPILER_RUNTIME "dynamic")
-            else()
-                set(_COMPILER_RUNTIME "static")
-            endif()
-
-            # Only define compiler.runtime_type when explicitly requested
-            # If a generator expression is used, let Conan handle it conditional on build_type
-            get_property(_IS_MULTI_CONFIG_GENERATOR GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
-            if(NOT CMAKE_MSVC_RUNTIME_LIBRARY MATCHES "<CONFIG:Debug>:Debug>")
-                if(CMAKE_MSVC_RUNTIME_LIBRARY MATCHES "Debug")
-                    set(_COMPILER_RUNTIME_TYPE "Debug")
-                else()
-                    set(_COMPILER_RUNTIME_TYPE "Release")
-                endif()
-            endif()
-
-            unset(_KNOWN_MSVC_RUNTIME_VALUES)
-            unset(_IS_MULTI_CONFIG_GENERATOR)
+            set(_msvc_runtime_library ${CMAKE_MSVC_RUNTIME_LIBRARY})
+        else()
+            set(_msvc_runtime_library MultiThreaded$<$<CONFIG:Debug>:Debug>DLL) # default value documented by CMake
         endif()
+
+        set(_KNOWN_MSVC_RUNTIME_VALUES "")
+        list(APPEND _KNOWN_MSVC_RUNTIME_VALUES MultiThreaded MultiThreadedDLL)
+        list(APPEND _KNOWN_MSVC_RUNTIME_VALUES MultiThreadedDebug MultiThreadedDebugDLL)
+        list(APPEND _KNOWN_MSVC_RUNTIME_VALUES MultiThreaded$<$<CONFIG:Debug>:Debug> MultiThreaded$<$<CONFIG:Debug>:Debug>DLL)
+
+        # only accept the 6 possible values, otherwise we don't don't know to map this
+        if(NOT _msvc_runtime_library IN_LIST _KNOWN_MSVC_RUNTIME_VALUES)
+            message(FATAL_ERROR "CMake-Conan: unable to map MSVC runtime: ${_msvc_runtime_library} to Conan settings")
+        endif()
+
+        # Runtime is "dynamic" in all cases if it ends in DLL
+        if(_msvc_runtime_library MATCHES ".*DLL$")
+            set(_COMPILER_RUNTIME "dynamic")
+        else()
+            set(_COMPILER_RUNTIME "static")
+        endif()
+        message(STATUS "CMake-Conan: CMake compiler.runtime=${_COMPILER_RUNTIME}")
+
+        # Only define compiler.runtime_type when explicitly requested
+        # If a generator expression is used, let Conan handle it conditional on build_type
+        if(NOT _msvc_runtime_library MATCHES "<CONFIG:Debug>:Debug>")
+            if(_msvc_runtime_library MATCHES "Debug")
+                set(_COMPILER_RUNTIME_TYPE "Debug")
+            else()
+                set(_COMPILER_RUNTIME_TYPE "Release")
+            endif()
+            message(STATUS "CMake-Conan: CMake compiler.runtime_type=${_COMPILER_RUNTIME_TYPE}")
+        endif()
+
+        unset(_KNOWN_MSVC_RUNTIME_VALUES)
+
     elseif(_COMPILER MATCHES AppleClang)
         set(_COMPILER "apple-clang")
         string(REPLACE "." ";" VERSION_LIST ${CMAKE_CXX_COMPILER_VERSION})
@@ -292,24 +294,43 @@ function(detect_build_type BUILD_TYPE)
     endif()
 endfunction()
 
+macro(set_conan_compiler_if_appleclang lang command output_variable)
+    if(CMAKE_${lang}_COMPILER_ID STREQUAL "AppleClang")
+        execute_process(COMMAND xcrun --find ${command}
+            OUTPUT_VARIABLE _xcrun_out OUTPUT_STRIP_TRAILING_WHITESPACE)
+        cmake_path(GET _xcrun_out PARENT_PATH _xcrun_toolchain_path)
+        cmake_path(GET CMAKE_${lang}_COMPILER PARENT_PATH _compiler_parent_path)
+        if ("${_xcrun_toolchain_path}" STREQUAL "${_compiler_parent_path}")
+            set(${output_variable} "")
+        endif()
+        unset(_xcrun_out)
+        unset(_xcrun_toolchain_path)
+        unset(_compiler_parent_path)
+    endif()
+endmacro()
+
 
 macro(append_compiler_executables_configuration)
     set(_conan_c_compiler "")
     set(_conan_cpp_compiler "")
     if(CMAKE_C_COMPILER)
         set(_conan_c_compiler "\"c\":\"${CMAKE_C_COMPILER}\",")
+        set_conan_compiler_if_appleclang(C cc _conan_c_compiler)
     else()
         message(WARNING "CMake-Conan: The C compiler is not defined. "
                         "Please define CMAKE_C_COMPILER or enable the C language.")
     endif()
     if(CMAKE_CXX_COMPILER)
         set(_conan_cpp_compiler "\"cpp\":\"${CMAKE_CXX_COMPILER}\"")
+        set_conan_compiler_if_appleclang(CXX c++ _conan_cpp_compiler)
     else()
         message(WARNING "CMake-Conan: The C++ compiler is not defined. "
                         "Please define CMAKE_CXX_COMPILER or enable the C++ language.")
     endif()
 
-    string(APPEND PROFILE "tools.build:compiler_executables={${_conan_c_compiler}${_conan_cpp_compiler}}\n")
+    if(NOT "x${_conan_c_compiler}${_conan_cpp_compiler}" STREQUAL "x")
+        string(APPEND PROFILE "tools.build:compiler_executables={${_conan_c_compiler}${_conan_cpp_compiler}}\n")
+    endif()
     unset(_conan_c_compiler)
     unset(_conan_cpp_compiler)
 endmacro()
@@ -413,32 +434,47 @@ function(conan_install)
     cmake_parse_arguments(ARGS CONAN_ARGS ${ARGN})
     set(CONAN_OUTPUT_FOLDER ${CMAKE_BINARY_DIR}/conan)
     # Invoke "conan install" with the provided arguments
-    set(CONAN_ARGS ${CONAN_ARGS} -of=${CONAN_OUTPUT_FOLDER} ${CONAN_EXTRA_INSTALL_ARGS})
+    set(CONAN_ARGS ${CONAN_ARGS} -of=${CONAN_OUTPUT_FOLDER})
     message(STATUS "CMake-Conan: conan install ${CMAKE_SOURCE_DIR} ${CONAN_ARGS} ${ARGN}")
+
+
+    # In case there was not a valid cmake executable in the PATH, we inject the
+    # same we used to invoke the provider to the PATH
+    if(DEFINED PATH_TO_CMAKE_BIN)
+        set(_OLD_PATH $ENV{PATH})
+        set(ENV{PATH} "$ENV{PATH}:${PATH_TO_CMAKE_BIN}")
+    endif()
+
     execute_process(COMMAND ${CONAN_COMMAND} install ${CMAKE_SOURCE_DIR} ${CONAN_ARGS} ${ARGN} --format=json
                     RESULT_VARIABLE return_code
                     OUTPUT_VARIABLE conan_stdout
                     ERROR_VARIABLE conan_stderr
                     ECHO_ERROR_VARIABLE    # show the text output regardless
                     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
+    if(DEFINED PATH_TO_CMAKE_BIN)
+        set(ENV{PATH} "${_OLD_PATH}")
+    endif()
+
     if(NOT "${return_code}" STREQUAL "0")
         message(FATAL_ERROR "Conan install failed='${return_code}'")
-    else()
-        # the files are generated in a folder that depends on the layout used, if
-        # one is specified, but we don't know a priori where this is.
-        # TODO: this can be made more robust if Conan can provide this in the json output
-        string(JSON CONAN_GENERATORS_FOLDER GET ${conan_stdout} graph nodes 0 generators_folder)
-        cmake_path(CONVERT ${CONAN_GENERATORS_FOLDER} TO_CMAKE_PATH_LIST CONAN_GENERATORS_FOLDER)
-        # message("conan stdout: ${conan_stdout}")
-        message(STATUS "CMake-Conan: CONAN_GENERATORS_FOLDER=${CONAN_GENERATORS_FOLDER}")
-        set_property(GLOBAL PROPERTY CONAN_GENERATORS_FOLDER "${CONAN_GENERATORS_FOLDER}")
-        # reconfigure on conanfile changes
-        string(JSON CONANFILE GET ${conan_stdout} graph nodes 0 label)
-        message(STATUS "CMake-Conan: CONANFILE=${CMAKE_SOURCE_DIR}/${CONANFILE}")
-        set_property(DIRECTORY ${CMAKE_SOURCE_DIR} APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/${CONANFILE}")
-        # success
-        set_property(GLOBAL PROPERTY CONAN_INSTALL_SUCCESS TRUE)
     endif()
+
+    # the files are generated in a folder that depends on the layout used, if
+    # one is specified, but we don't know a priori where this is.
+    # TODO: this can be made more robust if Conan can provide this in the json output
+    string(JSON CONAN_GENERATORS_FOLDER GET ${conan_stdout} graph nodes 0 generators_folder)
+    cmake_path(CONVERT ${CONAN_GENERATORS_FOLDER} TO_CMAKE_PATH_LIST CONAN_GENERATORS_FOLDER)
+    # message("conan stdout: ${conan_stdout}")
+    message(STATUS "CMake-Conan: CONAN_GENERATORS_FOLDER=${CONAN_GENERATORS_FOLDER}")
+    set_property(GLOBAL PROPERTY CONAN_GENERATORS_FOLDER "${CONAN_GENERATORS_FOLDER}")
+    # reconfigure on conanfile changes
+    string(JSON CONANFILE GET ${conan_stdout} graph nodes 0 label)
+    message(STATUS "CMake-Conan: CONANFILE=${CMAKE_SOURCE_DIR}/${CONANFILE}")
+    set_property(DIRECTORY ${CMAKE_SOURCE_DIR} APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/${CONANFILE}")
+    # success
+    set_property(GLOBAL PROPERTY CONAN_INSTALL_SUCCESS TRUE)
+
 endfunction()
 
 
@@ -512,14 +548,28 @@ macro(conan_provide_dependency method package_name)
         endif()
         construct_profile_argument(_host_profile_flags CONAN_HOST_PROFILE)
         construct_profile_argument(_build_profile_flags CONAN_BUILD_PROFILE)
+        if(EXISTS "${CMAKE_SOURCE_DIR}/conanfile.py")
+            file(READ "${CMAKE_SOURCE_DIR}/conanfile.py" outfile)
+            if(NOT "${outfile}" MATCHES ".*CMakeDeps.*")
+                message(WARNING "Cmake-conan: CMakeDeps generator was not defined in the conanfile")
+            endif()
+            set(generator "")
+        elseif (EXISTS "${CMAKE_SOURCE_DIR}/conanfile.txt")
+            file(READ "${CMAKE_SOURCE_DIR}/conanfile.txt" outfile)
+            if(NOT "${outfile}" MATCHES ".*CMakeDeps.*")
+                message(WARNING "Cmake-conan: CMakeDeps generator was not defined in the conanfile. "
+                        "Please define the generator as it will be mandatory in the future")
+            endif()
+            set(generator "-g;CMakeDeps")
+        endif()
         get_property(_multiconfig_generator GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
         if(NOT _multiconfig_generator)
             message(STATUS "CMake-Conan: Installing single configuration ${CMAKE_BUILD_TYPE}")
-            conan_install(${_host_profile_flags} ${_build_profile_flags} --build=missing)
+            conan_install(${_host_profile_flags} ${_build_profile_flags} ${CONAN_INSTALL_ARGS} ${generator})
         else()
             message(STATUS "CMake-Conan: Installing both Debug and Release")
-            conan_install(${_host_profile_flags} ${_build_profile_flags} -s build_type=Release --build=missing)
-            conan_install(${_host_profile_flags} ${_build_profile_flags} -s build_type=Debug --build=missing)
+            conan_install(${_host_profile_flags} ${_build_profile_flags} -s build_type=Release ${CONAN_INSTALL_ARGS} ${generator})
+            conan_install(${_host_profile_flags} ${_build_profile_flags} -s build_type=Debug ${CONAN_INSTALL_ARGS} ${generator})
         endif()
         unset(_host_profile_flags)
         unset(_build_profile_flags)
@@ -551,12 +601,13 @@ macro(conan_provide_dependency method package_name)
     # this will simply reuse the result. If not, fall back to CMake default search
     # behaviour, also allowing modules to be searched.
     if(NOT ${package_name}_FOUND)
-        #FIXME: https://github.com/conan-io/cmake-conan/issues/570
-        set(_cmake_module_path_orig "${CMAKE_MODULE_PATH}")
-        list(PREPEND CMAKE_MODULE_PATH "${_conan_generators_folder}")
+        list(FIND CMAKE_MODULE_PATH "${_conan_generators_folder}" _index)
+        if(_index EQUAL -1)
+            list(PREPEND CMAKE_MODULE_PATH "${_conan_generators_folder}")
+        endif()
+        unset(_index)
         find_package(${package_name} ${ARGN} BYPASS_PROVIDER)
-        set(CMAKE_MODULE_PATH "${_cmake_module_path_orig}")
-        unset(_cmake_module_path_orig)
+        list(REMOVE_ITEM CMAKE_MODULE_PATH "${_conan_generators_folder}")
     endif()
 endmacro()
 
@@ -591,3 +642,10 @@ cmake_language(DEFER DIRECTORY "${CMAKE_SOURCE_DIR}" CALL conan_provide_dependen
 # Configurable variables for Conan profiles
 set(CONAN_HOST_PROFILE "default;auto-cmake" CACHE STRING "Conan host profile")
 set(CONAN_BUILD_PROFILE "default" CACHE STRING "Conan build profile")
+set(CONAN_INSTALL_ARGS "--build=missing" CACHE STRING "Command line arguments for conan install")
+
+find_program(_cmake_program NAMES cmake NO_PACKAGE_ROOT_PATH NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH NO_CMAKE_FIND_ROOT_PATH)
+if(NOT _cmake_program)
+    get_filename_component(PATH_TO_CMAKE_BIN "${CMAKE_COMMAND}" DIRECTORY)
+    set(PATH_TO_CMAKE_BIN "${PATH_TO_CMAKE_BIN}" CACHE INTERNAL "Path where the CMake executable is")
+endif()

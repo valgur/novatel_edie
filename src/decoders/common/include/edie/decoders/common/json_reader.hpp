@@ -37,6 +37,7 @@
 #include <nlohmann/json.hpp>
 
 #include "crc32.hpp"
+#include "logger.hpp"
 
 using nlohmann::json;
 

@@ -30,10 +30,10 @@
 #include <string>
 #include <variant>
 
-#include <logger/logger.hpp>
 #include <nlohmann/json.hpp>
 
 #include "edie/decoders/common/common.hpp"
+#include "edie/decoders/common/logger.hpp"
 #include "edie/decoders/common/json_reader.hpp"
 #include "edie/decoders/common/message_decoder.hpp"
 

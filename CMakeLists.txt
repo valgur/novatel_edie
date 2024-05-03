@@ -28,7 +28,7 @@ elseif(CMAKE_HOST_UNIX)
     cmake_host_system_information(RESULT DISTRIB_VERSION_ID QUERY DISTRIB_VERSION_ID)
     set(DISTRIB_NAME "${DISTRIB_NAME}-${DISTRIB_VERSION_ID}")
 else()
-    message(FATAL_ERROR "Unable to identify OS. Update script to support distribution or OS")
+    message(WARNING "Unable to identify OS. Update script to support distribution or OS")
 endif()
 
 if(MSVC)
@@ -56,11 +56,13 @@ else()
         # TODO: we shouldn't have to do this, something is bloating an object file
         add_compile_options($<$<CONFIG:Debug>:-O1>)
     endif()
+
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         add_compile_options(-Wno-format-truncation -Wno-error=format -Wno-format -Wno-format-extra-args -Wno-error=restrict -Wno-restrict)
-    endif()
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
         add_compile_options(-Wno-unqualified-std-cast-call -Wno-unknown-pragmas)
+    else()
+        message(WARNING "Unable to identify compiler.")
     endif()
     
     if(WARNINGS_AS_ERRORS)
@@ -77,17 +79,14 @@ endif()
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
+
 # Configure installation directories
 set(CMAKE_INSTALL_INCLUDEDIR include CACHE PATH "")
 set(CMAKE_INSTALL_BINDIR bin/novatel/edie CACHE PATH "")
 set(CMAKE_INSTALL_LIBDIR lib/novatel/edie CACHE PATH "")
 set(CMAKE_INSTALL_DATADIR share/novatel/edie CACHE PATH "")
 
-# Output all binaries in the same directory for easier testing
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-
+set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}")
 
 # Find Git package, if not need to install manually or through .yml file
 find_package(Git)
@@ -107,7 +106,8 @@ if(GIT_EXECUTABLE)
 endif()
 
 # Build EDIE components
-add_subdirectory(src)
+add_subdirectory(src/hw_interface)
+add_subdirectory(src/decoders)
 
 if(BUILD_TESTS)
     enable_testing()
@@ -149,10 +149,10 @@ configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/edie-config.cma
     "${CMAKE_CURRENT_BINARY_DIR}/edie-config.cmake"
     INSTALL_DESTINATION ${EDIE_CMAKE_INSTALL_DIR}
     PATH_VARS
-        CMAKE_INSTALL_INCLUDEDIR
-        CMAKE_INSTALL_LIBDIR
-        CMAKE_INSTALL_BINDIR
-        CMAKE_INSTALL_DATADIR)
+    CMAKE_INSTALL_INCLUDEDIR
+    CMAKE_INSTALL_LIBDIR
+    CMAKE_INSTALL_BINDIR
+    CMAKE_INSTALL_DATADIR)
 
 write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/edie-config-version.cmake"
     VERSION ${EDIE_VERSION}

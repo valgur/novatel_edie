@@ -27,7 +27,7 @@
 #include <stdexcept>
 #include <string>
 
-#include "logger/logger.hpp"
+#include "edie/decoders/common/logger.hpp"
 #include "gtest/gtest.h"
 
 int main(int argc, char** argv)

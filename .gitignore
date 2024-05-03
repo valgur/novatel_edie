@@ -4,8 +4,8 @@
 build/
 bin/
 venv/
-edie.*.log
-edie.log
 CMakeSettings.json
 CMakeUserPresets.json
 version.h
+edie.*.log
+edie.log

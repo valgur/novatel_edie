@@ -9,14 +9,6 @@ target_include_directories(${TARGET_NAME}
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/edie/decoders/common>"
 )
 
-if(BUILD_SHARED_LIBS)
-    # Statically linking against spdlog causes its singleton registry to be
-    # re-instantiated in each shared library and executable that links against it.
-    list(APPEND CONAN_EXTRA_INSTALL_ARGS
-        -o spdlog/*:shared=True -o fmt/*:shared=True
-    )
-endif()
-
 find_package(nlohmann_json REQUIRED CONFIG)
 find_package(spdlog REQUIRED CONFIG)
 find_package(spdlog_setup REQUIRED CONFIG)
@@ -24,12 +16,9 @@ find_package(spdlog_setup REQUIRED CONFIG)
 target_link_libraries(${TARGET_NAME} PUBLIC
     nlohmann_json::nlohmann_json
     spdlog_setup::spdlog_setup
+    $<TARGET_NAME_IF_EXISTS:spdlog::spdlog>
+    $<TARGET_NAME_IF_EXISTS:spdlog::spdlog_header_only>
 )
-if(TARGET spdlog::spdlog)
-    target_link_libraries(${TARGET_NAME} INTERFACE spdlog::spdlog)
-else()
-    target_link_libraries(${TARGET_NAME} INTERFACE spdlog::spdlog_header_only)
-endif()
 
 install(TARGETS ${TARGET_NAME} EXPORT EDIE-targets)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/

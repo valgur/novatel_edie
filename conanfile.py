@@ -2,6 +2,7 @@ import os
 import re
 
 from conan import ConanFile
+from conan.errors import ConanInvalidConfiguration
 from conan.tools.build import check_min_cppstd
 from conan.tools.cmake import CMake, cmake_layout, CMakeToolchain, CMakeDeps
 from conan.tools.files import copy, rmdir, load
@@ -29,7 +30,7 @@ class NovatelEdieConan(ConanFile):
     options_description = {
         "shared": "Build shared libraries (.dll/.so) instead of static ones (.lib/.a)",
         "fPIC": "Build with -fPIC",
-        "build_dynamic_libs": "Build additional C-style *_dynamic_library versions of the libraries",
+        "build_dynamic_libs": "Build additional C API *_dynamic_library versions of the libraries",
     }
 
     exports_sources = ["cmake/*", "database/*", "src/*", "LICENSE", "!doc", "!test", "CMakelists.txt"]
@@ -48,27 +49,27 @@ class NovatelEdieConan(ConanFile):
 
     def layout(self):
         cmake_layout(self)
+    
+    @property
+    def _require_shared_spdlog(self):
+        # Statically linking against spdlog causes its singleton registry to be
+        # re-instantiated in each shared library and executable that links against it.
+        return self.options.shared or self.options.build_dynamic_libs
 
     def requirements(self):
         self.requires("nlohmann_json/[>=3.11 <3.12]", transitive_headers=True, transitive_libs=True)
-        self.requires("spdlog/[>=1.13 <2]", transitive_headers=True, transitive_libs=True)
         self.requires("gegles-spdlog_setup/[>=1.1 <2]", transitive_headers=True, transitive_libs=True)
-        self.requires("fmt/[>=10 <11]")
+        self.requires("spdlog/[>=1.13 <2]", transitive_headers=True, transitive_libs=True, options={"shared": self._require_shared_spdlog})
+        self.requires("fmt/[>=10 <11]", override=True)
 
     def validate(self):
         if self.settings.compiler.cppstd:
-            check_min_cppstd(self, 17)
-        # Statically linking against spdlog causes its singleton registry to be
-        # re-instantiated in each shared library and executable that links against it.
-        if (self.options.shared or self.options.build_dynamic_libs) and not self.dependencies[
-            "spdlog"
-        ].options.shared:
-            raise Exception(
-                "spdlog must be dynamically linked when building novatel_edie as a shared library"
-            )
+            check_min_cppstd(self, 20)
+        if self._require_shared_spdlog and not self.dependencies["spdlog"].options.shared:
+            raise ConanInvalidConfiguration("spdlog must be dynamically linked when building novatel_edie as a shared library")
 
     def build_requirements(self):
-        self.test_requires("gtest/1.14.0")
+        self.test_requires("gtest/[>=1.14 <2]")
 
     def generate(self):
         tc = CMakeToolchain(self)
@@ -90,14 +91,9 @@ class NovatelEdieConan(ConanFile):
         cmake.build()
 
     def package(self):
+        copy(self, "LICENSE", self.source_folder, os.path.join(self.package_folder, "licenses"))
         cmake = CMake(self)
         cmake.install()
-        copy(
-            self,
-            "LICENSE",
-            src=self.source_folder,
-            dst=os.path.join(self.package_folder, "licenses"),
-        )
         rmdir(self, os.path.join(self.source_folder, "lib", "cmake"))
 
     def package_info(self):
@@ -105,9 +101,7 @@ class NovatelEdieConan(ConanFile):
         self.cpp_info.set_property("cmake_target_name", "EDIE::EDIE")
         self.cpp_info.includedirs.append(os.path.join("include", "novatel", "edie"))
         self.cpp_info.resdirs = ["res"]
-        self.cpp_info.libs = ["novatel", "stream_interface"]
+        self.cpp_info.libs = ["common", "novatel", "stream_interface"]
         if self.options.build_dynamic_libs:
             self.cpp_info.libs.extend(["decoders_dynamic_library", "hwinterface_dynamic_library"])
-        self.runenv_info.define_path(
-            "EDIE_DATABASE_FILE", os.path.join(self.package_folder, "res", "messages_public.json")
-        )
+        self.runenv_info.define_path("EDIE_DATABASE_FILE", os.path.join(self.package_folder, "res", "messages_public.json"))
