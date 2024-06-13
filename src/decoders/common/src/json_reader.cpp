@@ -460,7 +460,7 @@ const std::vector<novatel::edie::BaseField::Ptr>& novatel::edie::MessageDefiniti
                                                                                                      uint32_t uiMsgDefCrc_) const
 {
     // If we can't find the correct CRC just default to the latest.
-    if (!fields.contains(uiMsgDefCrc_))
+    if (fields.find(uiMsgDefCrc_) == fields.end())
     {
         pclLogger_.info("Log DB is missing the log definition {} - {}.  Defaulting to newest version of the log definition.", name, uiMsgDefCrc_);
         uiMsgDefCrc_ = latestMessageCrc;

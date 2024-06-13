@@ -188,7 +188,7 @@ struct EnumDataType
     std::string description{};
 
     constexpr EnumDataType() = default;
-    constexpr EnumDataType(std::string name_, uint32_t value_, std::string description_)
+    EnumDataType(std::string name_, uint32_t value_, std::string description_)
         : value(value_), name(std::move(name_)), description(std::move(description_))
     {
     }
@@ -638,7 +638,7 @@ class JsonReader
             mMessageName[msg->name] = msg;
             mMessageId[msg->logID] = msg;
 
-            for (const auto& value : msg->fields | std::views::values) { MapMessageEnumFields(value); }
+            for (const auto& item : msg->fields) { MapMessageEnumFields(item.second); }
         }
     }
 
@@ -681,20 +681,20 @@ class JsonReader
 
     std::vector<novatel::edie::MessageDefinition::Ptr>::iterator GetMessageIt(uint32_t iMsgId_)
     {
-        return std::ranges::find_if(vMessageDefinitions.begin(), vMessageDefinitions.end(),
-                                    [iMsgId_](novatel::edie::MessageDefinition::ConstPtr elem) { return (elem->logID == iMsgId_); });
+        return std::find_if(vMessageDefinitions.begin(), vMessageDefinitions.end(),
+                            [iMsgId_](novatel::edie::MessageDefinition::ConstPtr elem) { return (elem->logID == iMsgId_); });
     }
 
     std::vector<novatel::edie::MessageDefinition::Ptr>::iterator GetMessageIt(const std::string& strMessage_)
     {
-        return std::ranges::find_if(vMessageDefinitions.begin(), vMessageDefinitions.end(),
-                                    [strMessage_](novatel::edie::MessageDefinition::ConstPtr elem) { return (elem->name == strMessage_); });
+        return std::find_if(vMessageDefinitions.begin(), vMessageDefinitions.end(),
+                            [strMessage_](novatel::edie::MessageDefinition::ConstPtr elem) { return (elem->name == strMessage_); });
     }
 
     std::vector<novatel::edie::EnumDefinition::Ptr>::iterator GetEnumIt(const std::string& strEnumeration_)
     {
-        return std::ranges::find_if(vEnumDefinitions.begin(), vEnumDefinitions.end(),
-                                    [strEnumeration_](novatel::edie::EnumDefinition::ConstPtr elem) { return (elem->name == strEnumeration_); });
+        return std::find_if(vEnumDefinitions.begin(), vEnumDefinitions.end(),
+                            [strEnumeration_](novatel::edie::EnumDefinition::ConstPtr elem) { return (elem->name == strEnumeration_); });
     }
 
   public:
