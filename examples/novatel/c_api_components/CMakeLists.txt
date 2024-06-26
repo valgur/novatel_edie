@@ -1,0 +1,7 @@
+set(TARGET_NAME "c_api_components")
+add_executable(${TARGET_NAME} ${TARGET_NAME}.c)
+target_link_libraries(${TARGET_NAME} decoders_c_api)
+target_compile_features(${TARGET_NAME} PRIVATE c_std_99)
+set_target_properties(${TARGET_NAME} PROPERTIES LANGUAGE C LINKER_LANGUAGE C)
+set_property(TARGET ${TARGET_NAME} PROPERTY FOLDER "examples")
+set(CMAKE_VERBOSE_MAKEFILE 1)

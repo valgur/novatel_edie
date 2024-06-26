@@ -3,12 +3,17 @@ include(cmake/third_party.cmake)
 
 project(novatel-edie VERSION 3.3.7 LANGUAGES CXX)
 
+option(BUILD_C_API "Build C API" ON)
 option(BUILD_TESTS "Build tests" ON)
 option(BUILD_EXAMPLES "Build examples" ON)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 option(CMAKE_POSITION_INDEPENDENT_CODE "Set -fPIC" ON)
 option(WARNINGS_AS_ERRORS "Treat warnings as errors" OFF)
 option(COVERAGE "Coverage" OFF)
+
+if(BUILD_C_API)
+    enable_language(C)
+endif()
 
 if(NOT DEFINED CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)

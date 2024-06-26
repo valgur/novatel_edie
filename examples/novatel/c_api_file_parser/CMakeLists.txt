@@ -1,0 +1,6 @@
+set(TARGET_NAME "c_api_file_parser")
+add_executable(${TARGET_NAME} ${TARGET_NAME}.c)
+target_link_libraries(${TARGET_NAME} decoders_c_api)
+target_compile_features(${TARGET_NAME} PRIVATE c_std_99)
+set_target_properties(${TARGET_NAME} PROPERTIES LINKER_LANGUAGE C)
+set_property(TARGET ${TARGET_NAME} PROPERTY FOLDER "examples")
