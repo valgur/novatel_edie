@@ -178,10 +178,10 @@ jobs:
     - name: Generate HTML code coverage reports
       run: | 
         mkdir build/code-coverage
-        gcovr -r ./src/ ./build/ --exclude='.*/test/.*' --exclude='.*/dynamic_library/.*' --exclude='.*/version.h' --html --html-details -o ./build/code-coverage/index.html
+        gcovr -r ./src/ ./build/ --exclude='.*/test/.*' --exclude='.*/version.h' --html --html-details -o ./build/code-coverage/index.html
     
     - name: Coverage visualization in pipeline summary
-      run: gcovr -r ./src/ ./build/ --exclude='.*/test/.*' --exclude='.*/dynamic_library/.*' --exclude='.*/version.h' --exclude-unreachable-branches --print-summary -o ./build/coverage.xml
+      run: gcovr -r ./src/ ./build/ --exclude='.*/test/.*' --exclude='.*/version.h' --exclude-unreachable-branches --print-summary -o ./build/coverage.xml
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4.3.0
