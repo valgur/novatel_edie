@@ -5,6 +5,8 @@ endif()
 option(USE_CONAN "Use Conan to automatically manage dependencies" TRUE)
 
 if(NOT DEFINED CONAN_INSTALL_ARGS)
+    include(${CMAKE_CURRENT_LIST_DIR}/fetch_conan.cmake)
+    find_or_download_conan(MIN_VERSION 2.1.0 DOWNLOAD_VERSION 2.4.1)
     set(CONAN_INSTALL_ARGS
         --build=missing
         # Deploy the installed dependencies in the build dir for easier installation
