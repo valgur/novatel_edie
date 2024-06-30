@@ -24,6 +24,8 @@ jobs:
           - [linux, ubuntu-latest, gcc, Release]
           - [linux, ubuntu-latest, clang, Debug]
           - [linux, ubuntu-latest, clang, Release]
+          - [macos, macos-latest, apple-clang, Debug]
+          - [macos, macos-latest, apple-clang, Release]
     env:
       OPERATING_SYSTEM: ${{ matrix.platform[0] }}
       DISTRIBUTION: ${{ matrix.platform[1] }}
@@ -49,7 +51,7 @@ jobs:
             cmake -S . -B build -DCMAKE_BUILD_TYPE=$BUILD_TYPE -G "Visual Studio 17 2022"
           elif [ "${{ env.COMPILER }}" == "clang-cl" ]; then
             cmake -S . -B build -DCMAKE_BUILD_TYPE=$BUILD_TYPE -G "Visual Studio 17 2022" -T ClangCL
-          elif [ "${{ env.COMPILER }}" == "clang" ]; then
+          elif [ "${{ env.COMPILER }}" == "clang" -o "${{ env.COMPILER }}" == "apple-clang" ]; then
             cmake -S . -B build -DCMAKE_BUILD_TYPE=$BUILD_TYPE -G Ninja -DCMAKE_CXX_COMPILER=clang++
           elif [ "${{ env.COMPILER }}" == "gcc" ]; then
             cmake -S . -B build -DCMAKE_BUILD_TYPE=$BUILD_TYPE -G Ninja -DCMAKE_CXX_COMPILER=g++
