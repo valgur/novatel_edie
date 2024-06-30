@@ -10,7 +10,8 @@ Functions
 
     Finds a Conan executable from the system PATH or downloads it if it is not
     found. Takes an optional MIN_VERSION argument for the found Conan and
-    a required DOWNLOAD_VERSION argument for the version to download.
+    an optional DOWNLOAD_VERSION argument for the version to download.
+    Latest release is downloaded if DOWNLOAD_VERSION is not provided.
     Output location can be specified with the DESTINATION argument.
 
 .. cmake:function:: fetch_conan()
@@ -21,6 +22,10 @@ Functions
     If DESTINATION is not provided, Conan is extracted to the
     ${CMAKE_BINARY_DIR}/conan directory.
 
+.. cmake:function:: get_latest_conan_version(VERSION_VAR)
+
+    Retrieves the latest Conan version number from GitHub and stores it in the
+    variable specified by VERSION_VAR.
 
 #]=======================================================================]
 
@@ -55,6 +60,9 @@ function(find_or_download_conan)
     if(CONAN_EXECUTABLE)
         set(CONAN_COMMAND "${CONAN_EXECUTABLE}" CACHE STRING "Path to the Conan executable" FORCE)
     else()
+        if(NOT ARG_DOWNLOAD_VERSION)
+            get_latest_conan_version(ARG_DOWNLOAD_VERSION)
+        endif()
         if(NOT ARG_DESTINATION)
             set(ARG_DESTINATION "${CMAKE_BINARY_DIR}/conan")
         endif()
@@ -128,4 +136,12 @@ function(fetch_conan)
     endif()
 
     set(CONAN_COMMAND "${ARG_DESTINATION}/conan" CACHE STRING "Path to the Conan executable")
+endfunction()
+
+function(get_latest_conan_version VERSION_VAR)
+    set(JSON_FILE "${CMAKE_BINARY_DIR}/conan_latest_release.json")
+    file(DOWNLOAD "https://api.github.com/repos/conan-io/conan/releases/latest" "${JSON_FILE}")
+    file(READ "${JSON_FILE}" JSON)
+    string(REGEX MATCH "\"tag_name\": \"([^\"]+)\"" _ "${JSON}")
+    set(${VERSION_VAR} "${CMAKE_MATCH_1}" PARENT_SCOPE)
 endfunction()
