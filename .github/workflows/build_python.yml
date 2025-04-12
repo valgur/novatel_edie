@@ -13,47 +13,45 @@ on:
 
 jobs:
   build:
-    name: Python - ${{ matrix.platform[0] }} - ${{ matrix.platform[2] }}
-    runs-on: ${{ matrix.platform[1] }}
+    name: Python - ${{ matrix.os }} - ${{ matrix.runs-on }} - ${{ matrix.archs }}
+    runs-on: ${{ matrix.runs-on }}
     strategy:
       fail-fast: false
       matrix:
-        platform:
-          - [Linux, ubuntu-latest, x86_64]
-          - [Linux, ubuntu-latest, i686]
-          - [Linux, ubuntu-latest, aarch64]
-          - [Windows, windows-latest, AMD64]
-          - [Windows, windows-latest, x86]
-          - [Windows, windows-latest, ARM64]
-          - [MacOS, macos-latest, x86_64]
-          - [MacOS, macos-latest, arm64]
-          # spdlog fails to build with the correct architecture on universal2
-          - [MacOS, macos-latest, universal2]
-          # aarch64 with QEMU likely works, but builds 10x slower than the rest
-          # - [Linux, ubuntu-latest, aarch64]
-          # ppc64le is too obscure and slow to build due to emulation
-          # - [Linux, ubuntu-latest, ppc64le]
+        os: [ linux-intel, linux-arm, windows, macOS-intel, macOS-arm, iOS, pyodide ]
+        include:
+          - archs: auto
+            platform: auto
+            python_versions: ${{ inputs.python_versions }}
+          - os: linux-intel
+            runs-on: ubuntu-latest
+          - os: linux-arm
+            runs-on: ubuntu-24.04-arm
+          - os: windows
+            runs-on: windows-latest
+          - os: macos-intel
+            # macos-13 was the last x86_64 runner
+            runs-on: macos-13
+          - os: macos-arm
+            # macos-14+ (including latest) are ARM64 runners
+            runs-on: macos-latest
+            archs: auto,universal2
+          - os: ios
+            runs-on: macos-latest
+            platform: ios
+          - os: pyodide
+            runs-on: ubuntu-latest
+            platform: pyodide
+            python_versions: cp312*
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up QEMU
-        if: runner.os == 'Linux'
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: all
-
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.13'
-
-      - name: Install cibuildwheel
-        run: python -m pip install --upgrade cibuildwheel
-
       - name: Build wheels
-        run: python -m cibuildwheel --output-dir wheelhouse
+        uses: pypa/cibuildwheel@v2.23.2
         env:
-          CIBW_ARCHS: ${{ matrix.platform[2] }}
-          CIBW_BUILD: ${{ inputs.python_versions }}
+          CIBW_PLATFORM: ${{ matrix.platform }}
+          CIBW_ARCHS: ${{ matrix.archs }}
+          CIBW_BUILD: ${{ matrix.python_versions }}
           CIBW_SKIP: "*-musllinux*"
 
       - name: Inspect
@@ -62,5 +60,5 @@ jobs:
       - name: Store build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.platform[0] }}-${{ matrix.platform[2] }}-wheels
+          name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}
           path: wheelhouse/
