@@ -21,6 +21,7 @@ jobs:
         platform:
           - [Linux, ubuntu-latest, x86_64]
           - [Linux, ubuntu-latest, i686]
+          - [Linux, ubuntu-latest, aarch64]
           - [Windows, windows-latest, AMD64]
           - [Windows, windows-latest, x86]
           - [Windows, windows-latest, ARM64]
