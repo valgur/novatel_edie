@@ -13,38 +13,38 @@ on:
 
 jobs:
   build:
-    name: Python - ${{ matrix.os }} - ${{ matrix.runs-on }} - ${{ matrix.archs }}
+    name: Python - ${{ matrix.os }}
     runs-on: ${{ matrix.runs-on }}
     strategy:
       fail-fast: false
       matrix:
         os: [ linux-intel, linux-arm, windows, macOS-intel, macOS-arm ]
         include:
-          - archs: auto
-            platform: auto
           - os: linux-intel
             runs-on: ubuntu-latest
+            archs: x86_64
           - os: linux-arm
             runs-on: ubuntu-24.04-arm
+            archs: aarch64
           - os: windows
             runs-on: windows-latest
+            archs: x86,AMD64,ARM64
           - os: macos-intel
             # macos-13 was the last x86_64 runner
             runs-on: macos-13
+            archs: x86_64
           - os: macos-arm
-            # macos-14+ (including latest) are ARM64 runners
             runs-on: macos-latest
-            archs: auto,universal2
+            archs: arm64,universal2
     steps:
       - uses: actions/checkout@v4
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.23.2
         env:
-          CIBW_PLATFORM: ${{ matrix.platform }}
           CIBW_ARCHS: ${{ matrix.archs }}
           CIBW_BUILD: ${{ inputs.python_versions }}
-          CIBW_SKIP: "*-musllinux* *i686*"
+          CIBW_SKIP: "*-musllinux*"
 
       - name: Inspect
         run: ls wheelhouse/
