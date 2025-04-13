@@ -116,31 +116,29 @@ template <typename T>
 {
     static_assert(std::is_floating_point_v<T>, "WriteFloatToBuffer requires float/double.");
 
-    int precision_arg = -1;
-    if (precision.has_value()) { precision_arg = std::max(*precision, 0); }
-    else if (format == std::chars_format::fixed || format == std::chars_format::scientific) { precision_arg = 6; }
-
-#if defined(__APPLE__) && __MAC_OS_X_VERSION_MIN_REQUIRED < 130300
+    int precision_arg = precision.has_value() ? std::max(*precision, 0) : 6;
     char fmt_char = format == std::chars_format::scientific ? 'e' : 'f';
 
-    std::string format_str;
-    if (precision_arg >= 0) { format_str = fmt::format("{{:.{}{}}}", precision_arg, fmt_char); }
-    else { format_str = fmt::format("{{:{}}}", fmt_char); }
+    try
+    {
+        std::string format_str = fmt::format("{{:.{}{}}}", precision_arg, fmt_char);
+        auto result = fmt::format_to_n(*ppcBuffer_, uiBytesLeft_, fmt::runtime(format_str), value);
+        if (result.size >= uiBytesLeft_) { return false; }
+        *ppcBuffer_ += result.size;
+        uiBytesLeft_ -= static_cast<uint32_t>(result.size);
+        return true;
+    }
+    catch (...)
+    {
+        return false;
+    }
 
-    auto result = fmt::format_to_n(*ppcBuffer_, uiBytesLeft_, fmt::runtime(format_str), value);
-    if (result.size >= uiBytesLeft_) { return false; }
-    *ppcBuffer_ += result.size;
-    uiBytesLeft_ -= static_cast<uint32_t>(result.size);
-    return true;
-#else
-    auto [end, ec] = std::to_chars(*ppcBuffer_, *ppcBuffer_ + uiBytesLeft_, value, format, precision_arg);
-
-    if (ec != std::errc{}) { return false; }
-
-    uiBytesLeft_ -= static_cast<uint32_t>(end - *ppcBuffer_);
-    *ppcBuffer_ = end;
-    return true;
-#endif
+    // std::to_chars() is not available for macOS < v13.3 and GCC 10 on ARM
+    // auto [end, ec] = std::to_chars(*ppcBuffer_, *ppcBuffer_ + uiBytesLeft_, value, format, precision_arg);
+    // if (ec != std::errc{}) { return false; }
+    // uiBytesLeft_ -= static_cast<uint32_t>(end - *ppcBuffer_);
+    // *ppcBuffer_ = end;
+    // return true;
 }
 
 // -------------------------------------------------------------------------------------------------------
